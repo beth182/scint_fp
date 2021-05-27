@@ -66,11 +66,7 @@ z0_scint = estimate_z0.calculate_quick_z0(spatial_inputs, crop_size=200)['z_0']
 
 
 rad_file = '../example_data/ncdf/CNR4_KSSW_2016142_15min.nc'
-k = 0.4  # von-karman constant
-g = 9.81  # acceleration due to gravity   (ms^-2)
-cp = 1004.6  # specific heat capacity of dry air at constant P (J/kgK)
-kelv = 273.15  # convert between celsius and kelvin
-R = 2.87  # gas constant (for pressure in hPa)
+
 
 QH_model = qstar_stability_estimate.simple_method_qh(rad_file)
 initial_ustar = qstar_stability_estimate.calculate_initial_ustar(ws, zeff, z0_scint)
