@@ -109,7 +109,7 @@ def std_v(wind_components):
         std_v = np.std(sample)
         std_v_list.append(std_v)
 
-    sigv_dict = {'sigv': std_v_list, 'time': time}
+    sigv_dict = {'sigv': np.asarray(std_v_list), 'time': np.asarray(time)}
 
     return sigv_dict
 

@@ -2,7 +2,7 @@
 # creates footprint of observation
 
 import scintools as sct
-from scint_fp.functions import estimate_z0, wx_u_v_components, retrieve_var, wx_stability
+from scint_fp.functions import estimate_z0, wx_u_v_components, retrieve_var, wx_stability, inputs_at_given_hour
 
 import numpy as np
 import copy
@@ -109,15 +109,14 @@ hour_inputs = {'wd': WX_hourly['dir'],
 
 
 
+# # for all hours
+# for hour in range(0, 24):
 
-# hours_valid = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
-# # for a selection of hours
-# for hour in hours_valid:
+hours_valid = [12]
+# for a selection of hours
+for hour in hours_valid:
 
-# for all hours
-for hour in range(0, 24):
-
-    hour_met_inputs = inputs_for_given_hour(hour, hour_inputs)
+    hour_met_inputs = inputs_at_given_hour.inputs_for_given_hour(hour, hour_inputs)
 
     time = hour_met_inputs['time']
     sigv = hour_met_inputs['sigv']
@@ -133,17 +132,12 @@ for hour in range(0, 24):
                                wind_dir=wd
                                )
 
-    # fp_point = sct.run_footprint(met_inputs=met_inputs,
-    #                              roughness_inputs=roughness_inputs,
-    #                              spatial_inputs=spatial_inputs)
-    #
-    # fp_point.footprint[fp_point.footprint == 0.0] = np.nan
-
     fp_path = sct.run_footprintpath(scint_pair=pair,
                                     met_inputs=met_inputs,
                                     roughness_inputs=roughness_inputs,
                                     path_params=path_params,
                                     spatial_inputs=spatial_inputs)
+
     fp_path.footprint[fp_path.footprint == 0.0] = np.nan
 
     string_to_save = str(pair.pair_id) + '_' + str(spatial_inputs.domain_size) + '_' + title_string

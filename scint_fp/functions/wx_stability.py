@@ -122,6 +122,6 @@ def wx_stability_vars(zeff,
         L_list.append(L)
         ustar_list.append(ustar)
 
-    wx_stability_vars = {'L': L_list, 'ustar': ustar_list}
+    wx_stability_vars = {'L': np.asarray(L_list), 'ustar': np.asarray(ustar_list)}
 
     return wx_stability_vars
