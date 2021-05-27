@@ -2,6 +2,9 @@
 # take an initial guess of stability using net all-wave radiation
 
 # imports
+
+import scint_fp.constants as const
+
 import netCDF4 as nc
 import numpy as np
 import matplotlib.pyplot as plt
@@ -116,7 +119,7 @@ def calculate_initial_ustar(ws,
     ustar_initial: Initial estimate of friction velocity
     """
 
-    ustar_initial = k * np.asarray(ws) / np.log(zeff / z0_scint)
+    ustar_initial = const.k * np.asarray(ws) / np.log(zeff / z0_scint)
 
     return ustar_initial
 
@@ -140,8 +143,8 @@ def calculate_initial_L(ustar_initial,
     L_initial: initial estimate of Obukhov length
     """
 
-    rho = np.asarray(press) / (R * (np.asarray(tair) + kelv))
-    L_initial = ((ustar_initial ** 3) * rho * cp * (np.asarray(tair) + kelv)) / (k * g * QH_model)
+    rho = np.asarray(press) / (const.R * (np.asarray(tair) + const.kelv))
+    L_initial = ((ustar_initial ** 3) * rho * const.cp * (np.asarray(tair) + const.kelv)) / (const.k * const.g * QH_model)
 
     return L_initial
 

@@ -1,6 +1,8 @@
 # Beth S. 13/05/21
 # Calculates stability params ustar, L from wx data files (rather than eddy covariance) for input into footprint model
 
+import scint_fp.constants as const
+
 import numpy as np
 import netCDF4 as nc
 
@@ -47,15 +49,6 @@ def wx_stability_vars(wx_path, scint_path, zeff, z0_scint):
     if not all(len(l) == the_len for l in it):
         raise ValueError('not all lists have same length!')
 
-    # constants
-    # usign Andres 1988 constants
-    c1 = 4.9
-    c2 = 6.1
-    c3 = 2.2
-
-    k = 0.4  # von-karman constant
-    g = 9.81  # acceleration due to gravity   (ms^-2)
-
     # create empty
     L_list = []
     ustar_list = []
@@ -87,7 +80,7 @@ def wx_stability_vars(wx_path, scint_path, zeff, z0_scint):
 
                 # MOST  function for unstable conditions
                 # equation 5 in Crawford et al. 2017
-                fmo_unstable = c1 * (1 - c2 * (zeta)) ** (-2 / 3)
+                fmo_unstable = const.c1 * (1 - const.c2 * (zeta)) ** (-2 / 3)
 
                 # Tstar
                 # equation 8 in Crawford et al. 2017
@@ -99,7 +92,7 @@ def wx_stability_vars(wx_path, scint_path, zeff, z0_scint):
                     L = 0.0000000000001
 
                 #  stability-adjusted logarithmic profile to estimate ustar
-                # # original version in scint processing scripts:
+                # # original version in scint processing scint_fp:
                 # Phi = -5 * zeta
                 # Phi0 = -5 * (z0_scint / L)
                 # from Grimmond and Cleugh 1994, equation 6
@@ -108,18 +101,18 @@ def wx_stability_vars(wx_path, scint_path, zeff, z0_scint):
 
                 # MOST  function for stable conditions
                 # equation 6 in Crawford et al. 2017
-                fmo_stable = c1 * (1 + (c3 * (zeta ** (2 / 3))))
+                fmo_stable = const.c1 * (1 + (const.c3 * (zeta ** (2 / 3))))
 
                 # Tstar
                 # equation 8 in Crawford et al. 2017
                 tstar = (scint_CT2_vals[a] * (zeff ** (2 / 3)) / fmo_stable) ** 0.5
 
             # ustar
-            ustar = k * np.asarray(wx_ws_vals)[a] / (np.log(zeff / z0_scint) - Phi + Phi0)
+            ustar = const.k * np.asarray(wx_ws_vals)[a] / (np.log(zeff / z0_scint) - Phi + Phi0)
 
             # calculate L
             # equation 7 in Crawford et al. 2017
-            L = ((ustar ** 2) * (np.asarray(wx_tair_vals)[a] + 273.15)) / (g * k * tstar)
+            L = ((ustar ** 2) * (np.asarray(wx_tair_vals)[a] + const.kelv)) / (const.g * const.k * tstar)
 
             print(L)
 
