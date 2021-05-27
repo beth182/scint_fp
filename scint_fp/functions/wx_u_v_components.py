@@ -36,7 +36,7 @@ def wind_components(time,
         u_vals.append(u)
         v_vals.append(v)
 
-    wind_components = {'u': u_vals, 'v': v_vals}
+    wind_components = {'u': u_vals, 'v': v_vals, 'time': time}
 
     return wind_components
 
@@ -80,23 +80,37 @@ def plot_wind_components(time, ws, wd, wind_components):
     plt.show()
 
 
-def std_v(v_vals_15_min):
+def std_v(wind_components):
     """
-    Caculate the standard deviation of the v componant of wind
+    Calculates the standard deviation of the v component of wind
     Parameters
     ----------
-    v_vals: v componant of wind
+    wind_components: dictionary for components of wind at 1 min
 
     Returns
     -------
-
+    Dictonary of on-the-hour standard deviation of v component of wind
     """
+
+    v_1min = wind_components['v']
+    time_1min = wind_components['time']
+
+    # group 1-min observation into groups of 60
+    v_groups = [v_1min[i:i + 60] for i in range(0, len(v_1min), 60)]
+
+    time_groups = [time_1min[i:i + 60] for i in range(0, len(time_1min), 60)]
+    time = []
+    for group in time_groups:
+        time.append(group[-1])
+
     std_v_list = []
 
-    for sample in v_vals_15_min:
+    for sample in v_groups:
         std_v = np.std(sample)
         std_v_list.append(std_v)
 
-    return std_v_list
+    sigv_dict = {'sigv': std_v_list, 'time': time}
+
+    return sigv_dict
 
 

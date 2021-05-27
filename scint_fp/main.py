@@ -75,7 +75,6 @@ rad_15min = retrieve_var.retrive_var(rad_file,
                                     ['Qstar'])
 
 # wind calculations
-
 u_v = wx_u_v_components.wind_components(time=WX_1min['time'],
                                         ws_array=WX_1min['WS'],
                                         wd_array=WX_1min['dir'])
@@ -87,10 +86,7 @@ u_v = wx_u_v_components.wind_components(time=WX_1min['time'],
 #                                        wind_components=u_v)
 
 # standard deviation of v component of wind
-v_vals = u_v['v']
-# group 1-min observation into groups of 15
-v_vals_15_min = [v_vals[i:i + 15] for i in range(0, len(v_vals), 15)]
-sigma_v = wx_u_v_components.std_v(v_vals_15_min)
+sigma_v = wx_u_v_components.std_v(u_v)
 
 # get only hourly values
 WX_hourly = retrieve_var.take_hourly_vars(WX_15min)
@@ -107,13 +103,17 @@ stability_vars = wx_stability.wx_stability_vars(zeff=zeff,
 
 
 
+hour_inputs = {'wd': WX_hourly['dir'],
+               'sigv': sigma_v['sigv'],
+               'L': stability_vars['L'],
+               'ustar': stability_vars['ustar']}
 
 print('end')
 
 
 def inputs_for_given_hour(hour_choice, hour_inputs):
     """
-
+    Stes a combination of 1 hour's representative met-input values
     Parameters
     ----------
     hour
