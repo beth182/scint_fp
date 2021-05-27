@@ -2,48 +2,45 @@
 # Calculates stability params ustar, L from wx data files (rather than eddy covariance) for input into footprint model
 
 import scint_fp.constants as const
+from scint_fp.functions import qstar_stability_estimate
 
 import numpy as np
 import netCDF4 as nc
+import matplotlib.pyplot as plt
 
 
-def wx_stability_vars(wx_path, scint_path, zeff, z0_scint):
+def wx_stability_vars(zeff,
+                      z0_scint,
+                      wx_dict,
+                      scint_dict,
+                      rad_dict):
     """
     Calculates friction velocity and L from scintillometer and wx data files
     LAS daily script function 'Andreas_new'
-    Parameters
-    ----------
-    wx_path:
-    scint_path:
-
-    Returns
-    -------
-
+    :param zeff: effective beam height of path
+    :param z0_scint: roughness length estimation
+    :param wx_dict: dictionary of hourly values from wx station
+    :param scint_dict: dictionary hourly values from scint
+    :param rad_dict: dictionary of hourly values from radiometer
+    :return:
     """
-    # read files
-    wx_ncfile = nc.Dataset(wx_path)
-    scint_ncfile = nc.Dataset(scint_path)
-
-    wx_time = wx_ncfile.variables['time']
-    scint_time = scint_ncfile.variables['time']
-    wx_time_dt = nc.num2date(wx_time[:], wx_time.units)
-    scint_time_dt = nc.num2date(scint_time[:], scint_time.units)
 
     # check to see that time arrays are the same across both instruments
-    if wx_time_dt.all() != scint_time_dt.all():
-        raise ValueError('scint & wx time arrays are different.')
+    if wx_dict['time'].all() != scint_dict['time'].all() != rad_dict['time'].all():
+        raise ValueError('scint, wx & rad time arrays are different.')
 
-    scint_CT2 = scint_ncfile.variables['CT2']
-    wx_ws = wx_ncfile.variables['WS']
-    wx_tair = wx_ncfile.variables['Tair']
+    time_vals = wx_dict['time']
 
-    scint_CT2_vals = np.array(scint_CT2[:, 0, 0, 0], dtype=np.float).tolist()
-    wx_ws_vals = np.array(wx_ws[:, 0, 0, 0], dtype=np.float).tolist()
-    wx_tair_vals = np.array(wx_tair[:, 0, 0, 0], dtype=np.float).tolist()
-    time_vals = wx_time_dt.tolist()
+    wx_ws_vals = wx_dict['WS']
+    wx_tair_vals = wx_dict['Tair']
+    wx_press_vals = wx_dict['press']
+
+    scint_CT2_vals = scint_dict['CT2']
+
+    rad_qstar_vals = rad_dict['Qstar']
 
     # check to see if all lists are the same length
-    lists = [scint_CT2_vals, wx_ws_vals, wx_tair_vals, time_vals]
+    lists = [scint_CT2_vals, wx_ws_vals, wx_tair_vals, time_vals, rad_qstar_vals]
     it = iter(lists)
     the_len = len(next(it))
     if not all(len(l) == the_len for l in it):
@@ -53,17 +50,24 @@ def wx_stability_vars(wx_path, scint_path, zeff, z0_scint):
     L_list = []
     ustar_list = []
 
+    # calculate values of intial L and ustar
+    # calculate initial ustar (take equation for neutral conditions)
+    initial_ustar = qstar_stability_estimate.calculate_initial_ustar(wx_ws_vals,
+                                                     zeff,
+                                                     z0_scint)
+
+    # using simple method to model QH term using Q*
+    QH_model = qstar_stability_estimate.simple_method_qh(rad_dict)
+
+    # initial L calculation
+    initial_L = qstar_stability_estimate.calculate_initial_L(ustar_initial=initial_ustar,
+                                                             QH_model=QH_model,
+                                                             tair=wx_tair_vals,
+                                                             press=wx_press_vals)
+
     for a in range(0, len(time_vals)):
 
-        # assumption: if daytime = unstable if nighttime = stable
-        if 6 <= time_vals[a].hour < 16:
-            L = -1  # unstable
-        else:
-            L = 1  # stable
-
-        print(' ')
-        print(L)
-
+        L = initial_L[a]
         # stability parameter
         zeta = zeff / L
 
@@ -114,7 +118,6 @@ def wx_stability_vars(wx_path, scint_path, zeff, z0_scint):
             # equation 7 in Crawford et al. 2017
             L = ((ustar ** 2) * (np.asarray(wx_tair_vals)[a] + const.kelv)) / (const.g * const.k * tstar)
 
-            print(L)
 
         L_list.append(L)
         ustar_list.append(ustar)

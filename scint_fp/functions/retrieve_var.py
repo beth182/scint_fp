@@ -27,3 +27,25 @@ def retrive_var(file_path,
         var_dict[var_name] = var_array
 
     return var_dict
+
+
+def take_hourly_vars(var_dict):
+    """
+    Takes dictionary of ncdf output and takes only values on the hour.
+    :param var_dict: dictionary of ncdf output
+    :return: dict of values on the hour
+    """
+
+    time = var_dict['time']
+
+    # index of where time is on the hour
+    hour_index = np.where([i.minute == 0 for i in time])
+
+    hourly_dict = {}
+
+    for key in var_dict.keys():
+        hourly_vals = var_dict[key][hour_index]
+        hourly_dict[key] = hourly_vals
+
+    return hourly_dict
+

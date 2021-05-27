@@ -10,29 +10,23 @@ import datetime
 from matplotlib.dates import DateFormatter
 
 
-def wind_components(nc_file_path):
+def wind_components(time,
+                    ws_array,
+                    wd_array):
     """
     Get u and v components from WS & dir, observed by WX station.
-    Returns
-    -------
-
+    :param time: time array
+    :param ws: wind speed array
+    :param wd: wind direction array
+    :return: u and v components of wind
     """
-
-    wx_ncfile = nc.Dataset(nc_file_path)
-    obs_wx_wd = wx_ncfile.variables['dir']
-    obs_wx_ws = wx_ncfile.variables['WS']
-    obs_wx_time = wx_ncfile.variables['time']
-
-    obs_wx_wd_vals = obs_wx_wd[:, 0, 0, 0]
-    obs_wx_ws_vals = obs_wx_ws[:, 0, 0, 0]
-    wx_time_dt = nc.num2date(obs_wx_time[:], obs_wx_time.units)
 
     u_vals = []
     v_vals = []
 
-    for i in range(0, len(wx_time_dt)):
-        ws = obs_wx_ws_vals[i]
-        wd = obs_wx_wd_vals[i]
+    for i in range(0, len(time)):
+        ws = ws_array[i]
+        wd = wd_array[i]
 
         wd_rad = math.radians(wd)
 
@@ -42,12 +36,12 @@ def wind_components(nc_file_path):
         u_vals.append(u)
         v_vals.append(v)
 
-    wind_components = {'u': u_vals, 'v': v_vals, 'time': wx_time_dt, 'ws': obs_wx_ws_vals, 'wd': obs_wx_wd_vals}
+    wind_components = {'u': u_vals, 'v': v_vals}
 
     return wind_components
 
 
-def plot_wind_components(wind_components):
+def plot_wind_components(time, ws, wd, wind_components):
     """
     Plot u and v components of wind
     Returns
@@ -55,24 +49,21 @@ def plot_wind_components(wind_components):
 
     """
 
-    wx_time_dt = wind_components['time']
     u_vals = wind_components['u']
     v_vals = wind_components['v']
-    obs_wx_ws_vals = wind_components['ws']
-    obs_wx_wd_vals = wind_components['wd']
 
     fig, ax = plt.subplots()
 
-    ax.plot(wx_time_dt.tolist(), u_vals, alpha=0.2, color='blue')
-    ax.scatter(wx_time_dt.tolist(), u_vals, label='u', marker='^', color='blue')
+    ax.plot(time.tolist(), u_vals, alpha=0.2, color='blue')
+    ax.scatter(time.tolist(), u_vals, label='u', marker='^', color='blue')
 
-    ax.plot(wx_time_dt.tolist(), v_vals, alpha=0.2, color='orange')
-    ax.scatter(wx_time_dt.tolist(), v_vals, label='v', marker='v', color='orange')
+    ax.plot(time.tolist(), v_vals, alpha=0.2, color='orange')
+    ax.scatter(time.tolist(), v_vals, label='v', marker='v', color='orange')
 
-    ax.plot(wx_time_dt.tolist(), obs_wx_ws_vals, label='ws', linestyle='None', marker='x', color='red')
+    ax.plot(time.tolist(), ws, label='ws', linestyle='None', marker='x', color='red')
 
     ax2 = ax.twinx()
-    ax2.plot(wx_time_dt.tolist(), obs_wx_wd_vals, label='dir', linestyle='None', marker='.', color='green')
+    ax2.plot(time.tolist(), wd, label='dir', linestyle='None', marker='.', color='green')
 
     plt.gcf().autofmt_xdate()
     ax.xaxis.set_major_formatter(DateFormatter('%j %H:%M'))
@@ -108,26 +99,4 @@ def std_v(v_vals_15_min):
 
     return std_v_list
 
-
-def get_wd_dir(nc_file_path_15min):
-    """
-    Get wind direction from 15 minute sample files.
-    Parameters
-    ----------
-    nc_file_path_15min: file path to wx data file - 15 min sample.
-
-    Returns
-    -------
-
-    """
-    wx_ncfile = nc.Dataset(nc_file_path_15min)
-    obs_wx_wd = wx_ncfile.variables['dir']
-    obs_wx_time = wx_ncfile.variables['time']
-
-    obs_wx_wd_vals = obs_wx_wd[:, 0, 0, 0]
-    wx_time_dt = nc.num2date(obs_wx_time[:], obs_wx_time.units)
-
-    wind_dir = {'time': wx_time_dt, 'dir': obs_wx_wd_vals}
-
-    return wind_dir
 

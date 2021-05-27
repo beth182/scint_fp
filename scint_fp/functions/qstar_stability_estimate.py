@@ -10,36 +10,20 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def simple_method_qh(radiation_filepath):
+def simple_method_qh(rad_dict):
+    """
+    Calculates a model of the QH term to go into L equation
+    following following Grimmond and Cleugh
+    all equation numbers reference this paper
+    :param rad_dict: dictionary of hourly output from the radiometer
+    :return: model of the QH term
     """
 
-    Parameters
-    ----------
-    radiation_filepath
-
-    Returns
-    -------
-
-    """
-
-    # read qstar and time values from file
-    rad_ncfile = nc.Dataset(radiation_filepath)
-    rad_time = rad_ncfile.variables['time']
-    rad_qstar = rad_ncfile.variables['Qstar']
-    rad_time_dt = nc.num2date(rad_time[:], rad_time.units)  # convert to dt
-    rad_qstar_vals = rad_qstar[:, 0, 0, 0]
-
-    # index of where time is on the hour
-    hour_index = np.where([i.minute == 0 for i in rad_time_dt])
-    # get only hourly vals
-    time = rad_time_dt[hour_index]
-    qstar = rad_qstar_vals[hour_index]
+    time = rad_dict['time']
+    qstar = rad_dict['Qstar']
 
     # check hourly time and qstar arrays are the same len
     assert len(time) == len(qstar)
-
-    # following Grimmond and Cleugh
-    # all equation numbers reference this paper
 
     # index of first hour where qstar > 20
     index_at_condition = np.where(qstar > 20)[0][0]
@@ -144,6 +128,6 @@ def calculate_initial_L(ustar_initial,
     """
 
     rho = np.asarray(press) / (const.R * (np.asarray(tair) + const.kelv))
-    L_initial = ((ustar_initial ** 3) * rho * const.cp * (np.asarray(tair) + const.kelv)) / (const.k * const.g * QH_model)
+    L_initial = - ((ustar_initial ** 3) * rho * const.cp * (np.asarray(tair) + const.kelv)) / (const.k * const.g * QH_model)
 
     return L_initial

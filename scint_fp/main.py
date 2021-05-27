@@ -2,7 +2,7 @@
 # creates footprint of observation
 
 import scintools as sct
-from scint_fp.functions import estimate_z0, qstar_stability_estimate, get_met_inputs, retrieve_var
+from scint_fp.functions import estimate_z0, wx_u_v_components, retrieve_var, wx_stability
 
 import numpy as np
 import copy
@@ -59,52 +59,59 @@ z0_scint = estimate_z0.calculate_quick_z0(spatial_inputs, crop_size=200)['z_0']
 # retrieve variables needed
 # WX station 15-min file
 # temperature, pressure, wind speed, wind direction
-
 WX_15min = retrieve_var.retrive_var(wx_file_path_15min,
                                     ['Tair', 'press', 'WS', 'dir'])
-
+# WX station 1-min file
+# wind speed, wind direction
 WX_1min = retrieve_var.retrive_var(wx_file_path_1min,
                                     ['WS', 'dir'])
-
+# scint 15-min file
+# temperature structure parameter
 scint_15min = retrieve_var.retrive_var(scint_path,
                                     ['CT2'])
-
+# radiation 15-minute file
+# net all-wave raditation
 rad_15min = retrieve_var.retrive_var(rad_file,
                                     ['Qstar'])
+
+# wind calculations
+
+u_v = wx_u_v_components.wind_components(time=WX_1min['time'],
+                                        ws_array=WX_1min['WS'],
+                                        wd_array=WX_1min['dir'])
+
+# optional plotting of components
+# wx_u_v_components.plot_wind_components(time=WX_1min['time'],
+#                                        ws=WX_1min['WS'],
+#                                        wd=WX_1min['dir'],
+#                                        wind_components=u_v)
+
+# standard deviation of v component of wind
+v_vals = u_v['v']
+# group 1-min observation into groups of 15
+v_vals_15_min = [v_vals[i:i + 15] for i in range(0, len(v_vals), 15)]
+sigma_v = wx_u_v_components.std_v(v_vals_15_min)
+
+# get only hourly values
+WX_hourly = retrieve_var.take_hourly_vars(WX_15min)
+scint_hourly = retrieve_var.take_hourly_vars(scint_15min)
+rad_hourly = retrieve_var.take_hourly_vars(rad_15min)
+
+
+# get stability vars
+stability_vars = wx_stability.wx_stability_vars(zeff=zeff,
+                                                z0_scint=z0_scint,
+                                                wx_dict=WX_hourly,
+                                                scint_dict=scint_hourly,
+                                                rad_dict=rad_hourly)
+
+
+
 
 print('end')
 
 
-
-# Temperature structure parameter
-
-
-
-
-
-
-# QH_model = qstar_stability_estimate.simple_method_qh(rad_file)
-# initial_ustar = qstar_stability_estimate.calculate_initial_ustar(ws, zeff, z0_scint)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-met_inputs_fp = get_met_inputs.get_fp_met_inputs(wx_file_path_15min, wx_file_path_1min, scint_path, zeff, z0_scint)
-hour_inputs = get_met_inputs.inputs_for_hour(met_inputs_fp)
-
-
-def inputs_for_hour(hour_choice, hour_inputs):
+def inputs_for_given_hour(hour_choice, hour_inputs):
     """
 
     Parameters
