@@ -2,7 +2,7 @@
 # creates footprint of observation
 
 import scintools as sct
-from sctipts.functions import estimate_z0
+from scripts.functions import estimate_z0
 import get_met_inputs
 import qstar_stability_estimate
 
