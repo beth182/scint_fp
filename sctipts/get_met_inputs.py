@@ -2,10 +2,7 @@
 # Get all met inputs for fp calculation.
 
 import wx_u_v_components
-import scintools as sct
-import estimate_z0
 import wx_stability
-import matplotlib.pyplot as plt
 import numpy as np
 
 
