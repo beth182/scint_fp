@@ -2,9 +2,7 @@
 # creates footprint of observation
 
 import scintools as sct
-from scripts.functions import estimate_z0
-import get_met_inputs
-import qstar_stability_estimate
+from scripts.functions import estimate_z0, qstar_stability_estimate, get_met_inputs
 
 import numpy as np
 import copy
