@@ -101,40 +101,13 @@ stability_vars = wx_stability.wx_stability_vars(zeff=zeff,
                                                 scint_dict=scint_hourly,
                                                 rad_dict=rad_hourly)
 
-
-
 hour_inputs = {'wd': WX_hourly['dir'],
                'sigv': sigma_v['sigv'],
                'L': stability_vars['L'],
-               'ustar': stability_vars['ustar']}
+               'ustar': stability_vars['ustar'],
+               'time': WX_hourly['time']}
 
-print('end')
 
-
-def inputs_for_given_hour(hour_choice, hour_inputs):
-    """
-    Stes a combination of 1 hour's representative met-input values
-    Parameters
-    ----------
-    hour
-    hour_inputs
-
-    Returns
-    -------
-
-    """
-
-    i = np.where([i.hour == hour_choice for i in hour_inputs['time']])
-
-    time = hour_inputs['time'][i][0]
-    sigv = hour_inputs['sigv'][i][0]
-    wd = hour_inputs['wd'][i][0]
-    L = hour_inputs['L'][i][0]
-    ustar = hour_inputs['ustar'][i][0]
-
-    hour_met_inputs = {'time': time, 'sigv': sigv, 'wd': wd, 'L': L, 'ustar': ustar}
-
-    return hour_met_inputs
 
 
 # hours_valid = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
@@ -144,7 +117,7 @@ def inputs_for_given_hour(hour_choice, hour_inputs):
 # for all hours
 for hour in range(0, 24):
 
-    hour_met_inputs = inputs_for_hour(hour, hour_inputs)
+    hour_met_inputs = inputs_for_given_hour(hour, hour_inputs)
 
     time = hour_met_inputs['time']
     sigv = hour_met_inputs['sigv']
