@@ -12,18 +12,18 @@ out_dir = 'C:/Users/beths/Desktop/LANDING/fp_raster_tests/'
 
 # files should be WX from new_scint_data, L2
 # and scint data from new_scint_data, L1
-wx_file_path_15min = '../example_data/Davis_BCT_2016142_15min_newdata_L2.nc'
-wx_file_path_1min = '../example_data/Davis_BCT_2016142_1min_newdata_L2.nc'
-scint_path = '../example_data/LASMkII_Fast_IMU_2016142_15min_newdata_L1.nc'
+wx_file_path_15min = '../example_data/ncdf/Davis_BCT_2016142_15min_newdata_L2.nc'
+wx_file_path_1min = '../example_data/ncdf/Davis_BCT_2016142_1min_newdata_L2.nc'
+scint_path = '../example_data/ncdf/LASMkII_Fast_IMU_2016142_15min_newdata_L1.nc'
 
 # random winter example
-# wx_file_path_15min = './example_data/2016020/Davis_IMU_2016020_15min.nc'
-# wx_file_path_1min = './example_data/2016020/Davis_IMU_2016020_1min.nc'
-# scint_path = './example_data/2016020/LASMkII_Fast_IMU_2016020_15min.nc'
+# wx_file_path_15min = './example_data/ncdf/2016020/Davis_IMU_2016020_15min.nc'
+# wx_file_path_1min = './example_data/ncdf/2016020/Davis_IMU_2016020_1min.nc'
+# scint_path = './example_data/ncdf/2016020/LASMkII_Fast_IMU_2016020_15min.nc'
 
-# wx_file_path_15min = './example_data/2016024/Davis_BCT_2016024_15min.nc'
-# wx_file_path_1min = './example_data/2016024/Davis_BCT_2016024_1min.nc'
-# scint_path = './example_data/2016024/LASMkII_Fast_IMU_2016024_15min.nc'
+# wx_file_path_15min = './example_data/ncdf/2016024/Davis_BCT_2016024_15min.nc'
+# wx_file_path_1min = './example_data/ncdf/2016024/Davis_BCT_2016024_1min.nc'
+# scint_path = './example_data/2016024/ncdf/LASMkII_Fast_IMU_2016024_15min.nc'
 
 # define scint pair
 # path 12 - BCT -> IMU
@@ -48,9 +48,9 @@ spatial_inputs = sct.SpatialInputs(
     x=float(pair.path_center().x),
     y=float(pair.path_center().y),
     z_asl=pair.path_center_z(),
-    bdsm_path='../../../example_inputs/rasters/height_surface_4m.tif',
-    cdsm_path='../../../example_inputs/rasters/height_veg_4m.tif',
-    dem_path='../../../example_inputs/rasters/height_terrain_4m.tif')
+    bdsm_path='../example_data/rasters/height_surface_4m.tif',
+    cdsm_path='../example_data/rasters/height_veg_4m.tif',
+    dem_path='../example_data/rasters/height_terrain_4m.tif')
 
 
 path_transect = pair.path_transect(dsm_file=spatial_inputs.bdsm_path, point_res=10)
@@ -62,7 +62,7 @@ zeff = path_transect.effective_beam_height()
 z0_scint = estimate_z0.calculate_quick_z0(spatial_inputs, crop_size=200)['z_0']
 
 
-rad_file = '../example_data/CNR4_KSSW_2016142_15min.nc'
+rad_file = '../example_data/ncdf/CNR4_KSSW_2016142_15min.nc'
 k = 0.4  # von-karman constant
 g = 9.81  # acceleration due to gravity   (ms^-2)
 cp = 1004.6  # specific heat capacity of dry air at constant P (J/kgK)
