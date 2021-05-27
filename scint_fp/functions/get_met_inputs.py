@@ -1,8 +1,8 @@
 # Beth S. 14/05/21
 # Get all met inputs for fp calculation.
 
-import wx_u_v_components
-import wx_stability
+from scint_fp.functions import wx_u_v_components, wx_stability
+
 import numpy as np
 
 

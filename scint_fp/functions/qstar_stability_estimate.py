@@ -147,9 +147,3 @@ def calculate_initial_L(ustar_initial,
     L_initial = ((ustar_initial ** 3) * rho * const.cp * (np.asarray(tair) + const.kelv)) / (const.k * const.g * QH_model)
 
     return L_initial
-
-
-
-
-
-print('end')
