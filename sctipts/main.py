@@ -1,5 +1,8 @@
+# Beth Saunders 27/05/21
+# creates footprint of observation
+
 import scintools as sct
-import estimate_z0
+from sctipts.functions import estimate_z0
 import get_met_inputs
 import qstar_stability_estimate
 
