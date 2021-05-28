@@ -6,8 +6,8 @@ from scint_fp.functions import qstar_stability_estimate
 from scint_fp.functions import plot_functions
 
 import numpy as np
-import netCDF4 as nc
 import matplotlib.pyplot as plt
+import copy
 
 
 def wx_stability_vars(zeff,
@@ -50,12 +50,15 @@ def wx_stability_vars(zeff,
     # create empty
     L_list = []
     ustar_list = []
+    iteration_count_list = []
+    iteration_dict_L = {}
+    iteration_dict_ustar = {}
 
     # calculate values of intial L and ustar
     # calculate initial ustar (take equation for neutral conditions)
     initial_ustar = qstar_stability_estimate.calculate_initial_ustar(wx_ws_vals,
-                                                     zeff,
-                                                     z0_scint)
+                                                                     zeff,
+                                                                     z0_scint)
 
     # using simple method to model QH term using Q*
     QH_model = qstar_stability_estimate.simple_method_qh(rad_dict)
@@ -69,20 +72,54 @@ def wx_stability_vars(zeff,
     # plot_functions.plot_L(initial_L, time_vals)
     # plot_functions.generic_plot_vs_time(zeff / initial_L, time_vals, 'zeff/L')
 
+    # Iterative process
+
+    # define acceptable differece to define when iterations stop
+    ustar_threshold = 0.001
+
+    # for each time
     for a in range(0, len(time_vals)):
 
-        L = initial_L[a]
-        # stability parameter
-        zeta = zeff / L
+        # get hour as string for key to dict
+        hour = time_vals[a].strftime('%H')
 
-        for i in range(0, 20):
-            if L < 0:  # if unstable
+        # setting a condition to break loop as initially False
+        # will keep looping until the difference in ustar output is smaller than ustar_threshold
+        threshold_reached = False
+
+        # define initial stability
+        L_initial = initial_L[a]
+        ustar_initial = initial_ustar[a]
+
+        # counter to log how many iterations we've gone through
+        iteration_count = 0
+
+        # define list where all values from iterations are stored
+        iteration_L_vals = []
+        iteration_ustar_vals = []
+
+        # while the condition has not be satisfied
+        while not threshold_reached:
+
+            # for the first iteration, take L initial as L
+            if iteration_count == 0:
+                L_previous = copy.copy(L_initial)
+                ustar_previous = copy.copy(ustar_initial)
+            # if not the first iteration, take a copy of the previous values
+            else:
+                L_previous = copy.copy(L)
+                ustar_previous = copy.copy(ustar)
+
+            # stability parameter
+            zeta = zeff / L_previous
+
+            if L_previous < 0:  # if unstable
 
                 #  stability-adjusted logarithmic profile to estimate ustar
                 # see equation 3 & 4 in Grimmond and Cleugh 1994
                 # coefficants updated as per Foken Micromet textbook, page 61
                 x = (-19.3 * zeta + 1) ** 0.25  # 1994 paper = -16, Foken = -19.3
-                x0 = (-19.3 * (z0_scint / L) + 1) ** 0.25
+                x0 = (-19.3 * (z0_scint / L_previous) + 1) ** 0.25
                 Phi = 2 * np.log((x + 1) / 2) + np.log(((x ** 2) + 1) / 2) - 2 * np.arctan(x) + np.pi / 2
                 Phi0 = 2 * np.log((x0 + 1) / 2) + np.log((x0 ** 2 + 1) / 2) - 2 * np.arctan(x0) + np.pi / 2
 
@@ -94,10 +131,10 @@ def wx_stability_vars(zeff,
                 # equation 8 in Crawford et al. 2017
                 tstar = - (scint_CT2_vals[a] * (zeff ** (2 / 3)) / fmo_unstable) ** 0.5
 
-            elif L >= 0:  # stable
+            elif L_previous >= 0:  # stable
 
-                if L == 0:
-                    L = 0.0000000000001
+                if L_previous == 0:
+                    L_previous = 0.0000000000001
 
                 #  stability-adjusted logarithmic profile to estimate ustar
                 # # original version in scint processing scint_fp:
@@ -105,7 +142,7 @@ def wx_stability_vars(zeff,
                 # Phi0 = -5 * (z0_scint / L)
                 # from Grimmond and Cleugh 1994, equation 6
                 Phi = - 17 * (1 - np.exp(-0.29 * zeta))
-                Phi0 = - 17 * (1 - np.exp(-0.29 * (z0_scint / L)))
+                Phi0 = - 17 * (1 - np.exp(-0.29 * (z0_scint / L_previous)))
 
                 # MOST  function for stable conditions
                 # equation 6 in Crawford et al. 2017
@@ -122,10 +159,27 @@ def wx_stability_vars(zeff,
             # equation 7 in Crawford et al. 2017
             L = ((ustar ** 2) * (np.asarray(wx_tair_vals)[a] + const.kelv)) / (const.g * const.k * tstar)
 
+            # check to see if condition is met if we aren't on the first iteration
+            if iteration_count != 0:
+                if np.abs(ustar - ustar_previous) <= ustar_threshold:
+                    threshold_reached = True
 
+            iteration_count += 1
+            iteration_L_vals.append(L)
+            iteration_ustar_vals.append(ustar)
+
+        # append each hour's L and ustar to lists
+        iteration_count_list.append(iteration_count)
+        iteration_dict_L[hour] = iteration_L_vals
+        iteration_dict_ustar[hour] = iteration_ustar_vals
         L_list.append(L)
         ustar_list.append(ustar)
 
-    wx_stability_vars = {'L': np.asarray(L_list), 'ustar': np.asarray(ustar_list)}
+    wx_stability_vars = {'L': np.asarray(L_list),
+                         'ustar': np.asarray(ustar_list),
+                         'iteration_count': np.asarray(iteration_count_list),
+                         'iterations_L': iteration_dict_L,
+                         'iterations_ustar': iteration_dict_ustar
+                         }
 
     return wx_stability_vars
