@@ -77,7 +77,7 @@ u_v = wx_u_v_components.wind_components(time=WX_1min['time'],
                                         wd_array=WX_1min['dir'])
 
 # optional plotting of components
-# wx_u_v_components.plot_wind_components(time=WX_1min['time'],
+# plot_functions.plot_wind_components(time=WX_1min['time'],
 #                                        ws=WX_1min['WS'],
 #                                        wd=WX_1min['dir'],
 #                                        wind_components=u_v)
