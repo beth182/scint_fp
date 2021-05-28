@@ -58,7 +58,7 @@ def generic_plot_vs_time(var, time, varname):
     """
 
     plt.figure()
-    plt.scatter(var, time)
+    plt.scatter(time, var)
     plt.ylabel(varname)
     plt.xlabel('time')
     plt.gcf().autofmt_xdate()

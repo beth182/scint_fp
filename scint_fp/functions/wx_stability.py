@@ -67,6 +67,7 @@ def wx_stability_vars(zeff,
                                                              press=wx_press_vals)
 
     # plot_functions.plot_L(initial_L, time_vals)
+    # plot_functions.generic_plot_vs_time(zeff / initial_L, time_vals, 'zeff/L')
 
     for a in range(0, len(time_vals)):
 
