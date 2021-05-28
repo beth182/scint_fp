@@ -102,3 +102,59 @@ def plot_wind_components(time, ws, wd, wind_components):
     ax2.legend(lines + lines2, labels + labels2, loc=0)
 
     plt.show()
+
+
+def stability_iteration_plots(stability_vars, savepath):
+    """
+    Makes plots of values for each iteration
+    """
+
+    iteration_count = stability_vars['iteration_count']
+    iterations_L = stability_vars['iterations_L']
+    iterations_ustar = stability_vars['iterations_ustar']
+
+    for hour_string in sorted(iterations_L.keys()):
+
+        print(hour_string)
+
+        hour = int(hour_string)
+        hour_index = hour - 1
+        # index is -1 from the hour, as hour 0 (midnight) is for the day after the start
+        # so starts at 1am, and ends midnight next day
+        # 1am is item [0] in lists, midnight is last item [-1]
+
+        L_iterations = iterations_L[hour_string]
+        ustar_iterations = iterations_ustar[hour_string]
+        num_of_iters = iteration_count[hour_index]
+
+        if np.isnan(L_iterations[-1]):
+            pass
+        else:
+
+            # check to see if iterations logged is the same length of iteration count (+1 for initial val)
+            assert len(L_iterations) - 1 == num_of_iters
+
+            # check to see if iterations of L all have the same sign
+            assert all(item >= 0 for item in L_iterations) or all(item < 0 for item in L_iterations)
+
+            plt.figure()
+            plt.title('hour ' + hour_string)
+            iteration = list(range(len(ustar_iterations)))
+            plt.scatter(iteration, ustar_iterations)
+            plt.xlabel('Iteration number')
+            plt.ylabel('u*')
+            plt.savefig(savepath + 'ustar' + '_' + hour_string + '.png')
+
+            plt.figure()
+            plt.title('hour ' + hour_string)
+            iteration = list(range(len(L_iterations)))
+
+            if L_iterations[0] < 0:
+                plt.scatter(iteration, -1*np.asarray(L_iterations))
+                plt.gca().set_ylim(plt.gca().get_ylim()[::-1])
+            else:
+                plt.scatter(iteration, L_iterations)
+            plt.xlabel('Iteration number')
+            plt.ylabel('L')
+            plt.yscale("log")
+            plt.savefig(savepath + 'L' + '_' + hour_string + '.png')

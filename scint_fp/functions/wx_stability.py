@@ -105,6 +105,11 @@ def wx_stability_vars(zeff,
             if iteration_count == 0:
                 L_previous = copy.copy(L_initial)
                 ustar_previous = copy.copy(ustar_initial)
+
+                # append initial values to iteration list
+                iteration_L_vals.append(L_initial)
+                iteration_ustar_vals.append(ustar_initial)
+
             # if not the first iteration, take a copy of the previous values
             else:
                 L_previous = copy.copy(L)

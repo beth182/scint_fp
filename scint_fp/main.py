@@ -97,11 +97,16 @@ stability_vars = wx_stability.wx_stability_vars(zeff=zeff,
                                                 scint_dict=scint_hourly,
                                                 rad_dict=rad_hourly)
 
+# iteration plots
+# plot_functions.stability_iteration_plots(stability_vars, out_dir + 'stability_iterations/')
+
 hour_inputs = {'wd': WX_hourly['dir'],
                'sigv': sigma_v['sigv'],
                'L': stability_vars['L'],
                'ustar': stability_vars['ustar'],
                'time': WX_hourly['time']}
+
+
 
 print('end')
 
