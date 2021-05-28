@@ -3,6 +3,7 @@
 
 import scint_fp.constants as const
 from scint_fp.functions import qstar_stability_estimate
+from scint_fp.functions import plot_functions
 
 import numpy as np
 import netCDF4 as nc
@@ -64,6 +65,8 @@ def wx_stability_vars(zeff,
                                                              QH_model=QH_model,
                                                              tair=wx_tair_vals,
                                                              press=wx_press_vals)
+
+    # plot_functions.plot_L(initial_L, time_vals)
 
     for a in range(0, len(time_vals)):
 

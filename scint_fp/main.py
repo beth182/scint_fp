@@ -2,10 +2,12 @@
 # creates footprint of observation
 
 import scintools as sct
-from scint_fp.functions import estimate_z0, wx_u_v_components, retrieve_var, wx_stability, inputs_at_given_hour
+from scint_fp.functions import estimate_z0, wx_u_v_components, retrieve_var, wx_stability, \
+    inputs_at_given_hour, plot_functions
 
 import numpy as np
 import copy
+import matplotlib.pyplot as plt
 
 out_dir = 'C:/Users/beths/Desktop/LANDING/fp_raster_tests/'
 
@@ -101,10 +103,13 @@ hour_inputs = {'wd': WX_hourly['dir'],
                'ustar': stability_vars['ustar'],
                'time': WX_hourly['time']}
 
+print('end')
+
 # # for all hours
 # for hour in range(0, 24):
 
-hours_valid = [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0]
+# hours_valid = [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0]
+hours_valid = [12]
 # for a selection of hours
 for hour in hours_valid:
     hour_met_inputs = inputs_at_given_hour.inputs_for_given_hour(hour, hour_inputs)

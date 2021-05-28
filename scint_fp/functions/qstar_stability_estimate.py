@@ -8,6 +8,7 @@ import scint_fp.constants as const
 import netCDF4 as nc
 import numpy as np
 import matplotlib.pyplot as plt
+from scint_fp.functions import plot_functions
 
 
 def simple_method_qh(rad_dict):
@@ -67,22 +68,11 @@ def simple_method_qh(rad_dict):
 
     QH_model = qstar * x
 
-    return QH_model
+    # plot_functions.generic_plot_vs_time(time, qstar, 'Q*')
+    # plot_functions.generic_plot_vs_time(time, x, 'x')
+    # plot_functions.generic_plot_vs_time(time, QH_model, 'QH_model')
 
-    # plt.scatter(time, qstar)
-    # plt.xlabel('time')
-    # plt.ylabel('Q*')
-    # plt.gcf().autofmt_xdate()
-    #
-    # plt.scatter(time, x)
-    # plt.xlabel('time')
-    # plt.ylabel('x')
-    # plt.gcf().autofmt_xdate()
-    #
-    # plt.scatter(time, QH_model)
-    # plt.xlabel('time')
-    # plt.ylabel('QH_model')
-    # plt.gcf().autofmt_xdate()
+    return QH_model
 
 
 def calculate_initial_ustar(ws,
