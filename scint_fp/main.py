@@ -76,6 +76,9 @@ u_v = wx_u_v_components.wind_components(time=WX_1min['time'],
                                         ws_array=WX_1min['WS'],
                                         wd_array=WX_1min['dir'])
 
+# plot wind direction
+# plot_functions.generic_plot_vs_time(var=WX_15min['dir'], time=WX_15min['time'], varname='Wind direction')
+
 # optional plotting of components
 # plot_functions.plot_wind_components(time=WX_1min['time'],
 #                                        ws=WX_1min['WS'],
@@ -106,6 +109,8 @@ hour_inputs = {'wd': WX_hourly['dir'],
                'ustar': stability_vars['ustar'],
                'time': WX_hourly['time']}
 
+# plot_functions.plot_L(hour_inputs['L'], hour_inputs['time'])
+# plot_functions.generic_plot_vs_time(zeff / hour_inputs['L'], hour_inputs['time'], 'zeff/L')
 
 
 print('end')
