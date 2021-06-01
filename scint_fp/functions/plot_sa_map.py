@@ -9,9 +9,13 @@ import rasterio
 import rasterio.plot
 
 
-def plot_map(shpfile_dir, fp_raster):
+def plot_map(fp_raster,
+             shpfile_dir='C:/Users/beths/Desktop/LANDING/UKV_shapefiles/', ):
     """
     Function to produce plots of SAs and maps
+    :param fp_raster: file path for raster containing source area
+    :param shpfile_dir: Path to directory where UKV grid shape files are saved.
+    :return:
     """
     # ToDo: docstring
 
@@ -36,12 +40,6 @@ def plot_map(shpfile_dir, fp_raster):
 
     plt.show()
 
-    print('end')
 
-
-shpfile_dir = 'C:/Users/beths/Desktop/LANDING/UKV_shapefiles/'
 fp_raster = 'C:/Users/beths/Desktop/LANDING/fp_raster_tests/BCT_IMU_15000_2016_142_12.tif'
-
-plot_map(shpfile_dir, fp_raster)
-
-print('end')
+plot_map(fp_raster)
