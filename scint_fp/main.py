@@ -8,6 +8,7 @@ from scint_fp.functions import estimate_z0, wx_u_v_components, retrieve_var, wx_
 import numpy as np
 import copy
 import matplotlib.pyplot as plt
+import pandas as pd
 
 out_dir = 'C:/Users/beths/Desktop/LANDING/fp_raster_tests/'
 
@@ -102,6 +103,7 @@ stability_vars = wx_stability.wx_stability_vars(zeff=zeff,
 
 # iteration plots
 # plot_functions.stability_iteration_plots(stability_vars, out_dir + 'stability_iterations/')
+plt.close('all')
 
 hour_inputs = {'wd': WX_hourly['dir'],
                'sigv': sigma_v['sigv'],
@@ -112,15 +114,18 @@ hour_inputs = {'wd': WX_hourly['dir'],
 # plot_functions.plot_L(hour_inputs['L'], hour_inputs['time'])
 # plot_functions.generic_plot_vs_time(zeff / hour_inputs['L'], hour_inputs['time'], 'zeff/L')
 
+# save as table
+df = pd.DataFrame.from_dict(hour_inputs)
+col_order = ['time', 'wd', 'sigv', 'ustar', 'L']
+df[col_order].to_csv(out_dir + 'met_inputs.csv')
 
-print('end')
+# find rows where any items in the dataframe are nans
+nan_hours_df = df[df.isna().any(axis=1)]['time'].apply(lambda x: x.strftime('%H'))
+nan_hours = list(map(int, nan_hours_df))
+all_possible_hours = [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0]
+hours_valid = [x for x in all_possible_hours if x not in nan_hours]
 
-# # for all hours
-# for hour in range(0, 24):
-
-# hours_valid = [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0]
-hours_valid = [12]
-# for a selection of hours
+# create footprints
 for hour in hours_valid:
     hour_met_inputs = inputs_at_given_hour.inputs_for_given_hour(hour, hour_inputs)
 
@@ -147,8 +152,8 @@ for hour in hours_valid:
     fp_path.footprint[fp_path.footprint == 0.0] = np.nan
 
     string_to_save = str(pair.pair_id) + '_' + str(spatial_inputs.domain_size) + '_' + title_string
-    test_file_out = out_dir + string_to_save + '.tif'
-    fp_path.save_tiff(test_file_out)
+    file_out = out_dir + 'hourly/' + string_to_save + '.tif'
+    fp_path.save_tiff(file_out)
 
     print(title_string)
 

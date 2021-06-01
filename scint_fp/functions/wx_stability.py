@@ -75,7 +75,7 @@ def wx_stability_vars(zeff,
     # Iterative process
 
     # define acceptable differece to define when iterations stop
-    ustar_threshold = 0.001
+    ustar_threshold = 0.0001
 
     # for each time
     for a in range(0, len(time_vals)):
