@@ -65,8 +65,7 @@ WX_1min = retrieve_var.retrive_var(wx_file_path_1min,
                                    ['WS', 'dir'])
 # scint 15-min file
 # temperature structure parameter
-scint_15min = retrieve_var.retrive_var(scint_path,
-                                       ['CT2'])
+scint_15min = retrieve_var.retrive_var(scint_path, ['CT2'])
 # radiation 15-minute file
 # net all-wave raditation
 rad_15min = retrieve_var.retrive_var(rad_file,
