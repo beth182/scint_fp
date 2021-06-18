@@ -19,6 +19,16 @@ wx_file_path_1min = '../example_data/ncdf/Davis_BCT_2016142_1min_newdata_L2.nc'
 scint_path = '../example_data/ncdf/LASMkII_Fast_IMU_2016142_15min_newdata_L1.nc'
 rad_file = '../example_data/ncdf/CNR4_KSSW_2016142_15min.nc'
 
+# bdsm_path = 'D:/Documents/large_rasters/clipped/20_m_resample/resample_20_surface.tif'
+# cdsm_path = 'D:/Documents/large_rasters/clipped/20_m_resample/resample_20_veg.tif'
+# dem_path = 'D:/Documents/large_rasters/clipped/20_m_resample/resample_20_terrain.tif'
+
+bdsm_path = 'D:/Documents/large_rasters/clipped/10_m_resampled/resample_10_surface.tif'
+cdsm_path = 'D:/Documents/large_rasters/clipped/10_m_resampled/resample_10_veg.tif'
+dem_path = 'D:/Documents/large_rasters/clipped/10_m_resampled/resample_10_terrain.tif'
+
+
+
 # define scint pair
 # path 12 - BCT -> IMU
 pair_raw = sct.ScintillometerPair(x=[285440.6056, 284562.3107],
@@ -31,19 +41,19 @@ pair = copy.deepcopy(pair_raw)
 
 roughness_inputs = sct.RoughnessInputs()
 
-point_res = 20
-weightings = (50, 200)
+point_res = 50
+weightings = (100, 200)
 path_params = {'point_res': point_res,
                'weightings': weightings}
 
 spatial_inputs = sct.SpatialInputs(
-    domain_size=15000,
+    domain_size=65000,
     x=float(pair.path_center().x),
     y=float(pair.path_center().y),
     z_asl=pair.path_center_z(),
-    bdsm_path='../example_data/rasters/height_surface_4m.tif',
-    cdsm_path='../example_data/rasters/height_veg_4m.tif',
-    dem_path='../example_data/rasters/height_terrain_4m.tif')
+    bdsm_path=bdsm_path,
+    cdsm_path=cdsm_path,
+    dem_path=dem_path)
 
 path_transect = pair.path_transect(dsm_file=spatial_inputs.bdsm_path, point_res=10)
 
@@ -110,7 +120,12 @@ hour_inputs = {'wd': WX_hourly['dir'],
                'ustar': stability_vars['ustar'],
                'time': WX_hourly['time']}
 
-# plot_functions.plot_L(hour_inputs['L'], hour_inputs['time'])
+# plot_functions.generic_plot_vs_time(hour_inputs['wd'], hour_inputs['time'], 'Wind Direction ($^{\circ}$)')
+# plot_functions.generic_plot_vs_time(hour_inputs['sigv'], hour_inputs['time'], '$\sigma$v (m s$^{-1}$)')
+# plot_functions.generic_plot_vs_time(hour_inputs['ustar'], hour_inputs['time'], 'u$_{*}$ (m s$^{-1}$)')
+
+
+plot_functions.plot_L(hour_inputs['L'], hour_inputs['time'])
 # plot_functions.generic_plot_vs_time(zeff / hour_inputs['L'], hour_inputs['time'], 'zeff/L')
 
 # save as table
@@ -121,7 +136,7 @@ df[col_order].to_csv(out_dir + 'met_inputs.csv')
 # find rows where any items in the dataframe are nans
 nan_hours_df = df[df.isna().any(axis=1)]['time'].apply(lambda x: x.strftime('%H'))
 nan_hours = list(map(int, nan_hours_df))
-all_possible_hours = [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0]
+all_possible_hours = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0]
 hours_valid = [x for x in all_possible_hours if x not in nan_hours]
 
 # create footprints

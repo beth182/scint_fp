@@ -48,6 +48,10 @@ def plot_L(L, time):
     plt.subplots_adjust(hspace=.0)
 
     plt.gcf().autofmt_xdate()
+    plt.gca().xaxis.set_major_formatter(DateFormatter("%H"))
+
+    plt.xlabel('Time (h)')
+    plt.ylabel('L (m)')
 
     plt.show()
 
@@ -57,11 +61,26 @@ def generic_plot_vs_time(var, time, varname):
     Function to plot any var vs time
     """
 
+    # manual entry of stable hours
+    # ToDo: makw this automatic
+
+    stable_hours = [1, 2, 3, 4, 5, 20, 21, 22, 23, 0]
+
+    where_stable = np.isin([i.hour for i in time], stable_hours)
+
+    unstable_times = np.ma.masked_array(time, mask=where_stable)
+    stable_times = np.ma.masked_array(time, mask=[not i for i in where_stable])
+    unstable_var = np.ma.masked_array(var, mask=where_stable)
+    stable_var = np.ma.masked_array(var, mask=[not i for i in where_stable])
+
     plt.figure()
-    plt.scatter(time, var)
+    # plt.scatter(time, var)
+    plt.plot(stable_times, stable_var, marker='o', color='red')
+    plt.plot(unstable_times, unstable_var, marker='o', color = 'blue')
     plt.ylabel(varname)
-    plt.xlabel('time')
+    plt.xlabel('Time (h)')
     plt.gcf().autofmt_xdate()
+    plt.gca().xaxis.set_major_formatter(DateFormatter("%H"))
     plt.show()
 
 
