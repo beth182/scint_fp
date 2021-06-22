@@ -7,16 +7,30 @@ from matplotlib import gridspec
 from matplotlib.dates import DateFormatter
 
 
-def plot_L(L, time):
+def plot_L(L, time, stability_class):
     """
     Function to prodice a plot for L
     """
 
-    # seperate positive and negative vals
-    L_positive = np.ma.masked_where(L < 0, L, copy=True)
-    L_positive_times = np.ma.masked_where(L > 0, time, copy=True)
-    L_negative = np.ma.masked_where(L > 0, L, copy=True)
-    L_negative_times = np.ma.masked_where(L < 0, time, copy=True)
+    index_stable = np.where(np.asarray(stability_class) == 1)[0]
+    index_unstable = np.where(np.asarray(stability_class) == -1)[0]
+    index_neutral = np.where(np.asarray(stability_class) == 0)[0]
+
+    stable_hours = time[index_stable]
+    unstable_hours = time[index_unstable]
+    neutral_hours = time[index_neutral]
+
+    where_stable = np.isin(time, stable_hours)
+    where_unstable = np.isin(time, unstable_hours)
+    where_neutral = np.isin(time, neutral_hours)
+
+    unstable_L = np.ma.masked_array(L, mask=[not i for i in where_unstable])
+    stable_L = np.ma.masked_array(L, mask=[not i for i in where_stable])
+    neutral_L = np.ma.masked_array(L, mask=[not i for i in where_neutral])
+
+    # seperate positive and negative vals in neutral L
+    neutral_L_positive = np.ma.masked_where(neutral_L < 0, L, copy=True)
+    neutral_L_negative = np.ma.masked_where(neutral_L > 0, L, copy=True)
 
     # plotting
     fig = plt.figure()
@@ -24,16 +38,19 @@ def plot_L(L, time):
     gs = gridspec.GridSpec(2, 1, height_ratios=[1, 1])
 
     # the first subplot
+    # Positive values of L - stable and some neutral cases
     ax1 = plt.subplot(gs[0])
     # log scale for axis Y of the first subplot
     ax1.set_yscale("log")
-    line1, = ax1.plot(L_positive_times, L_positive, color='red', marker='o', linestyle=None)
+    line1, = ax1.plot(time, stable_L, color='red', marker='o', linestyle=None)
+    line2, = ax1.plot(time, neutral_L_positive, color='green', marker='o', linestyle=None)
 
     # the second subplot
     # shared axis X
     ax2 = plt.subplot(gs[1], sharex=ax1)
     ax2.set_yscale('log')
-    line2, = ax2.plot(L_negative_times, L_negative*-1, color='blue', marker='o', linestyle=None)
+    line3, = ax2.plot(time, unstable_L * -1, color='blue', marker='o', linestyle=None)
+    line4, = ax2.plot(time, neutral_L_negative * -1, color='green', marker='o', linestyle=None)
     ax2.set_ylim(ax2.get_ylim()[::-1])
 
     plt.setp(ax1.get_xticklabels(), visible=False)
@@ -42,7 +59,7 @@ def plot_L(L, time):
     yticks[-1].label1.set_visible(False)
 
     # put legend on first subplot
-    ax2.legend((line1, line2), ('Positive L', 'Negative L'), loc='upper left')
+    ax2.legend((line1, line2, line3), ('Stable', 'Neutral', 'Unstable'), loc='upper left')
 
     # remove vertical gap between subplots
     plt.subplots_adjust(hspace=.0)
@@ -56,27 +73,31 @@ def plot_L(L, time):
     plt.show()
 
 
-def generic_plot_vs_time(var, time, varname):
+def generic_plot_vs_time(var, time, varname, stability_class):
     """
     Function to plot any var vs time
     """
 
-    # manual entry of stable hours
-    # ToDo: makw this automatic
+    index_stable = np.where(np.asarray(stability_class) == 1)[0]
+    index_unstable = np.where(np.asarray(stability_class) == -1)[0]
+    index_neutral = np.where(np.asarray(stability_class) == 0)[0]
 
-    stable_hours = [1, 2, 3, 4, 5, 20, 21, 22, 23, 0]
+    stable_hours = time[index_stable]
+    unstable_hours = time[index_unstable]
+    neutral_hours = time[index_neutral]
 
-    where_stable = np.isin([i.hour for i in time], stable_hours)
+    where_stable = np.isin(time, stable_hours)
+    where_unstable = np.isin(time, unstable_hours)
+    where_neutral = np.isin(time, neutral_hours)
 
-    unstable_times = np.ma.masked_array(time, mask=where_stable)
-    stable_times = np.ma.masked_array(time, mask=[not i for i in where_stable])
-    unstable_var = np.ma.masked_array(var, mask=where_stable)
+    unstable_var = np.ma.masked_array(var, mask=[not i for i in where_unstable])
     stable_var = np.ma.masked_array(var, mask=[not i for i in where_stable])
+    neutral_var = np.ma.masked_array(var, mask=[not i for i in where_neutral])
 
     plt.figure()
-    # plt.scatter(time, var)
-    plt.plot(stable_times, stable_var, marker='o', color='red')
-    plt.plot(unstable_times, unstable_var, marker='o', color = 'blue')
+    plt.plot(time, stable_var, marker='o', color='red')
+    plt.plot(time, unstable_var, marker='o', color='blue')
+    plt.plot(time, neutral_var, marker='o', color='green')
     plt.ylabel(varname)
     plt.xlabel('Time (h)')
     plt.gcf().autofmt_xdate()
@@ -169,7 +190,7 @@ def stability_iteration_plots(stability_vars, savepath):
             iteration = list(range(len(L_iterations)))
 
             if L_iterations[0] < 0:
-                plt.scatter(iteration, -1*np.asarray(L_iterations))
+                plt.scatter(iteration, -1 * np.asarray(L_iterations))
                 plt.gca().set_ylim(plt.gca().get_ylim()[::-1])
             else:
                 plt.scatter(iteration, L_iterations)
@@ -177,3 +198,43 @@ def stability_iteration_plots(stability_vars, savepath):
             plt.ylabel('L')
             plt.yscale("log")
             plt.savefig(savepath + 'L' + '_' + hour_string + '.png')
+
+
+def classify_stability(times,
+                       zeff,
+                       L):
+    """
+
+    :param times:
+    :param zeff:
+    :param L:
+    :return:
+    """
+
+    # calculate z/L stability parameter
+
+    z_L_list = zeff / L
+
+    # classify into stability catagories
+    # Using Foken 2008 Textbook - Table 2.9
+
+    neutral_thresh = 0.1
+    stability_class = []
+
+    for z_L in z_L_list:
+
+        if np.abs(z_L) < neutral_thresh:
+            # neutral
+            stability_class.append(0)
+
+        else:
+            if z_L < 0:
+                # unstable
+                stability_class.append(-1)
+
+            else:
+                # stable
+                stability_class.append(1)
+
+    return stability_class
+

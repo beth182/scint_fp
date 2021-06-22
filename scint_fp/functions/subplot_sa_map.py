@@ -11,7 +11,8 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 
 def plot_map(fp_raster,
-             hour_string=None,
+             ax,
+             fig,
              shpfile_dir='C:/Users/beths/Desktop/LANDING/UKV_shapefiles/'):
     """
     Function to produce plots of SAs and maps
@@ -22,9 +23,7 @@ def plot_map(fp_raster,
     # ToDo: docstring
 
     raster = rasterio.open(fp_raster)
-    fig, ax = plt.subplots(figsize=(10, 10))
-
-    plt.title(hour_string)
+    # fig, ax = plt.subplots()
 
     # plotting model grids as shape files:
     # all sites with a unique model grid
@@ -38,7 +37,6 @@ def plot_map(fp_raster,
 
     # use imshow so that we have something to map the colorbar to
     image_hidden = ax.imshow(raster.read(1))
-
     # create an axes on the right side of ax. The width of cax will be 5%
     # of ax and the padding between cax and ax will be fixed at 0.05 inch.
     divider = make_axes_locatable(ax)
@@ -46,19 +44,22 @@ def plot_map(fp_raster,
     fig.colorbar(image_hidden, ax=ax, cax=cax)
 
     plot = rasterio.plot.show(raster, ax=ax)
+
     return plot
 
-# test
-# plot_map('C:/Users/beths/Desktop/LANDING/fp_raster_tests/hourly/BCT_IMU_65000_2016_142_12.tif', '12')
+
+
+
+
 
 
 hourly_dir = 'C:/Users/beths/Desktop/LANDING/fp_raster_tests/hourly/'
 partial_name = 'BCT_IMU_65000_2016_142_'
 
 # hours with source areas which fit in the UKV grids
-hours = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+# hours = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
 # test hours
-# hours = [5, 12, 19]
+hours = [5, 12, 19]
 
 # empty list for rasters
 raster_paths = []
@@ -77,12 +78,15 @@ for hour in hours:
     hour_strings.append(hour_string)
 
 
+fig, axs = plt.subplots(len(hours), figsize = (30,30))
+
 for i, raster in enumerate(raster_paths):
 
-    plot_map(raster, hour_string=hour_strings[i])
-    plt.savefig(hourly_dir+hour_strings[i] + '.png', bbox_inches='tight')
+    plot_map(raster, axs[i], fig)
+    plot_map(raster, axs[i], fig)
 
 
 
+plt.show()
 
 print('end')
