@@ -58,7 +58,7 @@ spatial_inputs = sct.SpatialInputs(
 path_transect = pair.path_transect(dsm_file=spatial_inputs.bdsm_path, point_res=10)
 
 # get effective beam height
-zeff = path_transect.effective_beam_height()
+z_fb = path_transect.effective_beam_height()
 
 ########################################################################################################################
 # get estimate of z0 using estimate_z0
@@ -104,7 +104,7 @@ scint_hourly = retrieve_var.take_hourly_vars(scint_15min)
 rad_hourly = retrieve_var.take_hourly_vars(rad_15min)
 
 # get stability vars
-stability_vars = wx_stability.wx_stability_vars(zeff=zeff,
+stability_vars = wx_stability.wx_stability_vars(zeff=z_fb,
                                                 z0_scint=z0_scint,
                                                 wx_dict=WX_hourly,
                                                 scint_dict=scint_hourly,
@@ -120,8 +120,8 @@ hour_inputs = {'wd': WX_hourly['dir'],
                'ustar': stability_vars['ustar'],
                'time': WX_hourly['time']}
 
-# stability_class = plot_functions.classify_stability(hour_inputs['time'], zeff, hour_inputs['L'])
-# plot_functions.generic_plot_vs_time(zeff / hour_inputs['L'], hour_inputs['time'], 'zeff/L', stability_class)
+# stability_class = plot_functions.classify_stability(hour_inputs['time'], z_fb, hour_inputs['L'])
+# plot_functions.generic_plot_vs_time(z_fb / hour_inputs['L'], hour_inputs['time'], 'z_fb/L', stability_class)
 # plot_functions.generic_plot_vs_time(hour_inputs['wd'], hour_inputs['time'], 'Wind Direction ($^{\circ}$)', stability_class)
 # plot_functions.generic_plot_vs_time(hour_inputs['sigv'], hour_inputs['time'], '$\sigma$v (m s$^{-1}$)', stability_class)
 # plot_functions.generic_plot_vs_time(hour_inputs['ustar'], hour_inputs['time'], 'u$_{*}$ (m s$^{-1}$)', stability_class)
@@ -169,6 +169,7 @@ for hour in hours_valid:
     string_to_save = str(pair.pair_id) + '_' + str(spatial_inputs.domain_size) + '_' + title_string
     file_out = out_dir + 'hourly/' + string_to_save + '.tif'
     fp_path.save_tiff(file_out)
+    fp_path.save(reference_file)
 
     print(title_string)
 

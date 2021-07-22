@@ -5,6 +5,8 @@ import scint_fp.constants as const
 from scint_fp.functions import qstar_stability_estimate
 from scint_fp.functions import plot_functions
 
+from scint_flux.functions import iterative_stability
+
 import numpy as np
 import matplotlib.pyplot as plt
 import copy
@@ -14,7 +16,8 @@ def wx_stability_vars(zeff,
                       z0_scint,
                       wx_dict,
                       scint_dict,
-                      rad_dict):
+                      rad_dict,
+                      neutral_limit=0.05):
     """
     Calculates friction velocity and L from scintillometer and wx data files
     LAS daily script function 'Andreas_new'
@@ -115,59 +118,84 @@ def wx_stability_vars(zeff,
                 L_previous = copy.copy(L)
                 ustar_previous = copy.copy(ustar)
 
-            # stability parameter
-            zeta = zeff / L_previous
+            if L_previous == 0.0:
+                L_previous = 0.0000000000001
+            elif L_previous == -0.0:
+                L_previous = -0.0000000000001
 
-            if L_previous < 0:  # if unstable
+            # calculate stability param z/L
+            stab_param = zeff / L_previous
+
+            if stab_param < -neutral_limit:  # if unstable
 
                 #  stability-adjusted logarithmic profile to estimate ustar
                 # see equation 3 & 4 in Grimmond and Cleugh 1994
                 # coefficants updated as per Foken Micromet textbook, page 61
-                x = (-19.3 * zeta + 1) ** 0.25  # 1994 paper = -16, Foken = -19.3
-                x0 = (-19.3 * (z0_scint / L_previous) + 1) ** 0.25
-                Phi = 2 * np.log((x + 1) / 2) + np.log(((x ** 2) + 1) / 2) - 2 * np.arctan(x) + np.pi / 2
-                Phi0 = 2 * np.log((x0 + 1) / 2) + np.log((x0 ** 2 + 1) / 2) - 2 * np.arctan(x0) + np.pi / 2
+
+                Phi = iterative_stability.phi_unstable(zeff / L_previous)
+                Phi0 = iterative_stability.phi_unstable(z0_scint / L_previous)
 
                 # MOST  function for unstable conditions
                 # equation 5 in Crawford et al. 2017
-                fmo_unstable = const.c1 * (1 - const.c2 * (zeta)) ** (-2 / 3)
+                fmo = iterative_stability.fmo_unstable(stab_param)
 
                 # Tstar
                 # equation 8 in Crawford et al. 2017
-                tstar = - (scint_CT2_vals[a] * (zeff ** (2 / 3)) / fmo_unstable) ** 0.5
+                tstar = - iterative_stability.tstar_eq(scint_CT2_vals[a], zeff, fmo)
 
-            elif L_previous >= 0:  # stable
-
-                if L_previous == 0:
-                    L_previous = 0.0000000000001
+            elif stab_param > neutral_limit:  # stable
 
                 #  stability-adjusted logarithmic profile to estimate ustar
-                # # original version in scint processing scint_fp:
-                # Phi = -5 * zeta
-                # Phi0 = -5 * (z0_scint / L)
                 # from Grimmond and Cleugh 1994, equation 6
-                Phi = - 17 * (1 - np.exp(-0.29 * zeta))
-                Phi0 = - 17 * (1 - np.exp(-0.29 * (z0_scint / L_previous)))
+
+                Phi = iterative_stability.phi_stable(zeff / L_previous)
+                Phi0 = iterative_stability.phi_stable(z0_scint / L_previous)
 
                 # MOST  function for stable conditions
                 # equation 6 in Crawford et al. 2017
-                fmo_stable = const.c1 * (1 + (const.c3 * (zeta ** (2 / 3))))
+                fmo = iterative_stability.fmo_stable(stab_param)
 
                 # Tstar
                 # equation 8 in Crawford et al. 2017
-                tstar = (scint_CT2_vals[a] * (zeff ** (2 / 3)) / fmo_stable) ** 0.5
+                tstar = iterative_stability.tstar_eq(scint_CT2_vals[a], zeff, fmo)
 
-            # ustar
-            ustar = const.k * np.asarray(wx_ws_vals)[a] / (np.log(zeff / z0_scint) - Phi + Phi0)
+            elif -neutral_limit <= stab_param <= neutral_limit:
+                # neutral
+                Phi = 0
+                Phi0 = 0
 
-            # calculate L
-            # equation 7 in Crawford et al. 2017
-            L = ((ustar ** 2) * (np.asarray(wx_tair_vals)[a] + const.kelv)) / (const.g * const.k * tstar)
+                if stab_param < 0:
+                    fmo = iterative_stability.fmo_neutral_negative(stab_param)
+                    tstar = - iterative_stability.tstar_eq(scint_CT2_vals[a], zeff, fmo)
+                else:
+                    fmo = iterative_stability.fmo_neutral_positive(stab_param)
+                    tstar = iterative_stability.tstar_eq(scint_CT2_vals[a], zeff, fmo)
+
+            if np.isnan(L_initial):
+                threshold_reached = True
+                ustar = np.nan
+                tstar = np.nan
+                L = np.nan
+                fmo = np.nan
+                stab_param = np.nan
+            else:
+
+                # ustar
+                ustar = iterative_stability.ustar_eq(np.asarray(wx_ws_vals)[a], zeff, z0_scint, Phi, Phi0)
+
+                # calculate L
+                # equation 7 in Crawford et al. 2017
+                L = iterative_stability.obukhov_length(ustar, np.asarray(wx_tair_vals)[a], tstar)
 
             # check to see if condition is met if we aren't on the first iteration
             if iteration_count != 0:
                 if np.abs(ustar - ustar_previous) <= ustar_threshold:
                     threshold_reached = True
+
+            if iteration_count > 50:
+                threshold_reached = True
+                ustar = np.nan
+                L = np.nan
 
             iteration_count += 1
             iteration_L_vals.append(L)
