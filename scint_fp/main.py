@@ -2,7 +2,7 @@
 # creates footprint of observation
 
 import scintools as sct
-from scint_fp.functions import estimate_z0, wx_u_v_components, retrieve_var, wx_stability, \
+from scint_fp.functions import estimate_roughness, wx_u_v_components, retrieve_var, wx_stability, \
     inputs_at_given_hour, plot_functions
 
 import numpy as np
@@ -10,14 +10,19 @@ import copy
 import matplotlib.pyplot as plt
 import pandas as pd
 
-out_dir = 'C:/Users/beths/Desktop/LANDING/fp_raster_tests/'
+from scint_flux.functions import rad_data
+
+out_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/'
 
 # files should be WX from new_scint_data, L2
 # and scint data from new_scint_data, L1
 wx_file_path_15min = '../example_data/ncdf/Davis_BCT_2016142_15min_newdata_L2.nc'
 wx_file_path_1min = '../example_data/ncdf/Davis_BCT_2016142_1min_newdata_L2.nc'
-scint_path = '../example_data/ncdf/LASMkII_Fast_IMU_2016142_15min_newdata_L1.nc'
 rad_file = '../example_data/ncdf/CNR4_KSSW_2016142_15min.nc'
+
+scint_path = '../example_data/ncdf/LASMkII_Fast_IMU_2016142_15min_newdata_L1.nc'
+
+######################################
 
 # bdsm_path = 'D:/Documents/large_rasters/clipped/20_m_resample/resample_20_surface.tif'
 # cdsm_path = 'D:/Documents/large_rasters/clipped/20_m_resample/resample_20_veg.tif'
@@ -27,7 +32,7 @@ bdsm_path = 'D:/Documents/large_rasters/clipped/10_m_resampled/resample_10_surfa
 cdsm_path = 'D:/Documents/large_rasters/clipped/10_m_resampled/resample_10_veg.tif'
 dem_path = 'D:/Documents/large_rasters/clipped/10_m_resampled/resample_10_terrain.tif'
 
-
+######################################
 
 # define scint pair
 # path 12 - BCT -> IMU
@@ -62,24 +67,68 @@ z_fb = path_transect.effective_beam_height()
 
 ########################################################################################################################
 # get estimate of z0 using estimate_z0
-z0_scint = estimate_z0.calculate_quick_z0(spatial_inputs, crop_size=200)['z_0']
+roughness_estimate = estimate_roughness.calculate_quick_roughness(spatial_inputs, crop_size=200)
 
 # retrieve variables needed
 # WX station 15-min file
 # temperature, pressure, wind speed, wind direction
 WX_15min = retrieve_var.retrive_var(wx_file_path_15min,
                                     ['Tair', 'press', 'WS', 'dir'])
+
 # WX station 1-min file
 # wind speed, wind direction
 WX_1min = retrieve_var.retrive_var(wx_file_path_1min,
                                    ['WS', 'dir'])
+
 # scint 15-min file
 # temperature structure parameter
 scint_15min = retrieve_var.retrive_var(scint_path, ['CT2'])
+
 # radiation 15-minute file
 # net all-wave raditation
 rad_15min = retrieve_var.retrive_var(rad_file,
                                      ['Qstar'])
+
+df_rad_15min = pd.DataFrame(rad_15min)
+df_WX_1min = pd.DataFrame(WX_1min)
+df_WX_15min = pd.DataFrame(WX_15min)
+df_scint_15min = pd.DataFrame(scint_15min)
+
+# get only hourly values
+# this doesn't need height adjustment - as it's only used for wind direction
+WX_hourly = retrieve_var.take_hourly_vars(WX_15min)
+scint_hourly = retrieve_var.take_hourly_vars(scint_15min)
+rad_hourly = retrieve_var.take_hourly_vars(rad_15min)
+
+########################################################################################################################
+# Problems arise from here
+# Wind is not adjusted for height etc.
+
+
+# adjust wind speed for height
+
+
+df = adj_ws.adjust_ws_iteratively(df=WS, ws=df_WX_1min['WS'], ustar_threshold=0.05)
+
+
+
+
+
+
+
+
+
+
+
+
+# get stability vars
+stability_vars = wx_stability.wx_stability_vars(zeff=z_fb,
+                                                z0_scint=z0_scint,
+                                                wx_dict=WX_hourly,
+                                                scint_dict=scint_hourly,
+                                                rad_dict=rad_hourly)
+
+########################################################################################################################
 
 # wind calculations
 u_v = wx_u_v_components.wind_components(time=WX_1min['time'],
@@ -97,18 +146,6 @@ u_v = wx_u_v_components.wind_components(time=WX_1min['time'],
 
 # standard deviation of v component of wind
 sigma_v = wx_u_v_components.std_v(u_v)
-
-# get only hourly values
-WX_hourly = retrieve_var.take_hourly_vars(WX_15min)
-scint_hourly = retrieve_var.take_hourly_vars(scint_15min)
-rad_hourly = retrieve_var.take_hourly_vars(rad_15min)
-
-# get stability vars
-stability_vars = wx_stability.wx_stability_vars(zeff=z_fb,
-                                                z0_scint=z0_scint,
-                                                wx_dict=WX_hourly,
-                                                scint_dict=scint_hourly,
-                                                rad_dict=rad_hourly)
 
 # iteration plots
 # plot_functions.stability_iteration_plots(stability_vars, out_dir + 'stability_iterations/')
@@ -164,12 +201,14 @@ for hour in hours_valid:
                                     path_params=path_params,
                                     spatial_inputs=spatial_inputs)
 
+    fp_path.roughness_outputs.z_m = -999.0
+
     fp_path.footprint[fp_path.footprint == 0.0] = np.nan
 
     string_to_save = str(pair.pair_id) + '_' + str(spatial_inputs.domain_size) + '_' + title_string
     file_out = out_dir + 'hourly/' + string_to_save + '.tif'
+    fp_path.save(out_dir + 'hourly/' + string_to_save)
     fp_path.save_tiff(file_out)
-    fp_path.save(reference_file)
 
     print(title_string)
 

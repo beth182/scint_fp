@@ -78,16 +78,17 @@ def crop_raster(spatial_inputs, crop_size):
     return raster_crop
 
 
-def calculate_quick_z0(spatial_inputs, crop_size):
+def calculate_quick_roughness(spatial_inputs, crop_size):
     """
-    Estimatea roughness length from mean building using the rule of thumb method, for a cropped bdsm.
+    Estimatea roughness length and displacement height  from mean building using the rule of thumb method,
+        for a cropped bdsm.
     Parameters
     ----------
     spatial_inputs: Sct object
 
     Returns
     -------
-    Estimate of z0
+    Estimate of roughness params z_0 and z_d
     """
     # crop raster
     cropped_raster = crop_raster(spatial_inputs, crop_size)
@@ -95,6 +96,6 @@ def calculate_quick_z0(spatial_inputs, crop_size):
     # mean building height
     z_h = np.mean(cropped_raster)
 
-    z0 = sct.roughness_methods.rt(z_h)
+    roughness = sct.roughness_methods.rt(z_h)
 
-    return z0
+    return roughness

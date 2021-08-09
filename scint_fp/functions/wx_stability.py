@@ -2,10 +2,10 @@
 # Calculates stability params ustar, L from wx data files (rather than eddy covariance) for input into footprint model
 
 import scint_fp.constants as const
-from scint_fp.functions import qstar_stability_estimate
 from scint_fp.functions import plot_functions
 
 from scint_flux.functions import iterative_stability
+from scint_flux.functions import rad_data
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -57,20 +57,31 @@ def wx_stability_vars(zeff,
     iteration_dict_L = {}
     iteration_dict_ustar = {}
 
+
+
+
     # calculate values of intial L and ustar
     # calculate initial ustar (take equation for neutral conditions)
-    initial_ustar = qstar_stability_estimate.calculate_initial_ustar(wx_ws_vals,
-                                                                     zeff,
-                                                                     z0_scint)
+    # initial_ustar = qstar_stability_estimate.calculate_initial_ustar(wx_ws_vals,
+    #                                                                  zeff,
+    #                                                                  z0_scint)
+
+    # calculate values of intial L and ustar
+    initial_ustar, initial_L = iterative_stability.initial_stability(df=df, ws=ws, z_effective=df['z_wx'] - df['z_d'],
+                                                                     z0=df['z_0'])
 
     # using simple method to model QH term using Q*
-    QH_model = qstar_stability_estimate.simple_method_qh(rad_dict)
+    df = rad_data.simple_method_qh(df)
+
+
+
+
 
     # initial L calculation
-    initial_L = qstar_stability_estimate.calculate_initial_L(ustar_initial=initial_ustar,
-                                                             QH_model=QH_model,
-                                                             tair=wx_tair_vals,
-                                                             press=wx_press_vals)
+    # initial_L = qstar_stability_estimate.calculate_initial_L(ustar_initial=initial_ustar,
+    #                                                          QH_model=QH_model,
+    #                                                          tair=wx_tair_vals,
+    #                                                          press=wx_press_vals)
 
     # plot_functions.plot_L(initial_L, time_vals)
     # plot_functions.generic_plot_vs_time(zeff / initial_L, time_vals, 'zeff/L')
