@@ -4,11 +4,10 @@
 
 import numpy as np
 import math
+import pandas as pd
 
 
-def wind_components(time,
-                    ws_array,
-                    wd_array):
+def wind_components(df):
     """
     Get u and v components from WS & dir, observed by WX station.
     :param time: time array
@@ -17,27 +16,25 @@ def wind_components(time,
     :return: u and v components of wind
     """
 
-    u_vals = []
-    v_vals = []
+    time = df.index,
+    ws_array = df['wind_speed_adj']
+    wd_array = df['wind_direction']
 
-    for i in range(0, len(time)):
-        ws = ws_array[i]
-        wd = wd_array[i]
+    wd_rad = np.radians(wd_array)
 
-        wd_rad = math.radians(wd)
+    u = - np.abs(ws_array) * np.sin(wd_rad)
+    v = - np.abs(ws_array) * np.cos(wd_rad)
 
-        u = - np.abs(ws) * np.sin(wd_rad)
-        v = - np.abs(ws) * np.cos(wd_rad)
+    u_series = u.rename('u_component')
+    v_series = v.rename('v_component')
 
-        u_vals.append(u)
-        v_vals.append(v)
+    # combine series with existing wx dataframe
+    updated_wx_df = pd.concat([df, u_series, v_series], axis=1)
 
-    wind_components = {'u': u_vals, 'v': v_vals, 'time': time}
-
-    return wind_components
+    return updated_wx_df
 
 
-def std_v(wind_components):
+def std_v(df):
     """
     Calculates the standard deviation of the v component of wind
     Parameters
@@ -49,8 +46,8 @@ def std_v(wind_components):
     Dictonary of on-the-hour standard deviation of v component of wind
     """
 
-    v_1min = wind_components['v']
-    time_1min = wind_components['time']
+    v_1min = df['v_component']
+    time_1min = df.index
 
     # group 1-min observation into groups of 60
     v_groups = [v_1min[i:i + 60] for i in range(0, len(v_1min), 60)]
@@ -68,6 +65,9 @@ def std_v(wind_components):
 
     sigv_dict = {'sigv': np.asarray(std_v_list), 'time': np.asarray(time)}
 
-    return sigv_dict
+    sigv_df = pd.DataFrame(sigv_dict)
+    sigv_df = sigv_df.set_index('time')
+
+    return sigv_df
 
 

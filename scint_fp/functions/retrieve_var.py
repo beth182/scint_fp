@@ -16,10 +16,18 @@ def retrive_var(file_path,
 
     ncdf_file = nc.Dataset(file_path)
 
+    # reads in observation height
+    height_obs = ncdf_file.variables['height']
+    z_davis = height_obs[:][0]
+
     file_time = ncdf_file.variables['time']
     time_dt = nc.num2date(file_time[:], file_time.units)
 
     var_dict = {'time': time_dt}
+
+    z_davis_arr = np.ones(len(file_time)) * z_davis
+
+    var_dict['z_wx'] = z_davis_arr
 
     for var_name in var_names:
         file_var = ncdf_file.variables[var_name]
@@ -29,23 +37,20 @@ def retrive_var(file_path,
     return var_dict
 
 
-def take_hourly_vars(var_dict):
+def take_hourly_vars(df):
     """
     Takes dictionary of ncdf output and takes only values on the hour.
     :param var_dict: dictionary of ncdf output
     :return: dict of values on the hour
     """
 
-    time = var_dict['time']
+    time = df.index
 
-    # index of where time is on the hour
-    hour_index = np.where([i.minute == 0 for i in time])
+    # where time is on the hour true/false
+    mask = [i.minute == 0 for i in time]
 
-    hourly_dict = {}
+    # take rows only on the hour
+    hourly_df = df.loc[mask]
 
-    for key in var_dict.keys():
-        hourly_vals = var_dict[key][hour_index]
-        hourly_dict[key] = hourly_vals
-
-    return hourly_dict
+    return hourly_df
 

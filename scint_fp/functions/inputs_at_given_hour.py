@@ -4,27 +4,21 @@
 # imports
 import numpy as np
 
-def inputs_for_given_hour(hour_choice, hour_inputs):
+
+def inputs_for_given_hour(hour_choice, hour_df):
     """
-    Stes a combination of 1 hour's representative met-input values
+    Finds a combination of 1 hour's representative met-input values
     Parameters
     ----------
     hour_choice: int representing hour chosen
-    hour_inputs: dictionary of whole day's inputs
+    hour_df: dataframe of whole day's inputs
 
     Returns
     -------
-    Dictionary of inputs for 1 hour
+    Dataframe of inputs for 1 hour
     """
 
-    i = np.where([i.hour == hour_choice for i in hour_inputs['time']])
+    i = np.where([i.hour == hour_choice for i in hour_df.index])
+    row = hour_df.iloc[i]
 
-    time = hour_inputs['time'][i][0]
-    sigv = hour_inputs['sigv'][i][0]
-    wd = hour_inputs['wd'][i][0]
-    L = hour_inputs['L'][i][0]
-    ustar = hour_inputs['ustar'][i][0]
-
-    hour_met_inputs = {'time': time, 'sigv': sigv, 'wd': wd, 'L': L, 'ustar': ustar}
-
-    return hour_met_inputs
+    return row
