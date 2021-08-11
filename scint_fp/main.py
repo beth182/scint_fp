@@ -25,6 +25,7 @@ from scint_fp.functions import wx_u_v_components
 from scint_fp.functions import retrieve_var
 from scint_fp.functions import inputs_at_given_hour
 from scint_fp.functions import time_average_sa_input
+from scint_fp.functions import sa_creation_selecting
 
 # USER CHOICES
 doy_start = 2016142
@@ -59,7 +60,7 @@ path_params = {'point_res': point_res,
                'weightings': weightings}
 
 spatial_inputs = sct.SpatialInputs(
-    domain_size=10000,
+    domain_size=15000,
     x=float(pair.path_center().x),
     y=float(pair.path_center().y),
     z_asl=pair.path_center_z(),
@@ -167,10 +168,10 @@ df = df.merge(rad_df, how='outer', left_index=True, right_index=True)
 df = rad_data.simple_method_qh(df)
 
 # adjust the wind speed at z met sensor to be at zf
-df = adj_ws.adjust_ws_iteratively(df=df, ws=df['wind_speed'], ustar_threshold=0.05)
+df = adj_ws.adjust_ws_iteratively(df=df, ws=df['wind_speed'], ustar_threshold=0.05, iteration_limit=100, neutral_limit=0.03)
 
 # calculate the fluxes
-df = iterative_stability.andreas_flux_calc(df=df, ustar_threshold=0.05)
+df = iterative_stability.andreas_flux_calc(df=df, ustar_threshold=0.05, neutral_limit=0.03)
 
 # wind calculations
 df = wx_u_v_components.wind_components(df)
@@ -182,34 +183,29 @@ df = wx_u_v_components.wind_components(df)
 # take the last 10 minute averages and aclculate the standard deviation of wind for that period
 df_av = time_average_sa_input.time_average_sa(df, 10)
 
+# determine which times are made into source areas here:
+########################################################################################################################
 # take 10-minute average values only ending on the hour
-df_hourly = retrieve_var.take_hourly_vars(df)
+df_selection = retrieve_var.take_hourly_vars(df_av)
 
+# find unstable times only
+df_selection = sa_creation_selecting.find_unstable_times(df_selection, neutral_limit=0.03)
+
+# remove nan rows
+df_selection = sa_creation_selecting.remove_nan_rows(df_selection)
+
+########################################################################################################################
 # save to csv
-df_hourly.to_csv(out_dir + 'met_inputs_test.csv')
+df_selection.to_csv(out_dir + 'met_inputs_test.csv')
 
-# select only columns going into the source area model
-sa_inputs_df = df_hourly[['wind_direction', 'sigv', 'ustar', 'L']]
+# create footprint for each entry in dataframe
+for index, row in df_selection.iterrows():
 
-# find rows where any items in the dataframe are nans
-nan_df = sa_inputs_df[sa_inputs_df.isna().any(axis=1)]
-nan_times = nan_df.index
-nan_hours = nan_times.strftime('%H')
-nan_hours_list = list(map(int, nan_hours))
-
-all_possible_hours = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0]
-hours_valid = [x for x in all_possible_hours if x not in nan_hours_list]
-# hours_valid = [15]
-
-# create footprints
-for hour in hours_valid:
-    hour_met_inputs = inputs_at_given_hour.inputs_for_given_hour(hour, df_hourly)
-
-    time = hour_met_inputs.index[0]
-    sigv = hour_met_inputs['sigv'][0]
-    wd = hour_met_inputs['wind_direction'][0]
-    L = hour_met_inputs['L'][0]
-    ustar = hour_met_inputs['ustar'][0]
+    time = row.name
+    sigv = row['sig_v']
+    wd = row['wind_direction']
+    ustar = row['ustar']
+    L = row['L']
 
     title_string = time.strftime('%Y') + '_' + time.strftime('%j') + '_' + time.strftime('%H')
 
