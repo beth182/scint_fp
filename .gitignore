@@ -134,3 +134,4 @@ dmypy.json
 *.ini
 *.bak
 /example_data/
+/test_outputs/

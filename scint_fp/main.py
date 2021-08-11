@@ -34,15 +34,20 @@ doy_end = 2016142
 # define site where the radiation data comes from
 rad_site = 'KSSW'
 
-out_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/'
+# out_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/'
+out_dir = 'test_outputs/'
 
 # bdsm_path = 'D:/Documents/large_rasters/clipped/10_m_resampled/resample_10_surface.tif'
 # cdsm_path = 'D:/Documents/large_rasters/clipped/10_m_resampled/resample_10_veg.tif'
 # dem_path = 'D:/Documents/large_rasters/clipped/10_m_resampled/resample_10_terrain.tif'
 
-bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif'
-cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'
-dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
+# bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif'
+# cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'
+# dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
+
+bdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_surface_4m.tif'
+cdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_veg_4m.tif'
+dem_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_terrain_4m.tif'
 
 # SCINT PROPERTIES #####################################################################################################
 # construct path using scintools
@@ -71,7 +76,10 @@ spatial_inputs = sct.SpatialInputs(
 # SCINT DATA ###########################################################################################################
 # find raw scintillometer files
 raw_scint_files = find_files.find_files(doy_start=doy_start, doy_end=doy_end, site=pair.pair_id.split('_')[1],
-                                        instrument='LASMkII_29', level='raw', time_res=None)
+                                        instrument='LASMkII_29', level='raw', time_res=None,
+                                        main_dir='/storage/basic/micromet/Tier_raw/')
+# main_dir='//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_raw/')
+
 # create empty dataframe
 scint_df = pd.DataFrame({'u_cn2': [], 'demod': [], 'sig_u_cn2': [], 'n_samples': []})
 
@@ -115,7 +123,8 @@ df = get_roughness_params.calc_z_f(z_fb, scint_df)
 # find wx files
 wx_files = find_files.find_files(doy_start=doy_start, doy_end=doy_end, site=pair.pair_id.split('_')[0],
                                  instrument='Davis', level='L2', time_res='1min',
-                                 main_dir='//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/new_data_scint/')
+                                 main_dir='/storage/basic/micromet/Tier_processing/rv006011/new_data_scint/')
+                                 # main_dir='//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/new_data_scint/')
 
 # create new columns
 wx_df = pd.DataFrame({'wind_speed': [], 't_air': [], 'r_h': [], 'pressure': [], 'rain_rate': [], 'z_wx': []})
@@ -147,7 +156,9 @@ df = scint_methods.temperature_structure_parameter(df)
 # RADIATION FILES ######################################################################################################
 # find radiation files
 rad_files = find_files.find_files(doy_start=doy_start, doy_end=doy_end, site=rad_site,
-                                  instrument='CNR4', level='L0', time_res='5s')
+                                  instrument='CNR4', level='L0', time_res='5s',
+                                  main_dir='/storage/basic/micromet/Tier_raw/')
+# main_dir='//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_raw/')
 
 # create empty dataframe
 rad_df = pd.DataFrame({'qstar': [], 'qstar_n_samples': []})
@@ -198,37 +209,37 @@ df_selection = sa_creation_selecting.remove_nan_rows(df_selection)
 # save to csv
 df_selection.to_csv(out_dir + 'met_inputs_test.csv')
 
-# create footprint for each entry in dataframe
-for index, row in df_selection.iterrows():
-
-    time = row.name
-    sigv = row['sig_v']
-    wd = row['wind_direction']
-    ustar = row['ustar']
-    L = row['L']
-
-    title_string = time.strftime('%Y') + '_' + time.strftime('%j') + '_' + time.strftime('%H')
-
-    met_inputs = sct.MetInputs(obukhov=L,
-                               sigv=sigv,
-                               ustar=ustar,
-                               wind_dir=wd
-                               )
-
-    fp_path = sct.run_footprintpath(scint_pair=pair,
-                                    met_inputs=met_inputs,
-                                    roughness_inputs=roughness_inputs,
-                                    path_params=path_params,
-                                    spatial_inputs=spatial_inputs)
-
-    # ToDo: temp fix. Need to take out once fixed in scintools
-    fp_path.roughness_outputs.z_m = -999.0
-
-    string_to_save = str(pair.pair_id) + '_' + str(spatial_inputs.domain_size) + '_' + title_string
-    file_out = out_dir + 'hourly/' + string_to_save + '.tif'
-    fp_path.save(out_dir + 'hourly/' + string_to_save)
-    fp_path.save_tiff(file_out)
-
-    print(title_string)
-
-print('END')
+# # create footprint for each entry in dataframe
+# for index, row in df_selection.iterrows():
+#
+#     time = row.name
+#     sigv = row['sig_v']
+#     wd = row['wind_direction']
+#     ustar = row['ustar']
+#     L = row['L']
+#
+#     title_string = time.strftime('%Y') + '_' + time.strftime('%j') + '_' + time.strftime('%H')
+#
+#     met_inputs = sct.MetInputs(obukhov=L,
+#                                sigv=sigv,
+#                                ustar=ustar,
+#                                wind_dir=wd
+#                                )
+#
+#     fp_path = sct.run_footprintpath(scint_pair=pair,
+#                                     met_inputs=met_inputs,
+#                                     roughness_inputs=roughness_inputs,
+#                                     path_params=path_params,
+#                                     spatial_inputs=spatial_inputs)
+#
+#     # ToDo: temp fix. Need to take out once fixed in scintools
+#     fp_path.roughness_outputs.z_m = -999.0
+#
+#     string_to_save = str(pair.pair_id) + '_' + str(spatial_inputs.domain_size) + '_' + title_string
+#     file_out = out_dir + 'hourly/' + string_to_save + '.tif'
+#     fp_path.save(out_dir + 'hourly/' + string_to_save)
+#     fp_path.save_tiff(file_out)
+#
+#     print(title_string)
+#
+# print('END')
