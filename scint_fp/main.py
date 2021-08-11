@@ -24,6 +24,7 @@ from scint_fp.functions import estimate_roughness
 from scint_fp.functions import wx_u_v_components
 from scint_fp.functions import retrieve_var
 from scint_fp.functions import inputs_at_given_hour
+from scint_fp.functions import time_average_sa_input
 
 # USER CHOICES
 doy_start = 2016142
@@ -175,12 +176,16 @@ df = iterative_stability.andreas_flux_calc(df=df, ustar_threshold=0.05)
 df = wx_u_v_components.wind_components(df)
 
 # standard deviation of v component of wind
-std_v_df = wx_u_v_components.std_v(df)
+# std_v_df = wx_u_v_components.std_v(df)
 
+
+# take the last 10 minute averages and aclculate the standard deviation of wind for that period
+df_av = time_average_sa_input.time_average_sa(df, 10)
+
+# take 10-minute average values only ending on the hour
 df_hourly = retrieve_var.take_hourly_vars(df)
 
-df_hourly = pd.concat([df_hourly, std_v_df], axis=1)
-
+# save to csv
 df_hourly.to_csv(out_dir + 'met_inputs_test.csv')
 
 # select only columns going into the source area model
@@ -193,8 +198,8 @@ nan_hours = nan_times.strftime('%H')
 nan_hours_list = list(map(int, nan_hours))
 
 all_possible_hours = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0]
-# hours_valid = [x for x in all_possible_hours if x not in nan_hours_list]
-hours_valid = [15]
+hours_valid = [x for x in all_possible_hours if x not in nan_hours_list]
+# hours_valid = [15]
 
 # create footprints
 for hour in hours_valid:
