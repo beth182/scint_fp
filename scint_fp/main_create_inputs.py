@@ -214,37 +214,3 @@ df_selection.to_csv(out_dir + 'met_inputs_test.csv')
 
 print('END')
 
-# # create footprint for each entry in dataframe
-# for index, row in df_selection.iterrows():
-#
-#     time = row.name
-#     sigv = row['sig_v']
-#     wd = row['wind_direction']
-#     ustar = row['ustar']
-#     L = row['L']
-#
-#     title_string = time.strftime('%Y') + '_' + time.strftime('%j') + '_' + time.strftime('%H')
-#
-#     met_inputs = sct.MetInputs(obukhov=L,
-#                                sigv=sigv,
-#                                ustar=ustar,
-#                                wind_dir=wd
-#                                )
-#
-#     fp_path = sct.run_footprintpath(scint_pair=pair,
-#                                     met_inputs=met_inputs,
-#                                     roughness_inputs=roughness_inputs,
-#                                     path_params=path_params,
-#                                     spatial_inputs=spatial_inputs)
-#
-#     # ToDo: temp fix. Need to take out once fixed in scintools
-#     fp_path.roughness_outputs.z_m = -999.0
-#
-#     string_to_save = str(pair.pair_id) + '_' + str(spatial_inputs.domain_size) + '_' + title_string
-#     file_out = out_dir + 'hourly/' + string_to_save + '.tif'
-#     fp_path.save(out_dir + 'hourly/' + string_to_save)
-#     fp_path.save_tiff(file_out)
-#
-#     print(title_string)
-#
-# print('END')
