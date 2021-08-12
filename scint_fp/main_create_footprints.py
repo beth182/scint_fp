@@ -11,6 +11,10 @@ bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif
 cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'
 dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
 
+# bdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_surface_4m.tif'
+# cdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_veg_4m.tif'
+# dem_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_terrain_4m.tif'
+
 pair = sct.ScintillometerPair(x=[look_up.BCT_info['x'], look_up.IMU_info['x']],
                               y=[look_up.BCT_info['y'], look_up.IMU_info['y']],
                               z_asl=[look_up.BCT_info['z_asl'], look_up.IMU_info['z_asl']],
