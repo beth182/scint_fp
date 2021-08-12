@@ -41,13 +41,19 @@ out_dir = 'test_outputs/'
 # cdsm_path = 'D:/Documents/large_rasters/clipped/10_m_resampled/resample_10_veg.tif'
 # dem_path = 'D:/Documents/large_rasters/clipped/10_m_resampled/resample_10_terrain.tif'
 
-# bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif'
-# cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'
-# dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
+bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif'
+cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'
+dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
 
-bdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_surface_4m.tif'
-cdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_veg_4m.tif'
-dem_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_terrain_4m.tif'
+# bdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_surface_4m.tif'
+# cdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_veg_4m.tif'
+# dem_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_terrain_4m.tif'
+
+# main_dir_tier_raw = '/storage/basic/micromet/Tier_raw/'
+# main_dir_new_data_scint = '/storage/basic/micromet/Tier_processing/rv006011/new_data_scint/'
+
+main_dir_tier_raw = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_raw/'
+main_dir_new_data_scint = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/new_data_scint/'
 
 # SCINT PROPERTIES #####################################################################################################
 # construct path using scintools
@@ -77,8 +83,7 @@ spatial_inputs = sct.SpatialInputs(
 # find raw scintillometer files
 raw_scint_files = find_files.find_files(doy_start=doy_start, doy_end=doy_end, site=pair.pair_id.split('_')[1],
                                         instrument='LASMkII_29', level='raw', time_res=None,
-                                        main_dir='/storage/basic/micromet/Tier_raw/')
-# main_dir='//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_raw/')
+                                        main_dir=main_dir_tier_raw)
 
 # create empty dataframe
 scint_df = pd.DataFrame({'u_cn2': [], 'demod': [], 'sig_u_cn2': [], 'n_samples': []})
@@ -123,8 +128,7 @@ df = get_roughness_params.calc_z_f(z_fb, scint_df)
 # find wx files
 wx_files = find_files.find_files(doy_start=doy_start, doy_end=doy_end, site=pair.pair_id.split('_')[0],
                                  instrument='Davis', level='L2', time_res='1min',
-                                 main_dir='/storage/basic/micromet/Tier_processing/rv006011/new_data_scint/')
-                                 # main_dir='//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/new_data_scint/')
+                                 main_dir=main_dir_new_data_scint)
 
 # create new columns
 wx_df = pd.DataFrame({'wind_speed': [], 't_air': [], 'r_h': [], 'pressure': [], 'rain_rate': [], 'z_wx': []})
@@ -157,8 +161,7 @@ df = scint_methods.temperature_structure_parameter(df)
 # find radiation files
 rad_files = find_files.find_files(doy_start=doy_start, doy_end=doy_end, site=rad_site,
                                   instrument='CNR4', level='L0', time_res='5s',
-                                  main_dir='/storage/basic/micromet/Tier_raw/')
-# main_dir='//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_raw/')
+                                  main_dir=main_dir_tier_raw)
 
 # create empty dataframe
 rad_df = pd.DataFrame({'qstar': [], 'qstar_n_samples': []})
@@ -208,6 +211,8 @@ df_selection = sa_creation_selecting.remove_nan_rows(df_selection)
 ########################################################################################################################
 # save to csv
 df_selection.to_csv(out_dir + 'met_inputs_test.csv')
+
+print('END')
 
 # # create footprint for each entry in dataframe
 # for index, row in df_selection.iterrows():

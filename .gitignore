@@ -134,4 +134,4 @@ dmypy.json
 *.ini
 *.bak
 /example_data/
-/test_outputs/
+/scint_fp/test_outputs/
