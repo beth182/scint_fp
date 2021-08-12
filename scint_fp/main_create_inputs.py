@@ -200,17 +200,17 @@ df_av = time_average_sa_input.time_average_sa(df, 10)
 # determine which times are made into source areas here:
 ########################################################################################################################
 # take 10-minute average values only ending on the hour
-# df_selection = retrieve_var.take_hourly_vars(df_av)
+df_selection = retrieve_var.take_hourly_vars(df_av)
 
 # find unstable times only
-df_selection = sa_creation_selecting.find_unstable_times(df_av, neutral_limit=0.03)
+df_selection = sa_creation_selecting.find_unstable_times(df_selection, neutral_limit=0.03)
 
 # remove nan rows
 df_selection = sa_creation_selecting.remove_nan_rows(df_selection)
 
 ########################################################################################################################
 # save to csv
-df_selection.to_csv(out_dir + 'met_inputs_minutes_111.csv')
+df_selection.to_csv(out_dir + 'met_inputs_111.csv')
 
 print('END')
 

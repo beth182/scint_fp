@@ -49,17 +49,15 @@ def plot_map(fp_raster,
 
 
 
-
-
-
-
-hourly_dir = 'C:/Users/beths/Desktop/LANDING/fp_raster_tests/hourly/'
-partial_name = 'BCT_IMU_65000_2016_142_'
+hourly_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/hourly/'
+partial_name = 'BCT_IMU_15000_2016_111_'
 
 # hours with source areas which fit in the UKV grids
 # hours = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
 # test hours
-hours = [5, 12, 19]
+hours = ['11_00', '11_10', '11_20', '11_30', '11_40', '11_50',
+                '12_00', '12_10', '12_20', '12_30', '12_40', '12_50',
+                '13_00']
 
 # empty list for rasters
 raster_paths = []
@@ -67,15 +65,15 @@ hour_strings = []
 
 # get raster paths for every hour in list
 for hour in hours:
-    str_hour = str(hour)
-    if hour < 10:
-        hour_string = str_hour.zfill(2)
-    else:
-        hour_string = str_hour
+    # str_hour = str(hour)
+    # if hour < 10:
+    #     hour_string = str_hour.zfill(2)
+    # else:
+    #     hour_string = str_hour
 
-    raster_path = hourly_dir + partial_name + hour_string + '.tif'
+    raster_path = hourly_dir + partial_name + hour + '.tif'
     raster_paths.append(raster_path)
-    hour_strings.append(hour_string)
+    hour_strings.append(hour)
 
 
 fig, axs = plt.subplots(len(hours), figsize = (30,30))
