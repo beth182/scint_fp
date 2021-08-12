@@ -4,16 +4,17 @@ import scintools as sct
 
 from scint_flux import look_up
 
-out_dir = 'test_outputs/'
-csv_name = 'met_inputs_test.csv'
+# out_dir = 'test_outputs/'
+out_dir = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintillometer_footprints/scint_fp/test_outputs/'
+csv_name = 'met_inputs_minutes_111.csv'
 
-bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif'
-cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'
-dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
+# bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif'
+# cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'
+# dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
 
-# bdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_surface_4m.tif'
-# cdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_veg_4m.tif'
-# dem_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_terrain_4m.tif'
+bdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_surface_4m.tif'
+cdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_veg_4m.tif'
+dem_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_terrain_4m.tif'
 
 pair = sct.ScintillometerPair(x=[look_up.BCT_info['x'], look_up.IMU_info['x']],
                               y=[look_up.BCT_info['y'], look_up.IMU_info['y']],
@@ -47,6 +48,8 @@ def create_footprints(pair, roughness_inputs, spatial_inputs, path_params,
     df.time = pd.to_datetime(df['time'])
     df = df.set_index('time')
 
+    df = df.between_time('11:00', '13:00')
+
     # create footprint for each entry in dataframe
     for index, row in df.iterrows():
 
@@ -56,7 +59,7 @@ def create_footprints(pair, roughness_inputs, spatial_inputs, path_params,
         ustar = row['ustar']
         L = row['L']
 
-        title_string = time.strftime('%Y') + '_' + time.strftime('%j') + '_' + time.strftime('%H')
+        title_string = time.strftime('%Y') + '_' + time.strftime('%j') + '_' + time.strftime('%H_%M')
 
         met_inputs = sct.MetInputs(obukhov=L,
                                    sigv=sigv,
