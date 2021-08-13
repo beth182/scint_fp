@@ -1,6 +1,7 @@
 
 import pandas as pd
 import scintools as sct
+import numpy as np
 
 from scint_flux import look_up
 
@@ -75,6 +76,7 @@ def create_footprints(pair, roughness_inputs, spatial_inputs, path_params,
 
         # ToDo: temp fix. Need to take out once fixed in scintools
         fp_path.roughness_outputs.z_m = -999.0
+        fp_path.footprint[fp_path.footprint == 0.0] = np.nan
 
         string_to_save = str(pair.pair_id) + '_' + str(spatial_inputs.domain_size) + '_' + title_string
         file_out = out_dir + 'hourly/' + string_to_save + '.tif'

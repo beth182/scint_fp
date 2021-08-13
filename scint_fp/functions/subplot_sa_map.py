@@ -49,7 +49,7 @@ def plot_map(fp_raster,
 
 
 
-hourly_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/hourly/'
+hourly_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/111/10_mins/'
 partial_name = 'BCT_IMU_15000_2016_111_'
 
 # hours with source areas which fit in the UKV grids
@@ -81,9 +81,6 @@ fig, axs = plt.subplots(len(hours), figsize = (30,30))
 for i, raster in enumerate(raster_paths):
 
     plot_map(raster, axs[i], fig)
-    plot_map(raster, axs[i], fig)
-
-
 
 plt.show()
 
