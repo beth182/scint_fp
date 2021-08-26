@@ -49,7 +49,7 @@ def create_footprints(pair, roughness_inputs, spatial_inputs, path_params,
     df.time = pd.to_datetime(df['time'])
     df = df.set_index('time')
 
-    df = df.between_time('11:00', '13:00')
+    # df = df.between_time('11:00', '13:00')
 
     # create footprint for each entry in dataframe
     for index, row in df.iterrows():
