@@ -7,7 +7,8 @@ from scint_flux import look_up
 
 # out_dir = 'test_outputs/'
 out_dir = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintillometer_footprints/scint_fp/test_outputs/'
-csv_name = 'met_inputs_hourly_111.csv'
+csv_name = 'met_inputs_hourly_118.csv'  # CHANGE HERE
+print(csv_name)
 
 # bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif'
 # cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'

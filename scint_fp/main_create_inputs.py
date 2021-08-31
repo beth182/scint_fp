@@ -31,8 +31,8 @@ from scint_fp.functions import sa_creation_selecting
 # doy_start = 2016111
 # doy_end = 2016111
 
-doy_start = 2016142
-doy_end = 2016142
+doy_start = 2016118  # CHANGE HERE
+doy_end = 2016118
 
 # define site where the radiation data comes from
 rad_site = 'KSSW'
@@ -194,7 +194,8 @@ df = iterative_stability.andreas_flux_calc(df=df, ustar_threshold=0.05, neutral_
 df = wx_u_v_components.wind_components(df)
 
 # take the last 10 minute averages and calculate the standard deviation of wind for that period
-df_av = time_average_sa_input.time_average_sa(df, 60)  # CHANGE HERE
+df_av = time_average_sa_input.time_average_sa(df, 10)
+# df_av = time_average_sa_input.time_average_sa(df, 60)  # CHANGE HERE
 
 # determine which times are made into source areas here:
 ########################################################################################################################
@@ -210,7 +211,7 @@ df_selection = sa_creation_selecting.remove_nan_rows(df_selection)
 
 ########################################################################################################################
 # save to csv
-df_selection.to_csv(out_dir + 'met_inputs_hourly_142.csv')  # CHANGE HERE
+df_selection.to_csv(out_dir + 'met_inputs_minutes_118.csv')  # CHANGE HERE
 
 print('END')
 
