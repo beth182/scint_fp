@@ -109,7 +109,7 @@ scint_df = scint_methods.cn2_analogue_output(scint_df)
 
 # GET HEIGHTS ##########################################################################################################
 # plot transect
-path_transect = pair.path_transect(dsm_file=spatial_inputs.bdsm_path, point_res=10)
+path_transect = pair.path_transect(dsm_file=spatial_inputs.bdsm_path, dem_file=spatial_inputs.dem_path, point_res=10)
 
 # get effective beam height
 z_fb = path_transect.effective_beam_height()
@@ -191,11 +191,17 @@ df = adj_ws.adjust_ws_iteratively(df=df, ws=df['wind_speed'], ustar_threshold=0.
 df = iterative_stability.andreas_flux_calc(df=df, ustar_threshold=0.05, neutral_limit=0.03)
 
 # wind calculations
-df = wx_u_v_components.wind_components(df)
+component_df = wx_u_v_components.ws_wd_to_u_v(df['wind_speed_adj'], df['wind_direction'])
+df = pd.concat([df, component_df], axis=1)
 
 # take the last 10 minute averages and calculate the standard deviation of wind for that period
 df_av = time_average_sa_input.time_average_sa(df, 10)
 # df_av = time_average_sa_input.time_average_sa(df, 60)  # CHANGE HERE
+
+# convert the averages of the u and the v component back to wind speed and direction
+av_comp = wx_u_v_components.u_v_to_ws_wd(df_av['u_component'], df_av['v_component'])
+df_av = pd.concat([df_av, av_comp], axis=1)
+
 
 # determine which times are made into source areas here:
 ########################################################################################################################

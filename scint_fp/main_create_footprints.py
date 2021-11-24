@@ -57,7 +57,7 @@ def create_footprints(pair, roughness_inputs, spatial_inputs, path_params,
 
         time = row.name
         sigv = row['sig_v']
-        wd = row['wind_direction']
+        wd = row['wind_direction_convert']
         ustar = row['ustar']
         L = row['L']
 
