@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-def time_average_sa(df, minute_resolution):
+def time_average_sa(df, minute_resolution, period='T'):
     """
 
     :param df:
@@ -10,7 +10,10 @@ def time_average_sa(df, minute_resolution):
     """
 
     # construct a string to go into resample denoting the rule
-    freq_string = str(minute_resolution) + 'T'
+    if period == 'T':
+        freq_string = str(minute_resolution) + period
+    else:
+        freq_string = period
 
     # resample to minute_resolution
     resample_df = df.resample(freq_string, closed='right', label='right').mean()

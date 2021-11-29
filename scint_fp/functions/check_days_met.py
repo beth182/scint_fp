@@ -13,7 +13,7 @@ from scint_flux.functions import wx_data
 from scint_fp.functions import time_average_sa_input
 
 doy_start = 2016118  # CHANGE HERE
-doy_end = 2016118
+doy_end = 2016119
 
 pair = sct.ScintillometerPair(x=[look_up.BCT_info['x'], look_up.IMU_info['x']],
                               y=[look_up.BCT_info['y'], look_up.IMU_info['y']],
@@ -38,16 +38,17 @@ for i in range(0, len(wx_files['file_paths'])):
     # append to existing dataframe
     df = df.append(process_df)
 
+# get u & v components of wind - then add to df
 component_df = wx_u_v_components.ws_wd_to_u_v(df['wind_speed'], df['wind_direction'])
-
 df = pd.concat([df, component_df], axis=1)
 
-df_av = time_average_sa_input.time_average_sa(df, 10)
+# timage average df with u & v components
+df_av = time_average_sa_input.time_average_sa(df, 10, period='D')
 
-test = wx_u_v_components.u_v_to_ws_wd(df['u_component'], df['v_component'])
-
+# convert back timage averaged values to wind speed and direction
 av_comp = wx_u_v_components.u_v_to_ws_wd(df_av['u_component'], df_av['v_component'])
-
 df_av = pd.concat([df_av, av_comp], axis=1)
+
+
 
 print('end')
