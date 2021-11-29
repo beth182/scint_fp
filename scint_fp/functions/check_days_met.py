@@ -5,6 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from scint_fp.functions import wx_u_v_components
 import numpy as np
+import datetime as dt
 
 from scint_flux import look_up
 from scint_flux.functions import find_files
@@ -12,8 +13,8 @@ import scintools as sct
 from scint_flux.functions import wx_data
 from scint_fp.functions import time_average_sa_input
 
-doy_start = 2016118  # CHANGE HERE
-doy_end = 2016119
+doy_start = 2016168 # CHANGE HERE
+doy_end = 2016168
 
 pair = sct.ScintillometerPair(x=[look_up.BCT_info['x'], look_up.IMU_info['x']],
                               y=[look_up.BCT_info['y'], look_up.IMU_info['y']],
@@ -42,8 +43,28 @@ for i in range(0, len(wx_files['file_paths'])):
 component_df = wx_u_v_components.ws_wd_to_u_v(df['wind_speed'], df['wind_direction'])
 df = pd.concat([df, component_df], axis=1)
 
+# take only times that are daytime-ish
+# between 0600 and 1800
+start_time = dt.time(6,0,0)
+end_time = dt.time(18,0,0)
+
+# get time as column of datetime objs from index
+df['time']=pd.to_datetime(df.index)
+
+# group by days
+seperate_days = df.groupby(by=df['time'].dt.date)
+
+# loop over all days and append selected times to a list
+list_of_dfs = []
+for group_name, df_group in seperate_days:
+    # take times
+    selection = df_group.between_time(start_time, end_time)
+    list_of_dfs.append(selection)
+# combine
+df_day = pd.concat(list_of_dfs)
+
 # timage average df with u & v components
-df_av = time_average_sa_input.time_average_sa(df, 10, period='D')
+df_av = time_average_sa_input.time_average_sa(df_day, 10, period='D')
 
 # convert back timage averaged values to wind speed and direction
 av_comp = wx_u_v_components.u_v_to_ws_wd(df_av['u_component'], df_av['v_component'])
