@@ -195,8 +195,8 @@ component_df = wx_u_v_components.ws_wd_to_u_v(df['wind_speed_adj'], df['wind_dir
 df = pd.concat([df, component_df], axis=1)
 
 # take the last 10 minute averages and calculate the standard deviation of wind for that period
-df_av = time_average_sa_input.time_average_sa(df, 10)
-# df_av = time_average_sa_input.time_average_sa(df, 60)  # CHANGE HERE
+# df_av = time_average_sa_input.time_average_sa(df, 10)
+df_av = time_average_sa_input.time_average_sa(df, 60)  # CHANGE HERE
 
 # convert the averages of the u and the v component back to wind speed and direction
 av_comp = wx_u_v_components.u_v_to_ws_wd(df_av['u_component'], df_av['v_component'])
@@ -217,7 +217,8 @@ df_selection = sa_creation_selecting.remove_nan_rows(df_selection)
 
 ########################################################################################################################
 # save to csv
-df_selection.to_csv(out_dir + 'met_inputs_minutes_118.csv')  # CHANGE HERE
+df_selection.to_csv(out_dir + 'met_inputs_hourly_118.csv')  # CHANGE HERE
+# df_selection.to_csv(out_dir + 'met_inputs_minutes_118.csv')
 
 print('END')
 

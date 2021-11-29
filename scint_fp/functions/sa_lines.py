@@ -7,12 +7,15 @@ import os
 import geopandas as gpd
 import matplotlib.colors as colors
 
+# CHANGE HERE
 # sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/111/10_mins/'
 # sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/142/10_mins/'
 # sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/142/hourly/'
-sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/111/hourly/'
-# sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/118/hourly/'
+# sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/111/hourly/'
+sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/118/hourly/'
+# sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/118/10_mins/'
 # sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/demonstration_figure/point_fp/'
+
 
 
 # deal with files
@@ -48,7 +51,8 @@ raster0 = rasterio.open(file_list[0])
 fig, ax = plt.subplots(figsize=(10, 10))
 
 # plot lancover map
-landcover_location = 'C:/Users/beths/OneDrive - University of Reading/Model_Eval/QGIS/BIG_MAP/BIG_MAP_CROP.tif'
+# landcover_location = 'C:/Users/beths/OneDrive - University of Reading/Model_Eval/QGIS/BIG_MAP/BIG_MAP_CROP.tif'
+landcover_location = 'C:/Users/beths/OneDrive - University of Reading/Model_Eval/QGIS/Elliott/LandUseMM_7classes_32631.tif'
 landcover_raster = rasterio.open(landcover_location)
 
 color_list_lc = ["white", "dimgrey", "lightgrey", "deepskyblue", "lawngreen", "darkgreen", "limegreen", "olive"]
@@ -66,8 +70,13 @@ rasterio.plot.show(landcover_raster, ax=ax, cmap=cmap_lc, norm=norm_lc, interpol
 # cx.add_basemap(ax, crs=raster0.crs, alpha=0.5)
 
 # limits which stay constant between and which suit both day's SAs
+
+# ax.set_xlim(279685.28503960633, 289345.4708460579)
+# ax.set_ylim(5707118.9139011325, 5716431.904868875)
+
 ax.set_xlim(279685.28503960633, 289345.4708460579)
-ax.set_ylim(5707118.9139011325, 5716431.904868875)
+ax.set_ylim(5710118.9139011325, 5719431.904868875)  # CHANGE HERE
+
 
 # handle raster ########################################################################################################
 for i, filename in enumerate(file_list):
