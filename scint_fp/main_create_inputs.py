@@ -27,12 +27,10 @@ from scint_fp.functions import inputs_at_given_hour
 from scint_fp.functions import time_average_sa_input
 from scint_fp.functions import sa_creation_selecting
 
-# USER CHOICES
-# doy_start = 2016111
-# doy_end = 2016111
+# USER CHOICE
 
-doy_start = 2016118  # CHANGE HERE
-doy_end = 2016118
+doy_start = 2016113  # CHANGE HERE
+doy_end = 2016113
 
 # define site where the radiation data comes from
 rad_site = 'KSSW'
@@ -217,8 +215,8 @@ df_selection = sa_creation_selecting.remove_nan_rows(df_selection)
 
 ########################################################################################################################
 # save to csv
-df_selection.to_csv(out_dir + 'met_inputs_hourly_118.csv')  # CHANGE HERE
-# df_selection.to_csv(out_dir + 'met_inputs_minutes_118.csv')
+df_selection.to_csv(out_dir + 'met_inputs_hourly_113.csv')  # CHANGE HERE
+# df_selection.to_csv(out_dir + 'met_inputs_minutes_113.csv')
 
 print('END')
 

@@ -42,7 +42,7 @@ def u_v_to_ws_wd(u_series, v_series):
     WS = (u_series ** 2 + v_series ** 2) ** 0.5
 
     # https://confluence.ecmwf.int/pages/viewpage.action?pageId=133262398
-    WD = 180 + (182 / np.pi) * np.arctan2(u_series, v_series)
+    WD = 180 + (180 / np.pi) * np.arctan2(u_series, v_series)
     WD[np.where(WD < 0)[0]] += 360
 
     WS = WS.rename('wind_speed_convert')

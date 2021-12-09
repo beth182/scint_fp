@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='scintillometer_footprints',
+    name='scint_fp',
     url='https://github.com/beth182/scintillometer_footprints',
     author='Beth Saunders',
     author_email='bethany.saunders@pgr.reading.ac.uk',
