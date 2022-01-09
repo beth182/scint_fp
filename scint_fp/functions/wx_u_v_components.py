@@ -3,16 +3,14 @@
 # to be put into source area calculation program
 
 import numpy as np
-import math
 import pandas as pd
-import matplotlib.pyplot as plt
 
 
 def ws_wd_to_u_v(ws_series, wd_series):
     """
     Get u and v components from WS & dir, observed by WX station.
-    :param ws: wind speed series. Time as index optional
-    :param wd: wind direction series. Time as index optional
+    :param ws_series: wind speed series. Time as index optional
+    :param wd_series: wind direction series. Time as index optional
     :return: u and v components of wind as a dataframe
     """
 
@@ -51,6 +49,28 @@ def u_v_to_ws_wd(u_series, v_series):
     wind_df = pd.concat([WS, WD], axis=1)
 
     return wind_df
+
+
+"""
+# an example script - to prove giving ws & wd, converting to u & v, and then converting back - yeilds the same vals
+# create arbitrary wind vals
+ws = [1., 5., 10., 5., 1.]
+wd = [100., 200., 100., 350., 50.]
+
+# convert to df
+pd_dict = {'ws': ws, 'wd': wd}
+wind_df = pd.DataFrame(pd_dict)
+
+# convert ws & dir to u and v using function ws_wd_to_u_v
+u_v_df = ws_wd_to_u_v(wind_df['ws'], wind_df['wd'])
+
+# convert this u & v back to ws and dir using function u_v_to_ws_wd
+ws_dir_con = u_v_to_ws_wd(u_v_df['u_component'], u_v_df['v_component'])
+
+# check they are the same
+assert ws_dir_con['wind_speed_convert'].all() == wind_df['ws'].all()
+assert ws_dir_con['wind_direction_convert'].all() == wind_df['wd'].all()
+"""
 
 # currently unused - check time_average_sa_input for the sigv calculation
 

@@ -135,3 +135,4 @@ dmypy.json
 *.bak
 /example_data/
 /scint_fp/test_outputs/
+/plots/
