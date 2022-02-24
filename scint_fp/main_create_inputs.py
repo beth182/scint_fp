@@ -29,23 +29,25 @@ from scint_fp.functions import sa_creation_selecting
 
 # USER CHOICE
 
-doy_start = 2016118 # CHANGE HERE
-doy_end = 2016118
+doy_start = 2016123  # CHANGE HERE
+doy_end = 2016123
+# average_period = 10
+average_period = 60
 
 # define site where the radiation data comes from
 rad_site = 'KSSW'
 
-# out_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/'
-out_dir = 'test_outputs/wd_corrected/'
+out_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/'
+# out_dir = 'test_outputs/wd_corrected/'
 # out_dir = 'test_outputs/'
 
-# bdsm_path = 'D:/Documents/large_rasters/clipped/10_m_resampled/resample_10_surface.tif'
-# cdsm_path = 'D:/Documents/large_rasters/clipped/10_m_resampled/resample_10_veg.tif'
-# dem_path = 'D:/Documents/large_rasters/clipped/10_m_resampled/resample_10_terrain.tif'
+bdsm_path = 'D:/Documents/large_rasters/clipped/10_m_resampled/resample_10_surface.tif'
+cdsm_path = 'D:/Documents/large_rasters/clipped/10_m_resampled/resample_10_veg.tif'
+dem_path = 'D:/Documents/large_rasters/clipped/10_m_resampled/resample_10_terrain.tif'
 
-bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif'
-cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'
-dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
+# bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif'
+# cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'
+# dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
 
 # bdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_surface_4m.tif'
 # cdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_veg_4m.tif'
@@ -54,8 +56,12 @@ dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
 # main_dir_tier_raw = '/storage/basic/micromet/Tier_raw/'
 # main_dir_new_data_scint = '/storage/basic/micromet/Tier_processing/rv006011/new_data_scint/'
 
-main_dir_tier_raw = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_raw/'
-main_dir_new_data_scint = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/new_data_scint/'
+# main_dir_tier_raw = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_raw/'
+# main_dir_new_data_scint = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/new_data_scint/'
+
+
+main_dir_tier_raw = 'C:/Users/beths/Desktop/LANDING/data_wifi_problems/'
+main_dir_new_data_scint = 'C:/Users/beths/Desktop/LANDING/data_wifi_problems/'
 
 # SCINT PROPERTIES #####################################################################################################
 # construct path using scintools
@@ -190,12 +196,11 @@ df = adj_ws.adjust_ws_iteratively(df=df, ws=df['wind_speed'], ustar_threshold=0.
 df = iterative_stability.andreas_flux_calc(df=df, ustar_threshold=0.05, neutral_limit=0.03)
 
 # wind calculations
-component_df = wx_u_v_components.ws_wd_to_u_v(df['wind_speed_adj'], df['wind_direction'])
+component_df = wx_u_v_components.ws_wd_to_u_v(df['wind_speed_adj'], df['wind_direction_corrected'])
 df = pd.concat([df, component_df], axis=1)
 
 # take the last 10 minute averages and calculate the standard deviation of wind for that period
-df_av = time_average_sa_input.time_average_sa(df, 10)
-# df_av = time_average_sa_input.time_average_sa(df, 60)  # CHANGE HERE
+df_av = time_average_sa_input.time_average_sa(df, average_period)
 
 # convert the averages of the u and the v component back to wind speed and direction
 av_comp = wx_u_v_components.u_v_to_ws_wd(df_av['u_component'], df_av['v_component'])
@@ -214,20 +219,12 @@ df_selection = sa_creation_selecting.find_unstable_times(df_selection, neutral_l
 # remove nan rows
 df_selection = sa_creation_selecting.remove_nan_rows(df_selection)
 
-
-########################################################################################################################
-# adding temporary wind direction adjustment
-# ToDo: remember to remove this
-adj_val = 34.4
-wd_col_name = 'wind_direction_convert'
-df_selection[wd_col_name] = df_selection[wd_col_name] - adj_val
-df_selection[wd_col_name][np.where(df_selection[wd_col_name] < 0)[0]] = df_selection[wd_col_name][np.where(df_selection[wd_col_name] < 0)[0]] + 360
-df_selection[wd_col_name][np.where(df_selection[wd_col_name] > 360)[0]] = df_selection[wd_col_name][np.where(df_selection[wd_col_name] > 360)[0]] - 360
-
 ########################################################################################################################
 # save to csv
-# df_selection.to_csv(out_dir + 'met_inputs_hourly_118.csv')  # CHANGE HERE
-df_selection.to_csv(out_dir + 'met_inputs_minutes_118.csv')
+if average_period == 10:
+    df_selection.to_csv(out_dir + 'met_inputs_minutes_' + str(doy_start)[-3:] + '.csv')
+elif average_period == 60:
+    df_selection.to_csv(out_dir + 'met_inputs_hourly_' + str(doy_start)[-3:] + '.csv')
 
 print('END')
 
