@@ -12,11 +12,12 @@ import matplotlib.colors as colors
 # sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/142/10_mins/'
 # sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/142/hourly/'
 # sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/111/hourly/'
-sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/118/hourly/'
+# sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/118/hourly/'
 # sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/118/10_mins/'
 # sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/demonstration_figure/point_fp/'
 
-
+# sa_dir = 'C:/Users/beths/Desktop/New folder/SA/hourly/'
+sa_dir = 'C:/Users/beths/Desktop/LANDING/New folder1/'
 
 # deal with files
 file_list = []
@@ -113,7 +114,7 @@ for i, filename in enumerate(file_list):
 df = gpd.read_file('C:/Users/beths/Desktop/LANDING/scint_path_shp/scint_path.shp')
 df.plot(edgecolor='green', ax=ax, linewidth=4.0)
 
-plt.legend()
+plt.legend(labels=[240,250,260,270,280])
 plt.show()
 
 print('end')

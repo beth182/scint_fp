@@ -115,7 +115,7 @@ def landcover_fractions_in_SA_weighted(sa_tif_path):
     maxx = minx + geoTransform[1] * maskDs.RasterXSize
     miny = maxy + geoTransform[5] * maskDs.RasterYSize
     data = gdal.Open(landcover_location, GA_ReadOnly)  # Your data the one you want to clip
-    output = 'C:/Users/beths\Desktop/LANDING/mask_tests/output.tif'  # output file
+    output = 'C:/Users/beths/Desktop/LANDING/mask_tests/output.tif'  # output file
     gdal.Translate(output, data, format='GTiff', projWin=[minx, maxy, maxx, miny], outputSRS=projection)
 
     # reads this cropped dataset
@@ -328,8 +328,11 @@ def lc_in_sa_stacked_bar(sas_df):
 # main_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/142/10_mins/'
 # main_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/142/hourly/'
 # main_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/111/hourly/'
-main_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/111/10_mins/'
+# main_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/111/10_mins/'
 # main_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/142/hourly/temp/'
+# main_dir = 'C:/Users/beths/Desktop/New folder/SA/hourly/'
+# main_dir = 'C:/Users/beths/Desktop/New folder/SA/10_mins/'
+main_dir = 'C:/Users/beths/Desktop/LANDING/New folder1/New folder/'
 
 os.chdir(main_dir)
 
@@ -337,7 +340,7 @@ file_list = []
 for file in glob.glob("*.tif"):
     file_list.append(main_dir + file)
 
-# sas_df = lc_fract_multiple_sas(sa_list=file_list)
-sas_df = 'C:/Users/beths/Desktop/LANDING/mask_tests/142_10mins.csv'
+sas_df = lc_fract_multiple_sas(sa_list=file_list)
+# sas_df = 'C:/Users/beths/Desktop/LANDING/mask_tests/142_10mins.csv'
 
 lc_in_sa_stacked_bar(sas_df)
