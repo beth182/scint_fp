@@ -15,9 +15,10 @@ import matplotlib.colors as colors
 # sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/118/hourly/'
 # sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/118/10_mins/'
 # sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/demonstration_figure/point_fp/'
+sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/123/hourly/'
 
 # sa_dir = 'C:/Users/beths/Desktop/New folder/SA/hourly/'
-sa_dir = 'C:/Users/beths/Desktop/LANDING/New folder1/'
+# sa_dir = 'C:/Users/beths/Desktop/LANDING/New folder1/'
 
 # deal with files
 file_list = []
@@ -72,11 +73,11 @@ rasterio.plot.show(landcover_raster, ax=ax, cmap=cmap_lc, norm=norm_lc, interpol
 
 # limits which stay constant between and which suit both day's SAs
 
-# ax.set_xlim(279685.28503960633, 289345.4708460579)
-# ax.set_ylim(5707118.9139011325, 5716431.904868875)
-
 ax.set_xlim(279685.28503960633, 289345.4708460579)
-ax.set_ylim(5710118.9139011325, 5719431.904868875)  # CHANGE HERE
+ax.set_ylim(5707118.9139011325, 5716431.904868875)
+
+# ax.set_xlim(279685.28503960633, 289345.4708460579)
+# ax.set_ylim(5710118.9139011325, 5719431.904868875)  # CHANGE HERE
 
 
 # handle raster ########################################################################################################
@@ -114,7 +115,8 @@ for i, filename in enumerate(file_list):
 df = gpd.read_file('C:/Users/beths/Desktop/LANDING/scint_path_shp/scint_path.shp')
 df.plot(edgecolor='green', ax=ax, linewidth=4.0)
 
-plt.legend(labels=[240,250,260,270,280])
+plt.legend()
+# plt.legend(labels=[240,250,260,270,280])
 plt.show()
 
 print('end')
