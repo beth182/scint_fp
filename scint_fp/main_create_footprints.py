@@ -7,7 +7,8 @@ from scint_flux import look_up
 
 # out_dir = 'test_outputs/'
 out_dir = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintillometer_footprints/scint_fp/test_outputs/'
-csv_name = 'met_inputs_hourly_118.csv'  # CHANGE HERE
+
+csv_name = 'met_inputs_minutes_123_error.csv'  # CHANGE HERE
 print(csv_name)
 
 # bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif'
@@ -47,7 +48,7 @@ def create_footprints(pair, roughness_inputs, spatial_inputs, path_params,
     # read inputs csv
     df = pd.read_csv(out_dir + csv_name)
     df.rename(columns={'Unnamed: 0': 'time'}, inplace=True)
-    df.time = pd.to_datetime(df['time'])
+    df.time = pd.to_datetime(df['time'], dayfirst=True)
     df = df.set_index('time')
 
     # df = df.between_time('11:00', '13:00')
@@ -62,6 +63,10 @@ def create_footprints(pair, roughness_inputs, spatial_inputs, path_params,
         L = row['L']
 
         title_string = time.strftime('%Y') + '_' + time.strftime('%j') + '_' + time.strftime('%H_%M')
+
+        print(' ')
+        print(title_string)
+        print(' ')
 
         met_inputs = sct.MetInputs(obukhov=L,
                                    sigv=sigv,
