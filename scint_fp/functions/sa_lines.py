@@ -6,6 +6,8 @@ import glob
 import os
 import geopandas as gpd
 import matplotlib.colors as colors
+import matplotlib as mpl
+mpl.rcParams.update({'font.size': 15})  # updating the matplotlib fontsize
 
 # CHANGE HERE
 # sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/111/10_mins/'
@@ -15,7 +17,12 @@ import matplotlib.colors as colors
 # sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/118/hourly/'
 # sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/118/10_mins/'
 # sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/demonstration_figure/point_fp/'
-sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/123/hourly/'
+# sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/123/hourly/'
+
+
+doy_choice = 126
+sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/' + str(doy_choice) + '/hourly/'
+
 
 # sa_dir = 'C:/Users/beths/Desktop/New folder/SA/hourly/'
 # sa_dir = 'C:/Users/beths/Desktop/LANDING/New folder1/'
@@ -115,8 +122,15 @@ for i, filename in enumerate(file_list):
 df = gpd.read_file('C:/Users/beths/Desktop/LANDING/scint_path_shp/scint_path.shp')
 df.plot(edgecolor='green', ax=ax, linewidth=4.0)
 
-plt.legend()
+plt.legend(loc='upper left')
 # plt.legend(labels=[240,250,260,270,280])
+
+plt.yticks(rotation=90)
+
+plt.title('DOY: ' + str(doy_choice))
+
+plt.savefig('C:/Users/beths/Desktop/LANDING/' + 'sa_lines_' + str(doy_choice) + '.png', bbox_inches='tight')
+
 plt.show()
 
 print('end')
