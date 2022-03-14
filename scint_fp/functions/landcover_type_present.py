@@ -7,11 +7,12 @@ from osgeo import gdal
 from gdalconst import GA_ReadOnly
 from collections import Counter
 import pandas as pd
-import matplotlib
 from matplotlib import colors
 import datetime as dt
 import glob
 import os
+import matplotlib as mpl
+mpl.rcParams.update({'font.size': 15})  # updating the matplotlib fontsize
 
 
 def landcover_fractions_in_SA(sa_tif_path):
@@ -260,7 +261,7 @@ def lc_fract_multiple_sas(sa_list):
     return df
 
 
-def lc_in_sa_stacked_bar(sas_df):
+def lc_in_sa_stacked_bar(sas_df_in):
     """
     Takes a dataframe of the land cover fractions present in the peropd's source areas
         And produces a stacked bar chart of them
@@ -268,14 +269,17 @@ def lc_in_sa_stacked_bar(sas_df):
     :return:
     """
 
-    if type(sas_df) == str:  # added option for reading in csv files
+    if type(sas_df_in) == str:  # added option for reading in csv files
 
-        new_df = pd.read_csv(sas_df)
-        new_df.index = new_df['Unnamed: 0']
+        sas_df = pd.read_csv(sas_df_in)
+        sas_df.index = sas_df['Unnamed: 0']
+        sas_df = sas_df.drop('Unnamed: 0', 1)
 
-        title_label = sas_df.split('/')[-1][:3]
+        title_label = sas_df_in.split('/')[-1][:3]
 
     else:
+
+        sas_df = sas_df_in
 
         # format the title string
         title_label = sas_df.index[0].strftime('%j')
@@ -285,29 +289,30 @@ def lc_in_sa_stacked_bar(sas_df):
         # format index for plotting
         sas_df.index = sas_df.index.strftime('%H:%M')
 
-        # get rid of the masks: must be a better way of doing this
-        dict_for_df = {}
+    # get rid of the masks: must be a better way of doing this
+    dict_for_df = {}
 
-        for col in sas_df.columns:
+    for col in sas_df.columns:
 
-            new_col = []
+        new_col = []
 
-            for item in sas_df[col]:
-                if type(item) != float:
-                    new_col.append(0)
-                else:
-                    new_col.append(item)
+        for item in sas_df[col]:
+            if type(item) != float:
+                new_col.append(0)
+            else:
+                new_col.append(item)
 
-            dict_for_df[col] = new_col
+        dict_for_df[col] = new_col
 
-        new_df = pd.DataFrame.from_dict(dict_for_df)
-        new_df.index = sas_df.index
+    new_df = pd.DataFrame.from_dict(dict_for_df)
+    new_df.index = sas_df.index
+
 
     color_list = ["dimgrey", "lightgrey", "deepskyblue", "lawngreen", "darkgreen", "limegreen", "olive"]
 
     fig, ax = plt.subplots(figsize=(12, 12))
 
-    new_df.plot(ax=ax, kind='bar', stacked=True, color=color_list, width=0.85, title=title_label)
+    new_df.plot(ax=ax, kind='bar', stacked=True, color=color_list, width=0.85)
 
     # plt.gcf().autofmt_xdate()
     plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5))
@@ -315,9 +320,9 @@ def lc_in_sa_stacked_bar(sas_df):
     ax.set_xlim(-.5, len(new_df.index) - 0.5)
 
     # half the amount of xticks present
-    plt.locator_params(axis='x', nbins=len(new_df.index) / 2)
+    plt.locator_params(axis='x', nbins=len(new_df.index) / 3)
 
-    plt.xlabel('Time (HH:MM)')
+    plt.xlabel('Time UTC (hh:mm)')
 
     plt.savefig('C:/Users/beths/Desktop/LANDING/mask_tests/output.png', bbox_inches='tight')
     # plt.show()
@@ -325,22 +330,39 @@ def lc_in_sa_stacked_bar(sas_df):
     print('end')
 
 
-# main_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/142/10_mins/'
-# main_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/142/hourly/'
-# main_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/111/hourly/'
-# main_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/111/10_mins/'
-# main_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/142/hourly/temp/'
-# main_dir = 'C:/Users/beths/Desktop/New folder/SA/hourly/'
-# main_dir = 'C:/Users/beths/Desktop/New folder/SA/10_mins/'
-main_dir = 'C:/Users/beths/Desktop/LANDING/New folder1/New folder/'
 
-os.chdir(main_dir)
+# CHOICES
+doy_choice = 126
+# av_period = 'hourly'
+av_period = '10_mins'
 
-file_list = []
-for file in glob.glob("*.tif"):
-    file_list.append(main_dir + file)
 
-sas_df = lc_fract_multiple_sas(sa_list=file_list)
-# sas_df = 'C:/Users/beths/Desktop/LANDING/mask_tests/142_10mins.csv'
+save_path = 'C:/Users/beths/Desktop/LANDING/mask_tests/'
+csv_file_name = str(doy_choice) + '_' + av_period + '.csv'
+
+csv_file_path = save_path + csv_file_name
+
+# check to see if the csv file exists
+if os.path.isfile(csv_file_path):
+
+
+
+    sas_df = csv_file_path
+
+else:
+
+    # create the dataframe
+    main_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/' + str(doy_choice) + '/' + av_period + '/'
+    os.chdir(main_dir)
+    file_list = []
+    for file in glob.glob("*.tif"):
+        file_list.append(main_dir + file)
+
+    sas_df = lc_fract_multiple_sas(sa_list=file_list)
+
+    # save the df as a csv
+    sas_df.to_csv(save_path + csv_file_name)
+
+
 
 lc_in_sa_stacked_bar(sas_df)
