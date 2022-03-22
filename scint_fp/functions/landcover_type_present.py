@@ -332,7 +332,7 @@ def lc_in_sa_stacked_bar(sas_df_in):
 
 
 # CHOICES
-doy_choice = 126
+doy_choice = 123
 # av_period = 'hourly'
 av_period = '10_mins'
 
