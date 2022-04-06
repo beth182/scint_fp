@@ -12,6 +12,7 @@ import datetime as dt
 import glob
 import os
 import matplotlib as mpl
+import matplotlib.patches as mpatches
 mpl.rcParams.update({'font.size': 15})  # updating the matplotlib fontsize
 
 
@@ -343,6 +344,12 @@ def lc_in_sa_stacked_bar(sas_df_in):
 
     fig.suptitle('')
     ax.set_title('')
+
+    bld_patch = mpatches.Patch(color='#696969', label='Building')
+    imp_patch = mpatches.Patch(color='#BEBEBE', label='Impervious')
+    water_patch = mpatches.Patch(color='#00BFFF', label='Water')
+    grass_patch = mpatches.Patch(color='#7CFC00', label='Grass')
+    plt.legend(handles=[bld_patch, imp_patch, water_patch, grass_patch], framealpha=1)
 
     # plt.show()
 
