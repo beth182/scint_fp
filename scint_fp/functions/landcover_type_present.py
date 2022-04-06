@@ -277,6 +277,8 @@ def lc_in_sa_stacked_bar(sas_df_in):
 
         title_label = sas_df_in.split('/')[-1][:3]
 
+        sas_df.index = pd.to_datetime(sas_df.index, dayfirst=True)
+
     else:
 
         sas_df = sas_df_in
@@ -285,9 +287,6 @@ def lc_in_sa_stacked_bar(sas_df_in):
         title_label = sas_df.index[0].strftime('%j')
 
         dt_index = sas_df.index.copy()
-
-        # format index for plotting
-        sas_df.index = sas_df.index.strftime('%H:%M')
 
     # get rid of the masks: must be a better way of doing this
     dict_for_df = {}
@@ -307,6 +306,59 @@ def lc_in_sa_stacked_bar(sas_df_in):
     new_df = pd.DataFrame.from_dict(dict_for_df)
     new_df.index = sas_df.index
 
+
+    print('end')
+
+    # Box plot
+    # """
+
+    # take only building, impervious, grass, water
+    df_select = new_df[['Building', 'Impervious', 'Water', 'Grass']]
+
+    df_select.index.names = ['Time']
+    df_select['Hour'] = df_select.index.hour + 1
+
+    if df_select.index[0].strftime('%j') == '123':
+        end_remove = pd.to_datetime('2016-05-02 17:00:00')
+        df_select = df_select.loc[(df_select.index < end_remove)]
+
+    elif df_select.index[0].strftime('%j') == '126':
+        start_remove = pd.to_datetime('2016-05-05 06:00:00')
+        end_remove = pd.to_datetime('2016-05-05 18:00:00')
+
+        df_select = df_select.loc[(df_select.index >= start_remove)]
+        df_select = df_select.loc[(df_select.index < end_remove)]
+
+    fig, ax = plt.subplots(1, figsize=(12, 12))
+
+    props_building = dict(boxes='#696969', whiskers="Black", medians="Black", caps="Black")
+    props_imperv = dict(boxes="#BEBEBE", whiskers="Black", medians="Black", caps="Black")
+    props_water = dict(boxes="#00BFFF", whiskers="Black", medians="Black", caps="Black")
+    props_grass = dict(boxes="#7CFC00", whiskers="Black", medians="Black", caps="Black")
+
+    df_select.boxplot('Building', 'Hour', ax=ax, color=props_building, patch_artist=True, sym='#696969', widths=0.95)
+    df_select.boxplot('Impervious', 'Hour', ax=ax, color=props_imperv, patch_artist=True, sym='#BEBEBE', widths=0.95)
+    df_select.boxplot('Water', 'Hour', ax=ax, color=props_water, patch_artist=True, sym='#00BFFF', widths=0.95)
+    df_select.boxplot('Grass', 'Hour', ax=ax, color=props_grass, patch_artist=True, sym='#7CFC00', widths=0.95)
+
+    fig.suptitle('')
+    ax.set_title('')
+
+    # plt.show()
+
+    plt.savefig('C:/Users/beths/Desktop/LANDING/mask_tests/boxplot.png', bbox_inches='tight')
+
+    print('end')
+
+    # """
+
+
+
+
+    # stacked bar
+    """
+    # format index for plotting
+    sas_df.index = sas_df.index.strftime('%H:%M')
 
     color_list = ["dimgrey", "lightgrey", "deepskyblue", "lawngreen", "darkgreen", "limegreen", "olive"]
 
@@ -328,11 +380,12 @@ def lc_in_sa_stacked_bar(sas_df_in):
     # plt.show()
 
     print('end')
+    """
 
 
 
 # CHOICES
-doy_choice = 123
+doy_choice = 126
 # av_period = 'hourly'
 av_period = '10_mins'
 
@@ -366,3 +419,4 @@ else:
 
 
 lc_in_sa_stacked_bar(sas_df)
+print('end')
