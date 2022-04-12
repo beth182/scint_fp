@@ -99,6 +99,7 @@ def plot_footprint_model_inputs(nc_file_path_123, csv_file_path_123,
 
     df = pd.concat([df_123, df_126], axis=1)
 
+    resample_df = df.resample('10T', closed='right', label='right').median()
 
     # find first instance of nc file which isnt a nan
 
@@ -116,40 +117,61 @@ def plot_footprint_model_inputs(nc_file_path_123, csv_file_path_123,
 
     max_time_df = max(max_ustar, max_L, max_zL, max_sigv)
 
-    fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(nrows=2, ncols=2, sharex=True, figsize=(13,12))
+    fig, ((ax1, ax2, ax3)) = plt.subplots(nrows=1, ncols=3, sharex=True, figsize=(15,5))
 
     # plt.suptitle('DOY: ' + nc_df.index[0].strftime('%j'))
 
-    ax1.plot(df.index[np.where(~np.isnan(df['sig_v_123']))], df['sig_v_123'][np.where(~np.isnan(df['sig_v_123']))[0]], marker='.', linewidth=0.5, color='red', label='123', alpha=0.5, markersize=4)
-    ax1.plot(df.index[np.where(~np.isnan(df['sig_v_126']))], df['sig_v_126'][np.where(~np.isnan(df['sig_v_126']))[0]], marker='.', linewidth=0.5, color='blue', label='126', alpha=0.5, markersize=4)
+    # ax1.scatter(df.index, df['sig_v_123'], color='red', label='123', alpha=0.3, edgecolors='None', marker='.')
+    # ax1.scatter(df.index, df['sig_v_126'], color='blue', label='126', alpha=0.3, edgecolors='None', marker='.')
+    ax1.plot(df.index[np.where(~np.isnan(df['sig_v_123']))], df['sig_v_123'][np.where(~np.isnan(df['sig_v_123']))[0]],
+             marker='o', linewidth=0.5, color='red', label='Cloudy', markersize=4)
+    ax1.plot(df.index[np.where(~np.isnan(df['sig_v_126']))], df['sig_v_126'][np.where(~np.isnan(df['sig_v_126']))[0]],
+             marker='o', linewidth=0.5, color='blue', label='Clear', markersize=4)
+
     ax1.legend()
     ax1.set_ylabel('$\sigma$v (m s$^{-1}$)')
-    ax2.plot(df.index, df['ustar_123'], marker='.', linewidth=0.5, color='red', alpha=0.5, markersize=4)
-    ax2.plot(df.index, df['ustar_126'], marker='.', linewidth=0.5, color='blue', alpha=0.5, markersize=4)
+
+    ax2.scatter(df.index, df['ustar_123'], color='red', alpha=0.3, edgecolors='None', marker='.')
+    ax2.scatter(df.index, df['ustar_126'], color='blue', alpha=0.3, edgecolors='None', marker='.')
+
+    ax2.plot(resample_df.index, resample_df['ustar_123'], marker='o', linewidth=0.5, color='red', markersize=4)
+    ax2.plot(resample_df.index, resample_df['ustar_126'], marker='o', linewidth=0.5, color='blue', markersize=4)
+    # ax2.scatter(resample_df.index, resample_df['ustar_123'], color='red', edgecolors='None', marker='o')
+
     ax2.set_ylabel('u$_{*}$ (m s$^{-1}$)')
 
-    ax3.plot(df.index, df['L_123']*-1, marker='.', linewidth=0.5, color='red', alpha=0.5, markersize=4)
-    ax3.plot(df.index, df['L_126'] * -1, marker='.', linewidth=0.5, color='blue', alpha=0.5, markersize=4)
-    ax3.set_ylabel('- L (m)')
+    # ax4.scatter(df.index, df['L_123']*-1, color='red', alpha=0.3, edgecolors='None', marker='.')
+    # ax4.scatter(df.index, df['L_126'] * -1, color='blue', alpha=0.3, edgecolors='None', marker='.')
+    #
+    # ax4.plot(resample_df.index, resample_df['L_123']*-1, marker='o', linewidth=0.5, color='red', markersize=4)
+    # ax4.plot(resample_df.index, resample_df['L_126'] * -1, marker='o', linewidth=0.5, color='blue', markersize=4)
+    #
+    # ax4.set_ylabel('- L (m)')
+    # ax4.set_yscale('log')
+    # ax4.set_ylim(ax3.get_ylim()[::-1])
+
+    ax3.scatter(df.index, df['stab_param_123']*-1, color='red', alpha=0.3, edgecolors='None', marker='.')
+    ax3.scatter(df.index, df['stab_param_126'] * -1, color='blue', alpha=0.3, edgecolors='None', marker='.')
+
+    ax3.plot(resample_df.index, resample_df['stab_param_123']*-1, marker='o', linewidth=0.5, color='red', markersize=4)
+    ax3.plot(resample_df.index, resample_df['stab_param_126'] * -1, marker='o', linewidth=0.5, color='blue', markersize=4)
+
+    ax3.set_ylabel('- z$_{f}$/L', labelpad=-5)
     ax3.set_yscale('log')
     ax3.set_ylim(ax3.get_ylim()[::-1])
-
-    ax4.plot(df.index, df['stab_param_123']*-1, marker='.', linewidth=0.5, color='red', alpha=0.5, markersize=4)
-    ax4.plot(df.index, df['stab_param_126'] * -1, marker='.', linewidth=0.5, color='blue', alpha=0.5, markersize=4)
-    ax4.set_ylabel('- z$_{f}$/L')
-    ax4.set_yscale('log')
-    ax4.set_ylim(ax4.get_ylim()[::-1])
 
     ax1.set_xlim(min_time_df, max_time_df)
     ax2.set_xlim(min_time_df, max_time_df)
     ax3.set_xlim(min_time_df, max_time_df)
-    ax4.set_xlim(min_time_df, max_time_df)
+    # ax4.set_xlim(min_time_df, max_time_df)
 
     ax3.xaxis.set_major_formatter(DateFormatter('%H'))
-    ax4.xaxis.set_major_formatter(DateFormatter('%H'))
+    # ax4.xaxis.set_major_formatter(DateFormatter('%H'))
 
     plt.gcf().autofmt_xdate()
     plt.tight_layout()
+
+
     fig.subplots_adjust(wspace=0.22, hspace=0)
 
     # plt.show()
