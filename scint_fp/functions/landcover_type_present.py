@@ -13,6 +13,7 @@ import glob
 import os
 import matplotlib as mpl
 import matplotlib.patches as mpatches
+
 mpl.rcParams.update({'font.size': 15})  # updating the matplotlib fontsize
 
 
@@ -289,6 +290,16 @@ def lc_in_sa_stacked_bar(sas_df_in):
 
         dt_index = sas_df.index.copy()
 
+    # reading model weighted lc fraction csv file
+    # made from scint_eval ukv_landuse functions file
+    csv_path = 'C:/Users/beths/Desktop/LANDING/weighted_lc_ukv_' + sas_df.index[0].strftime('%Y') + sas_df.index[
+        0].strftime('%j') + '.csv'
+    ukv_df = pd.read_csv(csv_path)
+
+    ukv_df['Unnamed: 0'] = pd.to_datetime(ukv_df['Unnamed: 0'], format='%y%m%d%H')
+    ukv_df = ukv_df.rename(columns={'Unnamed: 0': 'Time'})
+    ukv_df = ukv_df.set_index('Time')
+
     # get rid of the masks: must be a better way of doing this
     dict_for_df = {}
 
@@ -306,7 +317,6 @@ def lc_in_sa_stacked_bar(sas_df_in):
 
     new_df = pd.DataFrame.from_dict(dict_for_df)
     new_df.index = sas_df.index
-
 
     print('end')
 
@@ -337,30 +347,52 @@ def lc_in_sa_stacked_bar(sas_df_in):
     props_water = dict(boxes="#00BFFF", whiskers="Black", medians="Black", caps="Black")
     props_grass = dict(boxes="#7CFC00", whiskers="Black", medians="Black", caps="Black")
 
-    df_select.boxplot('Building', 'Hour', ax=ax, color=props_building, patch_artist=True, sym='#696969', widths=0.95)
-    df_select.boxplot('Impervious', 'Hour', ax=ax, color=props_imperv, patch_artist=True, sym='#BEBEBE', widths=0.95)
-    df_select.boxplot('Water', 'Hour', ax=ax, color=props_water, patch_artist=True, sym='#00BFFF', widths=0.95)
-    df_select.boxplot('Grass', 'Hour', ax=ax, color=props_grass, patch_artist=True, sym='#7CFC00', widths=0.95)
+    bp_build = df_select.boxplot('Building', 'Hour', ax=ax, color=props_building, patch_artist=True, sym='#696969',
+                                 widths=0.95, return_type='dict')
+    bp_imp = df_select.boxplot('Impervious', 'Hour', ax=ax, color=props_imperv, patch_artist=True, sym='#BEBEBE',
+                               widths=0.95, return_type='dict')
+    bp_wat = df_select.boxplot('Water', 'Hour', ax=ax, color=props_water, patch_artist=True, sym='#00BFFF', widths=0.95,
+                               return_type='dict')
+    bp_gra = df_select.boxplot('Grass', 'Hour', ax=ax, color=props_grass, patch_artist=True, sym='#7CFC00', widths=0.95,
+                               return_type='dict')
+
+    [patch.set(alpha=0.6) for patch in bp_build['Building']['boxes']]
+    [patch.set(alpha=0.6) for patch in bp_imp['Impervious']['boxes']]
+    [patch.set(alpha=0.6) for patch in bp_wat['Water']['boxes']]
+    [patch.set(alpha=0.6) for patch in bp_gra['Grass']['boxes']]
 
     fig.suptitle('')
     ax.set_title('')
 
-    bld_patch = mpatches.Patch(color='#696969', label='Building')
-    imp_patch = mpatches.Patch(color='#BEBEBE', label='Impervious')
-    water_patch = mpatches.Patch(color='#00BFFF', label='Water')
-    grass_patch = mpatches.Patch(color='#7CFC00', label='Grass')
-    plt.legend(handles=[bld_patch, imp_patch, water_patch, grass_patch], framealpha=1)
+    bld_patch = mpatches.Patch(color='#696969', label='Building', alpha=0.6)
+    imp_patch = mpatches.Patch(color='#BEBEBE', label='Paved', alpha=0.6)
+    water_patch = mpatches.Patch(color='#00BFFF', label='Water', alpha=0.6)
+    grass_patch = mpatches.Patch(color='#7CFC00', label='Grass', alpha=0.6)
+
+    ukv_can = ax.scatter(ukv_df.index.hour - (ukv_df.index.hour[0] - 1), ukv_df.canyon * 100, marker='x', color='darkgrey', s=50)
+    ukv_roof = ax.scatter(ukv_df.index.hour - (ukv_df.index.hour[0] - 1), ukv_df.roof * 100, marker='x', color='dimgrey', s=50)
+    ukv_c3 = ax.scatter(ukv_df.index.hour - (ukv_df.index.hour[0] - 1), ukv_df.C3 * 100, marker='x', color='lawngreen', s=50)
+    ukv_lake = ax.scatter(ukv_df.index.hour - (ukv_df.index.hour[0] - 1), ukv_df.lake * 100, marker='x', color='deepskyblue', s=50)
+
+    # leg_obs = plt.legend(handles=[bld_patch, imp_patch, water_patch, grass_patch], framealpha=1, loc='center left', bbox_to_anchor=(1, 0.6), title="Obs")
+    # leg_mod = plt.legend([ukv_can, ukv_roof, ukv_c3, ukv_lake], ["Canyon", "Roof", "C3", "Lake"], framealpha=1 , loc='center left', bbox_to_anchor=(1, 0.4), title="UKV")
+    # plt.gca().add_artist(leg_obs)
+
+    # plt.legend(handles=[bld_patch, imp_patch, water_patch, grass_patch], framealpha=1)
+
+    ax.set_ylim(0, 60)
 
     # plt.show()
+
+    # to get median values for the boxplot
+    # ye = df_select.resample('60T', closed='left', label='right').median()
+    # ye = df_select.resample('60T', closed='left', label='right').quantile(0.75) - df_select.resample('60T', closed='left', label='right').quantile(0.25)
 
     plt.savefig('C:/Users/beths/Desktop/LANDING/mask_tests/boxplot.png', bbox_inches='tight')
 
     print('end')
 
     # """
-
-
-
 
     # stacked bar
     """
@@ -390,12 +422,10 @@ def lc_in_sa_stacked_bar(sas_df_in):
     """
 
 
-
 # CHOICES
 doy_choice = 126
 # av_period = 'hourly'
 av_period = '10_mins'
-
 
 save_path = 'C:/Users/beths/Desktop/LANDING/mask_tests/'
 csv_file_name = str(doy_choice) + '_' + av_period + '.csv'
@@ -404,8 +434,6 @@ csv_file_path = save_path + csv_file_name
 
 # check to see if the csv file exists
 if os.path.isfile(csv_file_path):
-
-
 
     sas_df = csv_file_path
 
@@ -422,8 +450,6 @@ else:
 
     # save the df as a csv
     sas_df.to_csv(save_path + csv_file_name)
-
-
 
 lc_in_sa_stacked_bar(sas_df)
 print('end')
