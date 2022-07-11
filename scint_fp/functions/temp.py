@@ -1,122 +1,7 @@
 import netCDF4 as nc
 import matplotlib.pyplot as plt
 import numpy as np
-import contextily as cx
-import rasterio.plot
-import numpy as np
-import matplotlib.pyplot as plt
-import glob
-import os
-import geopandas as gpd
-import matplotlib.colors as colors
-import matplotlib as mpl
-mpl.rcParams.update({'font.size': 15})  # updating the matplotlib fontsize
 
-# CHANGE HERE
-doy_choice = 123
-sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/123_1200_all_paths/'
-
-
-# deal with files
-file_list = []
-os.chdir(sa_dir)
-for file in glob.glob("*.tif"):
-    file_list.append(sa_dir + file)
-
-
-# colours ##############################################################################################################
-colour_list = [(1.0, 0.0, 0.0, 1.0), (0.0, 0.0, 1.0, 1.0), (0.13, 0.55, 0.13, 1.0), (1.0, 0.65, 0.0, 1.0), (1.0, 0.0, 1.0, 1.0)]
-
-
-# initalize plot #######################################################################################################
-raster0 = rasterio.open(file_list[0])
-fig, ax = plt.subplots(figsize=(10, 10))
-
-# plot lancover map
-# landcover_location = 'C:/Users/beths/OneDrive - University of Reading/Model_Eval/QGIS/BIG_MAP/BIG_MAP_CROP.tif'
-landcover_location = 'C:/Users/beths/OneDrive - University of Reading/Model_Eval/QGIS/Elliott/LandUseMM_7classes_32631.tif'
-landcover_raster = rasterio.open(landcover_location)
-
-color_list_lc = ["white", "dimgrey", "lightgrey", "deepskyblue", "lawngreen", "darkgreen", "limegreen", "olive"]
-# make a color map of fixed colors
-cmap_lc = colors.ListedColormap(color_list_lc)
-bounds_lc = [0, 1, 2, 3, 4, 5, 6, 7, 8]
-norm_lc = colors.BoundaryNorm(bounds_lc, cmap_lc.N)
-
-rasterio.plot.show(landcover_raster, ax=ax, cmap=cmap_lc, norm=norm_lc, interpolation='nearest', alpha=0.5)
-
-ax.set_xlim(278553.32064617483, 288213.50645262643)
-ax.set_ylim(5705765.4782133335, 5715078.469181076)
-
-
-# handle raster ########################################################################################################
-for i, filename in enumerate(file_list):
-    replc = filename.replace('.', '_')
-    splt = replc.split('_')
-    # time_string = splt[-3] + ':' + splt[-2]
-    time_string = splt[-5][-3:] + ' - ' + splt[-4]
-
-    raster = rasterio.open(filename)
-    raster_array = raster.read()
-
-    # make all 0 vals in array nan
-    raster_array[raster_array == 0.0] = np.nan
-
-    # force non-zero vals to be 1
-    bool_arr = np.ones(raster_array.shape)
-
-    # remove nans in bool array
-    nan_index = np.where(np.isnan(raster_array))
-    bool_arr[nan_index] = 0.0
-
-    # get location of max val
-    ind_max_2d = np.unravel_index(np.nanargmax(raster_array), raster_array.shape)[1:]
-    max_coords = raster.xy(ind_max_2d[0], ind_max_2d[1])
-
-    # make plot ########################################################################################################
-
-    colour_here = list(colour_list[i])
-
-    rasterio.plot.show(bool_arr, transform=raster.transform, contour=True, contour_label_kws={}, ax=ax,
-                       colors=[colour_here])
-    ax.scatter(max_coords[0], max_coords[1], color=colour_here, marker='o', s=30, label=time_string)
-
-# plot paths
-df = gpd.read_file('C:/Users/beths/Desktop/LANDING/scint_path_shp/BCT_IMU.shp')
-df.plot(edgecolor='red', ax=ax, linewidth=4.0, linestyle='--')
-
-df = gpd.read_file('C:/Users/beths/Desktop/LANDING/scint_path_shp/BTT_BCT.shp')
-df.plot(edgecolor='blue', ax=ax, linewidth=4.0, linestyle='--')
-
-df = gpd.read_file('C:/Users/beths/Desktop/LANDING/scint_path_shp/IMU_BTT.shp')
-df.plot(edgecolor='forestgreen', ax=ax, linewidth=4.0, linestyle='--')
-
-df = gpd.read_file('C:/Users/beths/Desktop/LANDING/scint_path_shp/IMU_SWT.shp')
-df.plot(edgecolor='orange', ax=ax, linewidth=4.0, linestyle='--')
-
-df = gpd.read_file('C:/Users/beths/Desktop/LANDING/scint_path_shp/SCT_SWT.shp')
-df.plot(edgecolor='magenta', ax=ax, linewidth=4.0, linestyle='--')
-
-plt.legend(loc='upper left')
-
-plt.yticks(rotation=90)
-
-plt.title('DOY: ' + str(doy_choice) + ' 1200 UTC')
-
-# plt.savefig('C:/Users/beths/Desktop/LANDING/' + 'sa_lines_' + str(doy_choice) + '.png', bbox_inches='tight')
-plt.show()
-
-print('end')
-
-
-
-
-
-
-
-
-# looking at wind directions
-"""
 filepath240 = 'C:/Users/beths/Desktop/LANDING/New folder1/LASMkII_Fast_IMU_2016142_1min_wd_correction_240.nc'
 filepath250 = 'C:/Users/beths/Desktop/LANDING/New folder1/LASMkII_Fast_IMU_2016142_1min_wd_correction_250.nc'
 filepath260 = 'C:/Users/beths/Desktop/LANDING/New folder1/LASMkII_Fast_IMU_2016142_1min_wd_correction_260.nc'
@@ -195,6 +80,5 @@ plt.ylabel('QH')
 plt.plot(time, np.asarray(maxvals) - np.asarray(minvals), marker='.')
 plt.ylabel('qh diff')
 plt.xlabel('time')
-"""
 
 

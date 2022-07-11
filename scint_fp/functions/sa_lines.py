@@ -20,11 +20,8 @@ mpl.rcParams.update({'font.size': 15})  # updating the matplotlib fontsize
 # sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/123/hourly/'
 
 
-# doy_choice = 126
-# sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/' + str(doy_choice) + '/hourly/'
-
-doy_choice = 123
-sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/123_1200_all_paths/'
+doy_choice = 126
+sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/' + str(doy_choice) + '/hourly/'
 
 
 # sa_dir = 'C:/Users/beths/Desktop/New folder/SA/hourly/'
