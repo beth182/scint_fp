@@ -29,25 +29,25 @@ from scint_fp.functions import sa_creation_selecting
 
 # USER CHOICE
 
-doy_start = 2016123  # CHANGE HERE
-doy_end = 2016123
+doy_start = 2016176 # CHANGE HERE
+doy_end = 2016176
 # average_period = 10
 average_period = 60
 
 # define site where the radiation data comes from
 rad_site = 'KSSW'
 
-out_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/'
-# out_dir = 'test_outputs/wd_corrected/'
+# out_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/'
+out_dir = 'test_outputs/wd_corrected/'
 # out_dir = 'test_outputs/'
 
-bdsm_path = 'D:/Documents/large_rasters/clipped/10_m_resampled/resample_10_surface.tif'
-cdsm_path = 'D:/Documents/large_rasters/clipped/10_m_resampled/resample_10_veg.tif'
-dem_path = 'D:/Documents/large_rasters/clipped/10_m_resampled/resample_10_terrain.tif'
+# bdsm_path = 'D:/Documents/large_rasters/clipped/10_m_resampled/resample_10_surface.tif'
+# cdsm_path = 'D:/Documents/large_rasters/clipped/10_m_resampled/resample_10_veg.tif'
+# dem_path = 'D:/Documents/large_rasters/clipped/10_m_resampled/resample_10_terrain.tif'
 
-# bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif'
-# cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'
-# dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
+bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif'
+cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'
+dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
 
 # bdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_surface_4m.tif'
 # cdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_veg_4m.tif'
@@ -56,19 +56,24 @@ dem_path = 'D:/Documents/large_rasters/clipped/10_m_resampled/resample_10_terrai
 # main_dir_tier_raw = '/storage/basic/micromet/Tier_raw/'
 # main_dir_new_data_scint = '/storage/basic/micromet/Tier_processing/rv006011/new_data_scint/'
 
-# main_dir_tier_raw = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_raw/'
-# main_dir_new_data_scint = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/new_data_scint/'
+main_dir_tier_raw = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_raw/'
+main_dir_new_data_scint = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/new_data_scint/'
 
 
-main_dir_tier_raw = 'C:/Users/beths/Desktop/LANDING/data_wifi_problems/'
-main_dir_new_data_scint = 'C:/Users/beths/Desktop/LANDING/data_wifi_problems/'
+# main_dir_tier_raw = 'C:/Users/beths/Desktop/LANDING/data_wifi_problems/'
+# main_dir_new_data_scint = 'C:/Users/beths/Desktop/LANDING/data_wifi_problems/'
+
+pair_id = 'BCT_IMU'
 
 # SCINT PROPERTIES #####################################################################################################
 # construct path using scintools
-pair = sct.ScintillometerPair(x=[look_up.BCT_info['x'], look_up.IMU_info['x']],
-                              y=[look_up.BCT_info['y'], look_up.IMU_info['y']],
-                              z_asl=[look_up.BCT_info['z_asl'], look_up.IMU_info['z_asl']],
-                              pair_id='BCT_IMU',
+tr_string = pair_id.split('_')[0]
+rx_string = pair_id.split('_')[1]
+
+pair = sct.ScintillometerPair(x=[look_up.site_info[tr_string]['x'], look_up.site_info[rx_string]['x']],
+                              y=[look_up.site_info[tr_string]['y'], look_up.site_info[rx_string]['y']],
+                              z_asl=[look_up.site_info[tr_string]['z_asl'], look_up.site_info[rx_string]['z_asl']],
+                              pair_id=pair_id,
                               crs='epsg:32631')
 
 roughness_inputs = sct.RoughnessInputs()
@@ -114,7 +119,7 @@ scint_df = scint_methods.cn2_analogue_output(scint_df)
 
 # GET HEIGHTS ##########################################################################################################
 # plot transect
-path_transect = pair.path_transect(dsm_file=spatial_inputs.bdsm_path, dem_file=spatial_inputs.dem_path, point_res=10)
+path_transect = pair.path_transect(dsm_file=spatial_inputs.bdsm_path, point_res=10)
 
 # get effective beam height
 z_fb = path_transect.effective_beam_height()
