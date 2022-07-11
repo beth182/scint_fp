@@ -1,14 +1,16 @@
 library(terra)
 
 
-out_dir = "D:/Documents/large_rasters/clipped/"
+# out_dir = "D:/Documents/large_rasters/clipped/"
+out_dir = "C:/Users/beths/Desktop/LANDING/"
 # original_raster_path = "D:/Documents/large_rasters/clipped/height_surface.tif"
-original_raster_path = "D:/Documents/large_rasters/clipped/height_veg.tif"
+# original_raster_path = "D:/Documents/large_rasters/clipped/height_veg.tif"
 # original_raster_path = "D:/Documents/large_rasters/clipped/height_terrain.tif"
+original_raster_path = "D:/Documents/Berlin_maps/DSM/DSM_WGS84UTM33N.tif"
 
 original_raster <- lapply(original_raster_path, rast)[[1]]
 
-fact <- 2.5
+fact <- 4
 
 r_change_res <- rast(res = res(original_raster) * fact,
                   nrows = nrow(original_raster) * fact,
@@ -22,3 +24,4 @@ r_resample <- terra::resample(original_raster, r_change_res)
 oFilename <- paste0(out_dir, "resample.tif")
 writeRaster(r_resample, oFilename, wopt = list(gdal = c("COMPRESS=LZW")),
               overwrite = TRUE)
+
