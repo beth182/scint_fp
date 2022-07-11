@@ -10,17 +10,17 @@ print(csv_name)
 
 # CHANGE HERE
 # LOCAL
-out_dir = 'test_outputs/wd_corrected/'
-bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif'
-cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'
-dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
+# out_dir = 'test_outputs/wd_corrected/'
+# bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif'
+# cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'
+# dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
 
 # CHANGE HERE
 # CLUSTER
-# out_dir = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintillometer_footprints/scint_fp/test_outputs/'
-# bdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_surface_4m.tif'
-# cdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_veg_4m.tif'
-# dem_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_terrain_4m.tif'
+out_dir = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintillometer_footprints/scint_fp/test_outputs/'
+bdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_surface_4m.tif'
+cdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_veg_4m.tif'
+dem_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_terrain_4m.tif'
 
 pair_id = 'BCT_IMU'
 # construct path using scintools
@@ -94,6 +94,7 @@ def create_footprints(pair, roughness_inputs, spatial_inputs, path_params,
         fp_path.footprint[fp_path.footprint == 0.0] = np.nan
 
         string_to_save = str(pair.pair_id) + '_' + str(spatial_inputs.domain_size) + '_' + title_string
+        # CHANGE HERE
         file_out = out_dir + 'hourly/' + string_to_save + '.tif'
         fp_path.save(out_dir + 'hourly/' + string_to_save)
         fp_path.save_tiff(file_out)
