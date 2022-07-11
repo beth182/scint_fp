@@ -5,24 +5,32 @@ import numpy as np
 
 from scint_flux import look_up
 
-# out_dir = 'test_outputs/'
-out_dir = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintillometer_footprints/scint_fp/test_outputs/'
-
-csv_name = 'met_inputs_minutes_123_error.csv'  # CHANGE HERE
+csv_name = 'met_inputs_hourly_176.csv'  # CHANGE HERE
 print(csv_name)
 
-# bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif'
-# cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'
-# dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
+# CHANGE HERE
+# LOCAL
+out_dir = 'test_outputs/wd_corrected/'
+bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif'
+cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'
+dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
 
-bdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_surface_4m.tif'
-cdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_veg_4m.tif'
-dem_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_terrain_4m.tif'
+# CHANGE HERE
+# CLUSTER
+# out_dir = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintillometer_footprints/scint_fp/test_outputs/'
+# bdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_surface_4m.tif'
+# cdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_veg_4m.tif'
+# dem_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_terrain_4m.tif'
 
-pair = sct.ScintillometerPair(x=[look_up.BCT_info['x'], look_up.IMU_info['x']],
-                              y=[look_up.BCT_info['y'], look_up.IMU_info['y']],
-                              z_asl=[look_up.BCT_info['z_asl'], look_up.IMU_info['z_asl']],
-                              pair_id='BCT_IMU',
+pair_id = 'BCT_IMU'
+# construct path using scintools
+tr_string = pair_id.split('_')[0]
+rx_string = pair_id.split('_')[1]
+
+pair = sct.ScintillometerPair(x=[look_up.site_info[tr_string]['x'], look_up.site_info[rx_string]['x']],
+                              y=[look_up.site_info[tr_string]['y'], look_up.site_info[rx_string]['y']],
+                              z_asl=[look_up.site_info[tr_string]['z_asl'], look_up.site_info[rx_string]['z_asl']],
+                              pair_id=pair_id,
                               crs='epsg:32631')
 
 roughness_inputs = sct.RoughnessInputs()
@@ -74,10 +82,11 @@ def create_footprints(pair, roughness_inputs, spatial_inputs, path_params,
                                    wind_dir=wd
                                    )
 
-        fp_path = sct.run_footprintpath(scint_pair=pair,
+        fp_path = sct.run_pathfootprint(scint_pair=pair,
                                         met_inputs=met_inputs,
                                         roughness_inputs=roughness_inputs,
                                         path_params=path_params,
+                                        target_percentage=0.6,
                                         spatial_inputs=spatial_inputs)
 
         # ToDo: temp fix. Need to take out once fixed in scintools
