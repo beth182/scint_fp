@@ -29,10 +29,11 @@ from scint_fp.functions import sa_creation_selecting
 
 # USER CHOICE
 
-doy_start = 2016176 # CHANGE HERE
+doy_start = 2016176  # CHANGE HERE
 doy_end = 2016176
 # average_period = 10
 average_period = 60
+unstable_only = False
 
 # define site where the radiation data comes from
 rad_site = 'KSSW'
@@ -49,19 +50,18 @@ bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif
 cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'
 dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
 
+raw_scint_path = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_raw/'
+processed_wx_path = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/new_data_scint/'
+
+# raw_scint_path = 'C:/Users/beths/Desktop/LANDING/data_wifi_problems/'
+# processed_wx_path = 'C:/Users/beths/Desktop/LANDING/data_wifi_problems/'
+
 # bdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_surface_4m.tif'
 # cdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_veg_4m.tif'
 # dem_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_terrain_4m.tif'
 
-# main_dir_tier_raw = '/storage/basic/micromet/Tier_raw/'
-# main_dir_new_data_scint = '/storage/basic/micromet/Tier_processing/rv006011/new_data_scint/'
-
-main_dir_tier_raw = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_raw/'
-main_dir_new_data_scint = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/new_data_scint/'
-
-
-# main_dir_tier_raw = 'C:/Users/beths/Desktop/LANDING/data_wifi_problems/'
-# main_dir_new_data_scint = 'C:/Users/beths/Desktop/LANDING/data_wifi_problems/'
+# raw_scint_path = '/storage/basic/micromet/Tier_raw/'
+# processed_wx_path = '/storage/basic/micromet/Tier_processing/rv006011/new_data_scint/'
 
 pair_id = 'BCT_IMU'
 
@@ -96,7 +96,7 @@ spatial_inputs = sct.SpatialInputs(
 # find raw scintillometer files
 raw_scint_files = find_files.find_files(doy_start=doy_start, doy_end=doy_end, site=pair.pair_id.split('_')[1],
                                         instrument='LASMkII_29', level='raw', time_res=None,
-                                        main_dir=main_dir_tier_raw)
+                                        main_dir=raw_scint_path)
 
 # create empty dataframe
 scint_df = pd.DataFrame({'u_cn2': [], 'demod': [], 'sig_u_cn2': [], 'n_samples': []})
@@ -141,7 +141,7 @@ df = get_roughness_params.calc_z_f(z_fb, scint_df)
 # find wx files
 wx_files = find_files.find_files(doy_start=doy_start, doy_end=doy_end, site=pair.pair_id.split('_')[0],
                                  instrument='Davis', level='L2', time_res='1min',
-                                 main_dir=main_dir_new_data_scint)
+                                 main_dir=processed_wx_path)
 
 # create new columns
 wx_df = pd.DataFrame({'wind_speed': [], 't_air': [], 'r_h': [], 'pressure': [], 'rain_rate': [], 'z_wx': []})
@@ -174,7 +174,7 @@ df = scint_methods.temperature_structure_parameter(df)
 # find radiation files
 rad_files = find_files.find_files(doy_start=doy_start, doy_end=doy_end, site=rad_site,
                                   instrument='CNR4', level='L0', time_res='5s',
-                                  main_dir=main_dir_tier_raw)
+                                  main_dir=raw_scint_path)
 
 # create empty dataframe
 rad_df = pd.DataFrame({'qstar': [], 'qstar_n_samples': []})
@@ -195,7 +195,8 @@ df = df.merge(rad_df, how='outer', left_index=True, right_index=True)
 df = rad_data.simple_method_qh(df)
 
 # adjust the wind speed at z met sensor to be at zf
-df = adj_ws.adjust_ws_iteratively(df=df, ws=df['wind_speed'], ustar_threshold=0.05, iteration_limit=100, neutral_limit=0.03)
+df = adj_ws.adjust_ws_iteratively(df=df, ws=df['wind_speed'], ustar_threshold=0.05, iteration_limit=100,
+                                  neutral_limit=0.03)
 
 # calculate the fluxes
 df = iterative_stability.andreas_flux_calc(df=df, ustar_threshold=0.05, neutral_limit=0.03)
@@ -211,7 +212,6 @@ df_av = time_average_sa_input.time_average_sa(df, average_period)
 av_comp = wx_u_v_components.u_v_to_ws_wd(df_av['u_component'], df_av['v_component'])
 df_av = pd.concat([df_av, av_comp], axis=1)
 
-
 # determine which times are made into source areas here:
 ########################################################################################################################
 # take 10-minute average values only ending on the hour
@@ -219,7 +219,9 @@ df_av = pd.concat([df_av, av_comp], axis=1)
 df_selection = df_av
 
 # find unstable times only
-df_selection = sa_creation_selecting.find_unstable_times(df_selection, neutral_limit=0.03)
+
+if unstable_only:
+    df_selection = sa_creation_selecting.find_unstable_times(df_selection, neutral_limit=0.03)
 
 # remove nan rows
 df_selection = sa_creation_selecting.remove_nan_rows(df_selection)
@@ -227,9 +229,16 @@ df_selection = sa_creation_selecting.remove_nan_rows(df_selection)
 ########################################################################################################################
 # save to csv
 if average_period == 10:
-    df_selection.to_csv(out_dir + 'met_inputs_minutes_' + str(doy_start)[-3:] + '.csv')
+    if unstable_only:
+        csv_out_string = 'met_inputs_minutes_'
+    else:
+        csv_out_string = 'met_inputs_minutes_all_stab_'
 elif average_period == 60:
-    df_selection.to_csv(out_dir + 'met_inputs_hourly_' + str(doy_start)[-3:] + '.csv')
+    if unstable_only:
+        csv_out_string = 'met_inputs_hourly_'
+    else:
+        csv_out_string = 'met_inputs_hourly_all_stab_'
+
+df_selection.to_csv(out_dir + csv_out_string + str(doy_start)[-3:] + '.csv')
 
 print('END')
-
