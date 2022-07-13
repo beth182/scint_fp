@@ -2,8 +2,10 @@
 
 # imports
 import pandas as pd
+import matplotlib.pyplot as plt
 
 from scint_flux import run_function
+from scint_flux.functions import plots
 
 from scint_fp.functions import wx_u_v_components
 from scint_fp.functions import time_average_sa_input
@@ -12,7 +14,7 @@ from scint_fp.functions import sa_creation_selecting
 # USER CHOICE
 
 # ToDo: be able to do more than one day
-doy = 2016176
+doy = 2017054
 
 # average_period = 10
 average_period = 60
@@ -55,6 +57,9 @@ df = run_function.main_QH_calcs(doy=doy,
                                 las_instrument_type='LASMkII_29',
                                 sa_path=False,
                                 write_file=False)
+
+
+# plots.plot_qh(df)
 
 # wind calculations
 component_df = wx_u_v_components.ws_wd_to_u_v(df['wind_speed_adj'], df['wind_direction_corrected'])
