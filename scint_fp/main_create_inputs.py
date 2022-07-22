@@ -14,57 +14,56 @@ from scint_fp.functions import time_average_sa_input
 from scint_fp.functions import sa_creation_selecting
 from scint_fp.functions import retrieve_var
 
-# USER CHOICE
-
-# ToDo: be able to do more than one day
-DOY_start = 2016267
-DOY_stop = 2016267
-
-average_period = 10
-# average_period = 60
-
-mins_ending_10 = True
-unstable_only = True
-
-pair_id = 'BCT_IMU'
-
-# define site where the radiation data comes from
-rad_site = 'KSSW'
-
-# out_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/'
-out_dir = 'test_outputs/wd_corrected/'
-# out_dir = 'test_outputs/'
-
-bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif'
-cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'
-dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
-
-raw_scint_path = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_raw/'
-processed_wx_path = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/new_data_scint/'
-# raw_scint_path = 'C:/Users/beths/Desktop/LANDING/data_wifi_problems/'
-# processed_wx_path = 'C:/Users/beths/Desktop/LANDING/data_wifi_problems/'
-
-# bdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_surface_4m.tif'
-# cdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_veg_4m.tif'
-# dem_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_terrain_4m.tif'
-# raw_scint_path = '/storage/basic/micromet/Tier_raw/'
-# processed_wx_path = '/storage/basic/micromet/Tier_processing/rv006011/new_data_scint/'
+# CHANGE HERE
+out_dir = 'test_outputs/'
 
 ########################################################################################################################
-
-start_dt = dt.datetime.strptime(str(DOY_start), '%Y%j')
-stop_dt = dt.datetime.strptime(str(DOY_stop), '%Y%j')
-
-delta = stop_dt - start_dt
-
-doy_list = []
-for i in range(delta.days + 1):
-    day = start_dt + dt.timedelta(days=i)
-    doy_list.append(day.strftime('%Y%j'))
+# days read in from csv
+csv_path = './DOY_in.csv'
+DOY_in_df = pd.read_csv(csv_path)
 
 df_list = []
 
-for doy in doy_list:
+for index, row in DOY_in_df.iterrows():
+
+    run_location = row.run_location
+    if run_location == 'cluster':
+        bdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_surface_4m.tif'
+        cdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_veg_4m.tif'
+        dem_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_terrain_4m.tif'
+        raw_scint_path = '/storage/basic/micromet/Tier_raw/'
+        processed_wx_path = '/storage/basic/micromet/Tier_processing/rv006011/new_data_scint/'
+    elif run_location == 'local':
+        bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif'
+        cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'
+        dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
+        raw_scint_path = 'C:/Users/beths/Desktop/LANDING/data_wifi_problems/'
+        processed_wx_path = 'C:/Users/beths/Desktop/LANDING/data_wifi_problems/'
+    elif run_location == 'mount':
+        bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif'
+        cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'
+        dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
+        raw_scint_path = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_raw/'
+        processed_wx_path = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/new_data_scint/'
+
+    doy = int(str(row.Year) + str(row.DOY))
+
+    average_period = row.average
+
+    if row.mins_ending_10 == 1:
+        mins_ending_10 = True
+    else:
+        mins_ending_10 = False
+
+    if row.unstable_only == 1:
+        unstable_only = True
+    else:
+        unstable_only = False
+
+    pair_id = row.pair
+
+    # define site where the radiation data comes from
+    rad_site = row.rad_site
 
     df = run_function.main_QH_calcs(doy=doy,
                                     pair_id=pair_id,
@@ -131,6 +130,8 @@ for doy in doy_list:
             csv_out_string = 'met_inputs_hourly_all_stab_'
 
     df_selection.to_csv(out_dir + csv_out_string + str(doy)[-3:] + '.csv')
+
+    print('end')
 
 # df_all = pd.concat(df_list)
 # plots.plot_qh(df_all)

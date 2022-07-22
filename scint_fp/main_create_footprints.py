@@ -1,12 +1,8 @@
-
 import pandas as pd
 import scintools as sct
 import numpy as np
 
 from scint_flux import look_up
-
-csv_name = 'met_inputs_hourly_176.csv'  # CHANGE HERE
-print(csv_name)
 
 # CHANGE HERE
 # LOCAL
@@ -15,12 +11,34 @@ print(csv_name)
 # cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'
 # dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
 
-# CHANGE HERE
 # CLUSTER
 out_dir = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintillometer_footprints/scint_fp/test_outputs/'
 bdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_surface_4m.tif'
 cdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_veg_4m.tif'
 dem_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_terrain_4m.tif'
+
+
+
+
+
+
+
+
+# read a csv with DOY inputs to run the SA model
+csv_path = './DOY_in.csv'
+DOY_in_df = pd.read_csv(csv_path)
+DOY_in_df['DOY_format'] = (DOY_in_df.Year.astype(str) + DOY_in_df.DOY.astype(str)).astype(int)
+doy_list = list(DOY_in_df['DOY_format'])
+
+df_list = []
+
+for doy in doy_list:
+
+
+    csv_name = 'met_inputs_hourly_176.csv'  # CHANGE HERE
+    print(csv_name)
+
+
 
 pair_id = 'BCT_IMU'
 # construct path using scintools
