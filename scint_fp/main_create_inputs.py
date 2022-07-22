@@ -12,17 +12,19 @@ from scint_flux.functions import benchmark
 from scint_fp.functions import wx_u_v_components
 from scint_fp.functions import time_average_sa_input
 from scint_fp.functions import sa_creation_selecting
+from scint_fp.functions import retrieve_var
 
 # USER CHOICE
 
 # ToDo: be able to do more than one day
-DOY_start = 2016176
-DOY_stop = 2016176
+DOY_start = 2016267
+DOY_stop = 2016267
 
-# average_period = 10
-average_period = 60
+average_period = 10
+# average_period = 60
 
-unstable_only = False
+mins_ending_10 = True
+unstable_only = True
 
 pair_id = 'BCT_IMU'
 
@@ -94,8 +96,6 @@ for doy in doy_list:
 
     # determine which times are made into source areas here:
     ########################################################################################################################
-    # take 10-minute average values only ending on the hour
-    # df_selection = retrieve_var.take_hourly_vars(df_av)
     df_selection = df_av
 
     # find unstable times only
@@ -106,27 +106,35 @@ for doy in doy_list:
     # remove nan rows
     df_selection = sa_creation_selecting.remove_nan_rows(df_selection)
 
+    if average_period == 10:
+        if mins_ending_10:
+            # only take the 10-min average SAs on the hour ending
+            df_selection = retrieve_var.take_hourly_vars(df_selection)
+
     ########################################################################################################################
     # save to csv
     if average_period == 10:
         if unstable_only:
-            csv_out_string = 'met_inputs_minutes_'
+            if mins_ending_10:
+                csv_out_string = 'met_inputs_minutes_ending_'
+            else:
+                csv_out_string = 'met_inputs_minutes_'
         else:
-            csv_out_string = 'met_inputs_minutes_all_stab_'
+            if mins_ending_10:
+                csv_out_string = 'met_inputs_minutes_all_stab_ending_'
+            else:
+                csv_out_string = 'met_inputs_minutes_all_stab_'
     elif average_period == 60:
         if unstable_only:
             csv_out_string = 'met_inputs_hourly_'
         else:
             csv_out_string = 'met_inputs_hourly_all_stab_'
 
-    # df_selection.to_csv(out_dir + csv_out_string + str(doy)[-3:] + '.csv')
+    df_selection.to_csv(out_dir + csv_out_string + str(doy)[-3:] + '.csv')
 
-df_all = pd.concat(df_list)
-
-plots.plot_qh(df_all)
-
-pair = run_function.construct_path(pair_id, bdsm_path, cdsm_path, dem_path)['pair']
-
-benchmark.test_l1_qh(df_all, DOY_start, DOY_stop, pair)
+# df_all = pd.concat(df_list)
+# plots.plot_qh(df_all)
+# pair = run_function.construct_path(pair_id, bdsm_path, cdsm_path, dem_path)['pair']
+# benchmark.test_l1_qh(df_all, DOY_start, DOY_stop, pair)
 
 print('END')
