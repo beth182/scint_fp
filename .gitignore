@@ -136,3 +136,4 @@ dmypy.json
 /example_data/
 /scint_fp/test_outputs/
 /plots/
+/scint_fp/DOY_in.csv
