@@ -1,2 +1,9 @@
 Year,DOY,average,mins_ending_10,unstable_only,pair,rad_site,run_location
-2016,267,10,1,1,BCT_IMU,KSSW,cluster
+2017,58,10,1,1,BCT_IMU,KSSW,mount
+2017,56,10,1,1,BCT_IMU,KSSW,mount
+2017,57,10,1,1,BCT_IMU,KSSW,mount
+2018,164,10,1,1,BCT_IMU,BTT,mount
+2018,121,10,1,1,BCT_IMU,BTT,mount
+2017,248,10,1,1,BCT_IMU,BTT,mount
+2017,253,10,1,1,BCT_IMU,BTT,mount
+2018,167,10,1,1,BCT_IMU,BTT,mount

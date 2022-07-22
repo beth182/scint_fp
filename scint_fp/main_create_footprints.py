@@ -65,7 +65,10 @@ df_list = []
 
 for index, row in DOY_in_df.iterrows():
 
-    doy = int(str(row.Year) + str(row.DOY))
+    # make sure DOY is padded with zeros
+    doy_string = str(row.DOY).zfill(3)
+
+    doy = int(str(row.Year) + doy_string)
 
     run_location = row.run_location
     if run_location == 'cluster':
