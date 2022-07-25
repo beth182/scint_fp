@@ -65,7 +65,10 @@ df_list = []
 
 for index, row in DOY_in_df.iterrows():
 
-    doy = int(str(row.Year) + str(row.DOY))
+    # make sure DOY is padded with zeros
+    doy_string = str(row.DOY).zfill(3)
+
+    doy = int(str(row.Year) + doy_string)
 
     run_location = row.run_location
     if run_location == 'cluster':
@@ -111,7 +114,7 @@ for index, row in DOY_in_df.iterrows():
         else:
             average_period_string = 'hourly_all_stab'
 
-    csv_name = 'met_inputs_' + average_period_string + '_' + str(doy)[4:] + '.csv'
+    csv_name = 'met_inputs_' + average_period_string + '_' + doy_string + '.csv'
 
     # construct out_dir based on inputs
     if average_period == 10:
