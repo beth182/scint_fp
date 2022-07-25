@@ -114,7 +114,7 @@ for index, row in DOY_in_df.iterrows():
         else:
             average_period_string = 'hourly_all_stab'
 
-    csv_name = 'met_inputs_' + average_period_string + '_' + str(doy)[4:] + '.csv'
+    csv_name = 'met_inputs_' + average_period_string + '_' + doy_string + '.csv'
 
     # construct out_dir based on inputs
     if average_period == 10:
