@@ -26,6 +26,9 @@ df_list = []
 
 for index, row in DOY_in_df.iterrows():
 
+    # define site where the radiation data comes from
+    rad_site = row.rad_site
+
     run_location = row.run_location
     if run_location == 'cluster':
         bdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_surface_4m.tif'
@@ -45,6 +48,11 @@ for index, row in DOY_in_df.iterrows():
         dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
         raw_scint_path = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_raw/'
         processed_wx_path = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/new_data_scint/'
+
+        if rad_site == 'KSSW':
+            rad_file_path = raw_scint_path
+        elif rad_site == 'BTT':
+            rad_file_path = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/scint_data_testing/'
 
     # make sure DOY is padded with zeros
     doy_string = str(row.DOY).zfill(3)
@@ -67,18 +75,17 @@ for index, row in DOY_in_df.iterrows():
 
     pair_id = row.pair
 
-    # define site where the radiation data comes from
-    rad_site = row.rad_site
-
     df = run_function.main_QH_calcs(doy=doy,
                                     pair_id=pair_id,
                                     sa_res=average_period,
                                     raw_scint_path=raw_scint_path,
                                     processed_wx_path=processed_wx_path,
+                                    rad_file_path=rad_file_path,
                                     bdsm_path=bdsm_path,
                                     cdsm_path=cdsm_path,
                                     dem_path=dem_path,
                                     las_instrument_type='LASMkII_29',
+                                    rad_site=rad_site,
                                     sa_path=False,
                                     write_file=False)
 

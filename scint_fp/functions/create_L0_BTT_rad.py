@@ -12,7 +12,7 @@ from scint_flux.functions import write_ncdf
 ########################################################################################################################
 # give a range of DOYs to run for
 DOY_start = 2017001
-DOY_stop = 2017366
+DOY_stop = 2017365
 
 site = 'BTT'
 
@@ -93,7 +93,7 @@ for DOYyear in DOY_list:
     df_resample = df.resample('1T', closed='right', label='right').mean()[:-1]
 
     # save as nc file
-    write_ncdf.write_file(df_resample, site, 'L0', '1min')
+    write_ncdf.write_file(df_resample, site, 'L0', '1min', instrument)
 
 print('end')
 
