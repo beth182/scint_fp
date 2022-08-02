@@ -138,3 +138,5 @@ dmypy.json
 /plots/
 /scint_fp/DOY_in.csv
 /scint_fp/DOY_in_LOG.csv
+/scint_fp/DOY_in_LOG.xlsx
+/scint_fp/~$DOY_in_LOG.xlsx
