@@ -141,8 +141,14 @@ for index, row in DOY_in_df.iterrows():
         else:
             csv_out_string = 'met_inputs_hourly_all_stab_'
 
+
+
+    # csv_name = csv_out_string + str(doy)[-3:] + '.csv'
+    csv_name = csv_out_string + pair_id + '_' + str(doy) + '.csv'
+
+    csv_save_path = out_dir + csv_name
+    df_selection.to_csv(csv_save_path)
     print('SAVED')
-    df_selection.to_csv(out_dir + csv_out_string + str(doy)[-3:] + '.csv')
 
 # df_all = pd.concat(df_list)
 # plots.plot_qh(df_all)
