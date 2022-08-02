@@ -86,6 +86,7 @@ for index, row in DOY_in_df.iterrows():
                                     dem_path=dem_path,
                                     las_instrument_type='LASMkII_29',
                                     rad_site=rad_site,
+                                    run_location=run_location,
                                     sa_path=False,
                                     write_file=False)
 
