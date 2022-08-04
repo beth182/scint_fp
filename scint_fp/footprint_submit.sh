@@ -9,7 +9,7 @@ SCRIPT=main_create_footprints.py
 
 cd $here
 
-module load python3/anaconda/5.1.0
+module load anaconda
 source activate rv006011
 
 python $SCRIPT > $SCRIPT.log 2>$SCRIPT.2.log
