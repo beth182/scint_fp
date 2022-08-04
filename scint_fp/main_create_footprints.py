@@ -87,6 +87,8 @@ for index, row in DOY_in_df.iterrows():
 
     average_period = row.average
 
+    pair_id = row.pair
+
     if row.mins_ending_10 == 1:
         mins_ending_10 = True
     else:
