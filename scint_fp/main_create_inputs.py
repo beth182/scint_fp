@@ -50,10 +50,10 @@ for index, row in DOY_in_df.iterrows():
         raw_scint_path = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_raw/'
         processed_wx_path = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/new_data_scint/'
 
-        if rad_site == 'KSSW':
-            rad_file_path = raw_scint_path
-        elif rad_site == 'BTT':
-            rad_file_path = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/scint_data_testing/'
+    if rad_site == 'KSSW':
+        rad_file_path = raw_scint_path
+    elif rad_site == 'BTT':
+        rad_file_path = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/scint_data_testing/'
 
     # make sure DOY is padded with zeros
     doy_string = str(row.DOY).zfill(3)
