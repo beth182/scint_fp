@@ -8,6 +8,7 @@ import datetime as dt
 from scint_flux import run_function
 from scint_flux.functions import plots
 from scint_flux.functions import benchmark
+from scint_flux import look_up
 
 from scint_fp.functions import wx_u_v_components
 from scint_fp.functions import time_average_sa_input
@@ -75,6 +76,8 @@ for index, row in DOY_in_df.iterrows():
 
     pair_id = row.pair
 
+    las_instrument_type = look_up.pair_instruments[pair_id]
+
     df = run_function.main_QH_calcs(doy=doy,
                                     pair_id=pair_id,
                                     sa_res=average_period,
@@ -84,7 +87,7 @@ for index, row in DOY_in_df.iterrows():
                                     bdsm_path=bdsm_path,
                                     cdsm_path=cdsm_path,
                                     dem_path=dem_path,
-                                    las_instrument_type='LASMkII_29',
+                                    las_instrument_type=las_instrument_type,
                                     rad_site=rad_site,
                                     run_location=run_location,
                                     sa_path=False,
