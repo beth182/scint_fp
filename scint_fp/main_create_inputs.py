@@ -54,7 +54,10 @@ for index, row in DOY_in_df.iterrows():
     if rad_site == 'KSSW':
         rad_file_path = raw_scint_path
     elif rad_site == 'BTT':
-        rad_file_path = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/scint_data_testing/'
+        if run_location == 'mount':
+            rad_file_path = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/scint_data_testing/'
+        elif run_location == 'cluster':
+            rad_file_path = '/storage/basic/micromet/Tier_processing/rv006011/scint_data_testing/'
 
     # make sure DOY is padded with zeros
     doy_string = str(row.DOY).zfill(3)
