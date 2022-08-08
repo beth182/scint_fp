@@ -4,6 +4,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import datetime as dt
+import os
 
 from scint_flux import run_function
 from scint_flux.functions import plots
@@ -16,7 +17,7 @@ from scint_fp.functions import sa_creation_selecting
 from scint_fp.functions import retrieve_var
 
 # CHANGE HERE
-out_dir = 'test_outputs/'
+out_dir_base = 'test_outputs/'
 
 ########################################################################################################################
 # days read in from csv
@@ -145,10 +146,23 @@ for index, row in DOY_in_df.iterrows():
         else:
             csv_out_string = 'met_inputs_hourly_all_stab_'
 
-
-
     # csv_name = csv_out_string + str(doy)[-3:] + '.csv'
     csv_name = csv_out_string + pair_id + '_' + str(doy) + '.csv'
+
+    # construct out_dir based on inputs
+    if average_period == 10:
+        if mins_ending_10:
+            out_string = '10_mins_ending'
+        else:
+            out_string = '10_mins'
+    elif average_period == 60:
+        out_string = 'hourly'
+
+    out_dir = out_dir_base + out_string + '/' + str(doy) + '/'
+
+    # see if directory exists
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
 
     csv_save_path = out_dir + csv_name
     df_selection.to_csv(csv_save_path)
