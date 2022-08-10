@@ -20,8 +20,9 @@ mpl.rcParams.update({'font.size': 15})  # updating the matplotlib fontsize
 # sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/123/hourly/'
 
 
-doy_choice = 126
-sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/' + str(doy_choice) + '/hourly/'
+doy_choice = 103
+# sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/' + str(doy_choice) + '/hourly/'
+sa_dir = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintillometer_footprints/scint_fp/test_outputs/10_mins_ending/2016103/'
 
 
 # sa_dir = 'C:/Users/beths/Desktop/New folder/SA/hourly/'
