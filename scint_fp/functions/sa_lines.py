@@ -7,142 +7,152 @@ import os
 import geopandas as gpd
 import matplotlib.colors as colors
 import matplotlib as mpl
+
 mpl.rcParams.update({'font.size': 15})  # updating the matplotlib fontsize
 
-# CHANGE HERE
-# sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/111/10_mins/'
-# sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/142/10_mins/'
-# sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/142/hourly/'
-# sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/111/hourly/'
-# sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/118/hourly/'
-# sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/118/10_mins/'
-# sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/demonstration_figure/point_fp/'
-# sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/123/hourly/'
 
-
-doy_choice = 103
-# sa_dir = 'C:/Users/beths/Desktop/LANDING/fp_output/' + str(doy_choice) + '/hourly/'
-sa_dir = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintillometer_footprints/scint_fp/test_outputs/10_mins_ending/2016103/'
-
-
-# sa_dir = 'C:/Users/beths/Desktop/New folder/SA/hourly/'
-# sa_dir = 'C:/Users/beths/Desktop/LANDING/New folder1/'
-
-# deal with files
-file_list = []
-os.chdir(sa_dir)
-for file in glob.glob("*.tif"):
-    file_list.append(sa_dir + file)
-
-# file_list = ['C:/Users/beths/Desktop/LANDING/fp_output/111/10_mins/BCT_IMU_15000_2016_111_11_00.tif',
-#              'C:/Users/beths/Desktop/LANDING/fp_output/111/10_mins/BCT_IMU_15000_2016_111_11_10.tif']
-
-# colours ##############################################################################################################
-cmap = plt.cm.inferno  # define the colormap
-# extract all colors from the .jet map
-cmaplist = [cmap(i) for i in range(cmap.N)]
-
-list_len = len(file_list)
-
-colour_len = len(cmaplist)
-
-colour_intervals = int(colour_len / list_len)
-
-colour_list = []
-
-count = 0
-for i in file_list:
-    color_choice = cmaplist[count]
-    colour_list.append(color_choice)
-    count += colour_intervals
-
-# initalize plot #######################################################################################################
-raster0 = rasterio.open(file_list[0])
-fig, ax = plt.subplots(figsize=(10, 10))
-
-# plot lancover map
-# landcover_location = 'C:/Users/beths/OneDrive - University of Reading/Model_Eval/QGIS/BIG_MAP/BIG_MAP_CROP.tif'
-landcover_location = 'C:/Users/beths/OneDrive - University of Reading/Model_Eval/QGIS/Elliott/LandUseMM_7classes_32631.tif'
-landcover_raster = rasterio.open(landcover_location)
-
-color_list_lc = ["white", "dimgrey", "lightgrey", "deepskyblue", "lawngreen", "darkgreen", "limegreen", "olive"]
-# make a color map of fixed colors
-cmap_lc = colors.ListedColormap(color_list_lc)
-bounds_lc = [0, 1, 2, 3, 4, 5, 6, 7, 8]
-norm_lc = colors.BoundaryNorm(bounds_lc, cmap_lc.N)
-
-rasterio.plot.show(landcover_raster, ax=ax, cmap=cmap_lc, norm=norm_lc, interpolation='nearest', alpha=0.5)
-
-# old method w/ basemap instead of land cover fractions:
-# first plot an intial inzis raster to set extent, then add a basemap
-# plot initial raster
-# rasterio.plot.show(raster0, ax=ax, alpha=0.0)
-# cx.add_basemap(ax, crs=raster0.crs, alpha=0.5)
-
-# limits which stay constant between and which suit both day's SAs
-
-ax.set_xlim(279685.28503960633, 289345.4708460579)
-ax.set_ylim(5707118.9139011325, 5716431.904868875)
-
-# ax.set_xlim(279685.28503960633, 289345.4708460579)
-# ax.set_ylim(5710118.9139011325, 5719431.904868875)  # CHANGE HERE
-
-
-# handle raster ########################################################################################################
-for i, filename in enumerate(file_list):
-    replc = filename.replace('.', '_')
-    splt = replc.split('_')
-    time_string = splt[-3] + ':' + splt[-2]
-
-    raster = rasterio.open(filename)
-    raster_array = raster.read()
-
-    # make all 0 vals in array nan
-    raster_array[raster_array == 0.0] = np.nan
-
-    # force non-zero vals to be 1
-    bool_arr = np.ones(raster_array.shape)
-
-    # remove nans in bool array
-    nan_index = np.where(np.isnan(raster_array))
-    bool_arr[nan_index] = 0.0
-
-    # get location of max val
-    ind_max_2d = np.unravel_index(np.nanargmax(raster_array), raster_array.shape)[1:]
-    max_coords = raster.xy(ind_max_2d[0], ind_max_2d[1])
-
-    # make plot ########################################################################################################
-
-    colour_here = list(colour_list[i])
-
-    rasterio.plot.show(bool_arr, transform=raster.transform, contour=True, contour_label_kws={}, ax=ax,
-                       colors=[colour_here])
-    ax.scatter(max_coords[0], max_coords[1], color=colour_here, marker='o', s=30, label=time_string)
-
-# plot path
-df = gpd.read_file('C:/Users/beths/Desktop/LANDING/scint_path_shp/scint_path.shp')
-df.plot(edgecolor='green', ax=ax, linewidth=4.0)
-
-plt.legend(loc='upper left')
-# plt.legend(labels=[240,250,260,270,280])
-
-plt.yticks(rotation=90)
-
-plt.title('DOY: ' + str(doy_choice))
-
-plt.savefig('C:/Users/beths/Desktop/LANDING/' + 'sa_lines_' + str(doy_choice) + '.png', bbox_inches='tight')
-
-plt.show()
-
-print('end')
-
-
-# eventually want to define function here to do this
-def sa_lines(domain_size=15000,
-             tr_rx='BCT_IMU',
-             sa_dir='C:/Users/beths/Desktop/LANDING/fp_output/111/10_mins'):
+def plot_sa_lines(colour_list,
+                  landcover_raster_filepath='C:/Users/beths/OneDrive - University of Reading/Model_Eval/QGIS/Elliott/LandUseMM_7classes_32631.tif',
+                  given_list=True):
     """
-    Function to create a plot of sa's on a map - represented by a line at their furtherst extent (or set % cut off)
-        And a marker at the value of the highest weight
+
     :return:
     """
+
+    fig, ax = plt.subplots(figsize=(10, 10))
+
+    # plot the land cover map
+    landcover_raster = rasterio.open(landcover_raster_filepath)
+    color_list_lc = ["white", "dimgrey", "lightgrey", "deepskyblue", "lawngreen", "darkgreen", "limegreen", "olive"]
+    # make a color map of fixed colors
+    cmap_lc = colors.ListedColormap(color_list_lc)
+    bounds_lc = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+    norm_lc = colors.BoundaryNorm(bounds_lc, cmap_lc.N)
+    rasterio.plot.show(landcover_raster, ax=ax, cmap=cmap_lc, norm=norm_lc, interpolation='nearest', alpha=0.5)
+
+    # plot paths
+    df_12 = gpd.read_file('C:/Users/beths/Desktop/LANDING/scint_path_shp/BCT_IMU.shp')
+    df_12.plot(edgecolor='red', ax=ax, linewidth=3.0)
+
+    df_11 = gpd.read_file('C:/Users/beths/Desktop/LANDING/scint_path_shp/BTT_BCT.shp')
+    df_11.plot(edgecolor='blue', ax=ax, linewidth=3.0)
+
+    df_15 = gpd.read_file('C:/Users/beths/Desktop/LANDING/scint_path_shp/SCT_SWT.shp')
+    df_15.plot(edgecolor='green', ax=ax, linewidth=3.0)
+
+    # plot the SAs
+    for i, filename in enumerate(file_list):
+
+        if given_list:
+            # labels as filename without .tif
+            labels = filename.split('.')[0].split('/')[-1]
+
+        else:
+            # labels as time
+            replc = filename.replace('.', '_')
+            splt = replc.split('_')
+            labels = splt[-3] + ':' + splt[-2]
+
+        raster = rasterio.open(filename)
+        raster_array = raster.read()
+
+        # make all 0 vals in array nan
+        raster_array[raster_array == 0.0] = np.nan
+
+        # force non-zero vals to be 1
+        bool_arr = np.ones(raster_array.shape)
+
+        # remove nans in bool array
+        nan_index = np.where(np.isnan(raster_array))
+        bool_arr[nan_index] = 0.0
+
+        # get location of max val
+        ind_max_2d = np.unravel_index(np.nanargmax(raster_array), raster_array.shape)[1:]
+        max_coords = raster.xy(ind_max_2d[0], ind_max_2d[1])
+
+        # Plot the SA line
+
+        if type(colour_list[i]) == str:
+            colour_here = colour_list[i]
+        else:
+            colour_here = list(colour_list[i])
+
+        rasterio.plot.show(bool_arr, transform=raster.transform, contour=True, contour_label_kws={}, ax=ax,
+                           colors=[colour_here])
+        ax.scatter(max_coords[0], max_coords[1], color=colour_here, marker='o', s=30, label=labels)
+
+    plt.legend(loc='upper left')
+    plt.yticks(rotation=90)
+
+    # limits which stay constant between and which suit both day's SAs
+    # ax.set_xlim(279685.28503960633, 289345.4708460579)
+    # ax.set_ylim(5707118.9139011325, 5716431.904868875)
+
+    # plt.savefig('C:/Users/beths/Desktop/LANDING/' + 'sa_lines_' + str(doy_choice) + '.png', bbox_inches='tight')
+
+    plt.show()
+
+
+def find_SA_rasters(sa_main_dir='C:/Users/beths/Desktop/LANDING/',
+                    given_list=False,
+                    **kwargs):
+    """
+
+    :param given_list:
+    :param sa_file_source:
+    :return:
+    """
+    if given_list:
+        sa_file_source = kwargs['sa_file_source']
+
+        list_of_files = []
+        for sa_name in sa_file_source:
+            new_path = sa_main_dir + sa_name
+            list_of_files.append(new_path)
+
+    else:
+
+        # deal with files
+        list_of_files = []
+        os.chdir(sa_main_dir)
+        for file in glob.glob("*.tif"):
+            list_of_files.append(sa_main_dir + file)
+
+    return list_of_files
+
+
+def get_colours(cmap, file_list):
+    """
+
+    :param cmap:
+    :param file_list:
+    :return:
+    """
+    # extract all colors from the map
+    cmaplist = [cmap(i) for i in range(cmap.N)]
+
+    list_len = len(file_list)
+    colour_len = len(cmaplist)
+    colour_intervals = int(colour_len / list_len)
+
+    colour_list = []
+
+    count = 0
+    for i in file_list:
+        color_choice = cmaplist[count]
+        colour_list.append(color_choice)
+        count += colour_intervals
+
+    return colour_list
+
+
+file_list = find_SA_rasters(given_list=True, sa_main_dir='C:/Users/beths/Desktop/LANDING/',
+                            sa_file_source=['SCT_SWT_combine.tif', 'BTT_BCT_combine.tif',
+                                            'BCT_IMU_combine.tif'])
+
+# colour_list = get_colours(cmap=plt.cm.inferno, file_list=file_list)
+colour_list = ['green', 'blue', 'red']
+
+plot_sa_lines(colour_list=colour_list)
+
+print('end')
