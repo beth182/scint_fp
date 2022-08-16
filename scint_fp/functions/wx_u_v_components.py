@@ -52,7 +52,7 @@ def u_v_to_ws_wd(u_series, v_series):
 
 
 """
-# an example script - to prove giving ws & wd, converting to u & v, and then converting back - yeilds the same vals
+# an example script - to prove giving ws & wd, converting to u & v, and then converting back - yields the same vals
 # create arbitrary wind vals
 ws = [1., 5., 10., 5., 1.]
 wd = [100., 200., 100., 350., 50.]
@@ -72,40 +72,40 @@ assert ws_dir_con['wind_speed_convert'].all() == wind_df['ws'].all()
 assert ws_dir_con['wind_direction_convert'].all() == wind_df['wd'].all()
 """
 
-# currently unused - check time_average_sa_input for the sigv calculation
 
-# def std_v(df):
-#     """
-#     Calculates the standard deviation of the v component of wind
-#     Parameters
-#     ----------
-#     wind_components: dictionary for components of wind at 1 min
-#
-#     Returns
-#     -------
-#     Dictonary of on-the-hour standard deviation of v component of wind
-#     """
-#
-#     v_1min = df['v_component']
-#     time_1min = df.index
-#
-#     # group 1-min observation into groups of 60
-#     v_groups = [v_1min[i:i + 60] for i in range(0, len(v_1min), 60)]
-#
-#     time_groups = [time_1min[i:i + 60] for i in range(0, len(time_1min), 60)]
-#     time = []
-#     for group in time_groups:
-#         time.append(group[-1])
-#
-#     std_v_list = []
-#
-#     for sample in v_groups:
-#         std_v = np.std(sample)
-#         std_v_list.append(std_v)
-#
-#     sigv_dict = {'sigv': np.asarray(std_v_list), 'time': np.asarray(time)}
-#
-#     sigv_df = pd.DataFrame(sigv_dict)
-#     sigv_df = sigv_df.set_index('time')
-#
-#     return sigv_df
+def std_v(df):
+    """
+    Calculates the standard deviation of the v component of wind
+    currently unused - check time_average_sa_input for the sigv calculation
+    Parameters
+    ----------
+    wind_components: dictionary for components of wind at 1 min
+
+    Returns
+    -------
+    Dictonary of on-the-hour standard deviation of v component of wind
+    """
+
+    v_1min = df['v_component']
+    time_1min = df.index
+
+    # group 1-min observation into groups of 60
+    v_groups = [v_1min[i:i + 60] for i in range(0, len(v_1min), 60)]
+
+    time_groups = [time_1min[i:i + 60] for i in range(0, len(time_1min), 60)]
+    time = []
+    for group in time_groups:
+        time.append(group[-1])
+
+    std_v_list = []
+
+    for sample in v_groups:
+        std_v = np.std(sample)
+        std_v_list.append(std_v)
+
+    sigv_dict = {'sigv': np.asarray(std_v_list), 'time': np.asarray(time)}
+
+    sigv_df = pd.DataFrame(sigv_dict)
+    sigv_df = sigv_df.set_index('time')
+
+    return sigv_df
