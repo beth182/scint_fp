@@ -2,19 +2,15 @@ import pandas as pd
 import numpy as np
 import copy
 
-import tkinter
 import matplotlib
-import matplotlib.pyplot as plt
-from matplotlib.dates import DateFormatter
+
 matplotlib.use('TkAgg')
 
 from scint_flux.functions import iterative_stability
 from scint_flux.functions import wx_data
-from scint_flux import constants
 
 from scint_fp.functions import wx_u_v_components
-from scint_fp.functions import model_inputs
-from scint_fp.functions import time_average_sa_input
+from scint_fp.functions.inputs_from_model import model_inputs
 
 DOYstart_choice = 2016142  # CHANGE HERE
 DOYstop_choice = 2016142
@@ -36,8 +32,8 @@ target_model_level = 70
 
 # get the wind speed of the model
 mod_wind_time, mod_wind_vals, mod_wind_height = model_inputs.collect_model_inputs(DOYstart_choice, DOYstop_choice, '21Z', 'wind',
-                                                                        target_model_level, model_site,
-                                                                        model_grid_letter, path_number)
+                                                                                  target_model_level, model_site,
+                                                                                  model_grid_letter, path_number)
 mod_ws = mod_wind_vals['ws']
 mod_wd = mod_wind_vals['wd']
 
@@ -47,23 +43,23 @@ mod_wind_height_array = np.ones(len(mod_wind_time))*mod_wind_height
 
 # get model Tair
 mod_tair_time, mod_tair_vals, mod_tair_height = model_inputs.collect_model_inputs(DOYstart_choice, DOYstop_choice, '21Z', 'Tair',
-                                                                        target_model_level, model_site,
-                                                                        model_grid_letter, path_number)
+                                                                                  target_model_level, model_site,
+                                                                                  model_grid_letter, path_number)
 # construct array of length mod_tair_time full of tair heights
 mod_tair_height_array = np.ones(len(mod_tair_time))*mod_tair_height
 
 
 # get model pressure
 mod_press_time, mod_press_vals, mod_press_height = model_inputs.collect_model_inputs(DOYstart_choice, DOYstop_choice, '21Z', 'Press',
-                                                                        target_model_level, model_site,
-                                                                        model_grid_letter, path_number)
+                                                                                     target_model_level, model_site,
+                                                                                     model_grid_letter, path_number)
 # construct array of length mod_press_time full of tair heights
 mod_press_height_array = np.ones(len(mod_press_time))*mod_press_height
 
 # get model BL flux (QH)
 mod_BLflux_time, mod_BLflux_vals, mod_BLflux_height = model_inputs.collect_model_inputs(DOYstart_choice, DOYstop_choice, '21Z', 'BL_H',
-                                                                        target_model_level, model_site,
-                                                                        model_grid_letter, path_number)
+                                                                                        target_model_level, model_site,
+                                                                                        model_grid_letter, path_number)
 # construct array of length mod_BLflux_time full of tair heights
 mod_BLflux_height_array = np.ones(len(mod_BLflux_time))*mod_BLflux_height
 
