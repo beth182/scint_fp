@@ -12,8 +12,8 @@ outDir <- "D:/Documents/large_rasters/clipped/"
 
 #first file is master file - i.e. the crop for this is used for all
 #the left hand side is the new name, the right hand side is the current name
-files <- c("height_surface.tif" = "D:/Documents/large_rasters/DSM_GLA_1m_EPSG_32631.tif",
-           "height_veg_2.tif" = "D:/Documents/large_rasters/CDSM_GLA_1m_EPSG32631.tif",)
+files <- c("height_surface.tif" = "../../../../large_rasters/DSM_GLA_1m_EPSG_32631.tif",
+           "height_veg_2.tif" = "../../../../large_rasters/CDSM_GLA_1m_EPSG32631.tif",)
 
 #zoom in this number of  at each edge
 zoom_m <- 1500

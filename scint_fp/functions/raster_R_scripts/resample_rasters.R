@@ -3,7 +3,7 @@ library(terra)
 
 out_dir = "D:/Documents/large_rasters/clipped/"
 # original_raster_path = "D:/Documents/large_rasters/clipped/height_surface.tif"
-original_raster_path = "D:/Documents/large_rasters/clipped/height_veg.tif"
+original_raster_path = "../../../../large_rasters/clipped/height_veg.tif"
 # original_raster_path = "D:/Documents/large_rasters/clipped/height_terrain.tif"
 
 original_raster <- lapply(original_raster_path, rast)[[1]]
