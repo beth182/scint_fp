@@ -32,7 +32,7 @@ def reweight_fp(raster_array, path_id, target_percentage):
                        'IMU_BTT': 540.}
     raster_array_reweight = raster_array_copy / path_total_dict[path_id]
 
-    trim = trim_fp(raster_array_reweight[0,:,:], target_percentage)['fp_trim']
+    trim = trim_fp(raster_array_reweight[0, :, :], target_percentage)['fp_trim']
 
     return trim
 
@@ -67,6 +67,9 @@ def plot_sa_lines(file_list,
     df_15 = gpd.read_file('C:/Users/beths/Desktop/LANDING/scint_path_shp/SCT_SWT.shp')
     df_15.plot(edgecolor='green', ax=ax, linewidth=3.0)
 
+    df_13 = gpd.read_file('C:/Users/beths/Desktop/LANDING/scint_path_shp/IMU_BTT.shp')
+    df_13.plot(edgecolor='magenta', ax=ax, linewidth=3.0)
+
     left = []
     right = []
     top = []
@@ -93,7 +96,6 @@ def plot_sa_lines(file_list,
         bottom.append(raster.bounds.bottom)
 
         raster_array_untrimmed = raster.read()
-
 
         fp_40 = reweight_fp(raster_array_untrimmed, labels, 0.4)
         fp_50 = reweight_fp(raster_array_untrimmed, labels, 0.5)
@@ -127,15 +129,13 @@ def plot_sa_lines(file_list,
             else:
                 colour_here = list(colour_list[i])
 
-
             line_label = labels.split('_')[0] + ' ' + labels.split('_')[1]
 
-            rasterio.plot.show(bool_arr, transform=raster.transform, contour=True, contour_label_kws={}, ax=ax, colors=[colour_here], linestyles=[linestyle_dict[weight]])
+            rasterio.plot.show(bool_arr, transform=raster.transform, contour=True, contour_label_kws={}, ax=ax,
+                               colors=[colour_here], linestyles=[linestyle_dict[weight]])
 
             if weight == '60':
                 ax.scatter(max_coords[0], max_coords[1], color=colour_here, marker='o', s=30, label=line_label)
-
-
 
     handles, labels = ax.get_legend_handles_labels()
 
@@ -147,9 +147,8 @@ def plot_sa_lines(file_list,
     handles.append(line_50)
     handles.append(line_40)
 
-    plt.legend(handles=handles,loc='upper left')
+    plt.legend(handles=handles, loc='upper left')
     plt.yticks(rotation=90)
-
 
     # set limits according to raster
     left_bound = min(left)
@@ -222,14 +221,14 @@ def get_colours(cmap, file_list):
     return colour_list
 
 
-sa_file_source_list=['SCT_SWT.tif', 'BTT_BCT.tif','BCT_IMU.tif']
+sa_file_source_list = ['SCT_SWT.tif', 'BTT_BCT.tif', 'BCT_IMU.tif', 'IMU_BTT.tif']
 # sa_file_source_list=['BCT_IMU.tif']
 
 file_list_outside = find_SA_rasters(given_list=True, sa_main_dir='C:/Users/beths/Desktop/LANDING/combine_rasters/',
-                            sa_file_source=sa_file_source_list)
+                                    sa_file_source=sa_file_source_list)
 
 # colour_list = get_colours(cmap=plt.cm.inferno, file_list=file_list)
-colour_list = ['green', 'blue', 'red']
+colour_list = ['green', 'blue', 'red', 'magenta']
 
 plot_sa_lines(file_list=file_list_outside, colour_list=colour_list)
 
