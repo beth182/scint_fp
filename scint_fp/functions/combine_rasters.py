@@ -36,6 +36,7 @@ def combine_rasters(path_string,
     raster_array[np.isnan(raster_array)] = 0
 
     for i in range(1, len(file_list)):
+        print(file_list[i])
         raster_add = rasterio.open(file_list[i])
         raster_array_add = raster_add.read(1)
         raster_array_add[np.isnan(raster_array_add)] = 0
