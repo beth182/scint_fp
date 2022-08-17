@@ -28,7 +28,8 @@ def reweight_fp(raster_array, path_id, target_percentage):
     # dict of number of SAs present for each path
     path_total_dict = {'BCT_IMU': 1195.,
                        'SCT_SWT': 516.,
-                       'BTT_BCT': 617.}
+                       'BTT_BCT': 617.,
+                       'IMU_BTT': 540.}
     raster_array_reweight = raster_array_copy / path_total_dict[path_id]
 
     trim = trim_fp(raster_array_reweight[0,:,:], target_percentage)['fp_trim']
