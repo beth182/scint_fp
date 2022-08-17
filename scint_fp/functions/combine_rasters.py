@@ -9,8 +9,8 @@ from scint_fp.functions import landcover_type_present as lc
 
 
 def combine_rasters(path_string,
-                    main_dir='//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintillometer_footprints/scint_fp/test_outputs/10_mins_ending/',
-                    # main_dir='/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintillometer_footprints/scint_fp/test_outputs/10_mins_ending/'
+                    # main_dir='//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintillometer_footprints/scint_fp/test_outputs/10_mins_ending/',
+                    main_dir='/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintillometer_footprints/scint_fp/test_outputs/10_mins_ending/'
                     ):
     out_dir = './'
 
@@ -57,13 +57,14 @@ def combine_rasters(path_string,
 
 
 
-# combine_rasters('BTT_BCT')
+combine_rasters('IMU_BTT')
 
 print('end')
 
 
 
-
+# optional post-evaluation
+"""
 df_sa_columns = ['Building', 'Impervious', 'Water', 'Grass', 'Deciduous', 'Evergreen', 'Shrub']
 
 
@@ -134,6 +135,7 @@ ax.set_xlim(-.5, len(combine.index) - 0.5)
 
 plt.savefig('C:/Users/beths/Desktop/LANDING/mask_tests/output.png', bbox_inches='tight')
 # plt.show()
+"""
 
 
 print('end')
