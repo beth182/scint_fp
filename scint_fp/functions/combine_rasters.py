@@ -58,18 +58,33 @@ def combine_rasters(path_string,
 
 
 
-combine_rasters('IMU_BTT')
-
+# combine_rasters('IMU_BTT')
 print('end')
 
 
 
 # optional post-evaluation
-"""
+
 df_sa_columns = ['Building', 'Impervious', 'Water', 'Grass', 'Deciduous', 'Evergreen', 'Shrub']
 
 
-P15_file = 'C:/Users/beths/Desktop/LANDING/SCT_SWT_combine.tif'
+P13_file = 'C:/Users/beths/Desktop/LANDING/combine_rasters/IMU_BTT.tif'
+P13_sa_df = lc.landcover_fractions_in_SA_weighted(P13_file)
+
+P13_df_sa_data = [[P13_sa_df.loc[1]['sa_weight_percent'],
+                   P13_sa_df.loc[2]['sa_weight_percent'],
+                   P13_sa_df.loc[3]['sa_weight_percent'],
+                   P13_sa_df.loc[4]['sa_weight_percent'],
+                   P13_sa_df.loc[5]['sa_weight_percent'],
+                   P13_sa_df.loc[6]['sa_weight_percent'],
+                   P13_sa_df.loc[7]['sa_weight_percent']]]
+
+P13_sa_df = pd.DataFrame(P13_df_sa_data, columns=df_sa_columns)
+P13_sa_df.index = ['IMU_BTT']
+
+
+
+P15_file = 'C:/Users/beths/Desktop/LANDING/combine_rasters/SCT_SWT.tif'
 P15_sa_df = lc.landcover_fractions_in_SA_weighted(P15_file)
 
 P15_df_sa_data = [[P15_sa_df.loc[1]['sa_weight_percent'],
@@ -85,7 +100,7 @@ P15_sa_df.index = ['SCT_SWT']
 
 
 
-P11_file = 'C:/Users/beths/Desktop/LANDING/BTT_BCT_combine.tif'
+P11_file = 'C:/Users/beths/Desktop/LANDING/combine_rasters/BTT_BCT.tif'
 P11_sa_df = lc.landcover_fractions_in_SA_weighted(P11_file)
 
 P11_df_sa_data = [[P11_sa_df.loc[1]['sa_weight_percent'],
@@ -99,7 +114,7 @@ P11_df_sa_data = [[P11_sa_df.loc[1]['sa_weight_percent'],
 P11_sa_df = pd.DataFrame(P11_df_sa_data, columns=df_sa_columns)
 P11_sa_df.index = ['BTT_BCT']
 
-P12_file = 'C:/Users/beths/Desktop/LANDING/BCT_IMU_combine.tif'
+P12_file = 'C:/Users/beths/Desktop/LANDING/combine_rasters/BCT_IMU.tif'
 P12_sa_df = lc.landcover_fractions_in_SA_weighted(P12_file)
 
 
@@ -117,7 +132,7 @@ P12_sa_df.index = ['BCT_IMU']
 
 
 
-combine = pd.concat([P12_sa_df, P11_sa_df, P15_sa_df])
+combine = pd.concat([P13_sa_df, P12_sa_df, P11_sa_df, P15_sa_df])
 
 
 color_list = ["dimgrey", "lightgrey", "deepskyblue", "lawngreen", "darkgreen", "limegreen", "olive"]
@@ -136,7 +151,7 @@ ax.set_xlim(-.5, len(combine.index) - 0.5)
 
 plt.savefig('C:/Users/beths/Desktop/LANDING/mask_tests/output.png', bbox_inches='tight')
 # plt.show()
-"""
+
 
 
 print('end')
