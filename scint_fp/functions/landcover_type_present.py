@@ -328,6 +328,13 @@ def lc_in_sa_stacked_bar(sas_df_in):
     new_df = pd.DataFrame.from_dict(dict_for_df)
     new_df.index = sas_df.index
 
+    """
+    new_df['Built'] = new_df.Building + new_df.Impervious
+    new_df['rest'] = new_df.Grass + new_df.Water
+    new_df.Built.min()
+    new_df.rest.min()
+    """
+
     print('end')
 
     # Box plot
@@ -394,9 +401,14 @@ def lc_in_sa_stacked_bar(sas_df_in):
 
     # plt.show()
 
+    """
     # to get median values for the boxplot
-    # ye = df_select.resample('60T', closed='left', label='right').median()
+    ye = df_select.resample('60T', closed='left', label='right').median()
+    ye.min()
+    ye.max()
+    
     # ye = df_select.resample('60T', closed='left', label='right').quantile(0.75) - df_select.resample('60T', closed='left', label='right').quantile(0.25)
+    """
 
     plt.savefig('C:/Users/beths/Desktop/LANDING/mask_tests/boxplot.png', bbox_inches='tight')
 
@@ -431,9 +443,9 @@ def lc_in_sa_stacked_bar(sas_df_in):
     print('end')
     """
 
-"""
+# """
 # CHOICES
-doy_choice = 126
+doy_choice = 123
 # av_period = 'hourly'
 av_period = '10_mins'
 
@@ -463,4 +475,4 @@ else:
 
 lc_in_sa_stacked_bar(sas_df)
 print('end')
-"""
+# """
