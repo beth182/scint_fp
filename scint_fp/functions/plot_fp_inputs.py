@@ -99,7 +99,48 @@ def plot_footprint_model_inputs(nc_file_path_123, csv_file_path_123,
 
     df = pd.concat([df_123, df_126], axis=1)
 
+
+    """
+    # Getting unstable hours
+    temp_123 = df_123.dropna()
+    temp_126 = df_126.dropna()
+    print(temp_123)
+    print(temp_126)
+    # read off first and last time 
+    # Cloudy: 0530 – 1840
+    # Clear: 0530 - 1830
+    """
+
     resample_df = df.resample('10T', closed='right', label='right').median()
+
+    """
+    # Getting intensity of instability
+    resample_df['stab_param_126'].max()  # -0.69
+    resample_df['stab_param_126'].min()  # -35.12
+    
+    resample_df['stab_param_123'].max()  # -0.10
+    resample_df['stab_param_123'].min()  # -1.18
+    """
+
+    """
+    # Getting magnitude of friction velocity
+    resample_df['ustar_126'].max()  # 0.56
+    resample_df['ustar_123'].max()  # 0.93
+    """
+
+    """
+    # Getting SIG V
+    resample_df['sig_v_126'].max()  # 2.36
+    resample_df['sig_v_126'].min()  # 0.20
+    
+    resample_df['sig_v_123'].max()  # 1.90
+    resample_df['sig_v_123'].min()  # 0.36
+    
+    
+    
+    """
+
+
 
     # find first instance of nc file which isnt a nan
 
