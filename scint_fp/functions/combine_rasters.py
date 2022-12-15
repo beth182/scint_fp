@@ -67,8 +67,7 @@ print('end')
 
 df_sa_columns = ['Building', 'Impervious', 'Water', 'Grass', 'Deciduous', 'Evergreen', 'Shrub']
 
-
-P13_file = 'C:/Users/beths/Desktop/LANDING/combine_rasters/IMU_BTT.tif'
+P13_file = 'C:/Users/beths/OneDrive - University of Reading/Paper 2/combine_rasters/IMU_BTT.tif'
 P13_sa_df = lc.landcover_fractions_in_SA_weighted(P13_file)
 
 P13_df_sa_data = [[P13_sa_df.loc[1]['sa_weight_percent'],
@@ -84,7 +83,7 @@ P13_sa_df.index = ['IMU_BTT']
 
 
 
-P15_file = 'C:/Users/beths/Desktop/LANDING/combine_rasters/SCT_SWT.tif'
+P15_file = 'C:/Users/beths/OneDrive - University of Reading/Paper 2/combine_rasters/SCT_SWT.tif'
 P15_sa_df = lc.landcover_fractions_in_SA_weighted(P15_file)
 
 P15_df_sa_data = [[P15_sa_df.loc[1]['sa_weight_percent'],
@@ -100,7 +99,7 @@ P15_sa_df.index = ['SCT_SWT']
 
 
 
-P11_file = 'C:/Users/beths/Desktop/LANDING/combine_rasters/BTT_BCT.tif'
+P11_file = 'C:/Users/beths/OneDrive - University of Reading/Paper 2/combine_rasters/BTT_BCT.tif'
 P11_sa_df = lc.landcover_fractions_in_SA_weighted(P11_file)
 
 P11_df_sa_data = [[P11_sa_df.loc[1]['sa_weight_percent'],
@@ -114,7 +113,7 @@ P11_df_sa_data = [[P11_sa_df.loc[1]['sa_weight_percent'],
 P11_sa_df = pd.DataFrame(P11_df_sa_data, columns=df_sa_columns)
 P11_sa_df.index = ['BTT_BCT']
 
-P12_file = 'C:/Users/beths/Desktop/LANDING/combine_rasters/BCT_IMU.tif'
+P12_file = 'C:/Users/beths/OneDrive - University of Reading/Paper 2/combine_rasters/BCT_IMU.tif'
 P12_sa_df = lc.landcover_fractions_in_SA_weighted(P12_file)
 
 
@@ -148,8 +147,7 @@ ax.set_xlim(-.5, len(combine.index) - 0.5)
 
 
 
-
-plt.savefig('C:/Users/beths/Desktop/LANDING/mask_tests/output.png', bbox_inches='tight')
+plt.savefig('C:/Users/beths/OneDrive - University of Reading/Paper 1/mask_tests/output.png', bbox_inches='tight')
 # plt.show()
 
 

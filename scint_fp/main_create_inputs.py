@@ -42,8 +42,8 @@ for index, row in DOY_in_df.iterrows():
         bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif'
         cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'
         dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
-        raw_scint_path = 'C:/Users/beths/Desktop/LANDING/data_wifi_problems/'
-        processed_wx_path = 'C:/Users/beths/Desktop/LANDING/data_wifi_problems/'
+        raw_scint_path = 'C:/Users/beths/OneDrive - University of Reading/local_runs_data/data_wifi_problems/'
+        processed_wx_path = 'C:/Users/beths/OneDrive - University of Reading/local_runs_data/data_wifi_problems/'
     elif run_location == 'mount':
         bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif'
         cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'

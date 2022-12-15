@@ -228,10 +228,10 @@ def plot_footprint_model_inputs(nc_file_path_123, csv_file_path_123,
 # nc_filepath = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/scint_data_testing/data/2016/London/L1/IMU/DAY/111/LASMkII_Fast_IMU_2016111_1min_sa10min.nc'
 # footprint_csv_path = 'D:/Documents/scintillometer_footprints/scint_fp/test_outputs/met_inputs_minutes_111.csv'
 
-nc_filepath_123 = 'C:/Users/beths/Desktop/LANDING/data_wifi_problems/data/2016/London/L1/IMU/DAY/123/LASMkII_Fast_IMU_2016123_1min_sa10min.nc'
-footprint_csv_path_123 = 'C:/Users/beths/Desktop/LANDING/fp_output/met_inputs_minutes_123.csv'
+nc_filepath_123 = 'C:/Users/beths/OneDrive - University of Reading/local_runs_data/data_wifi_problems/data/2016/London/L1/IMU/DAY/123/LASMkII_Fast_IMU_2016123_1min_sa10min.nc'
+footprint_csv_path_123 = 'C:/Users/beths/OneDrive - University of Reading/local_runs_data/fp_output/met_inputs_minutes_123.csv'
 
-nc_filepath_126 = 'C:/Users/beths/Desktop/LANDING/data_wifi_problems/data/2016/London/L1/IMU/DAY/126/LASMkII_Fast_IMU_2016126_1min_sa10min.nc'
-footprint_csv_path_126 = 'C:/Users/beths/Desktop/LANDING/fp_output/met_inputs_minutes_126.csv'
+nc_filepath_126 = 'C:/Users/beths/OneDrive - University of Reading/local_runs_data/data_wifi_problems/data/2016/London/L1/IMU/DAY/126/LASMkII_Fast_IMU_2016126_1min_sa10min.nc'
+footprint_csv_path_126 = 'C:/Users/beths/OneDrive - University of Reading/local_runs_data/fp_output/met_inputs_minutes_126.csv'
 
 plot_footprint_model_inputs(nc_filepath_123, footprint_csv_path_123, nc_filepath_126, footprint_csv_path_126)

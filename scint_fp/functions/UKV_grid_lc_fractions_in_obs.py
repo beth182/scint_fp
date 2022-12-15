@@ -14,7 +14,7 @@ landcover_raster_filepath = 'C:/Users/beths/OneDrive - University of Reading/Mod
 landcover_raster = rasterio.open(landcover_raster_filepath)
 
 # read in the UKV grid geo-reference data for each grid
-gpkg_dir_path = 'C:/Users/beths/Desktop/LANDING/grid_gpkg_files/'
+gpkg_dir_path = 'C:/Users/beths/OneDrive - University of Reading/UKV_grid_objects/grid_gpkg_files/'
 
 grid_df_list = []
 
@@ -69,7 +69,7 @@ df = df.rename(
 df['Built'] = df.Roof + df.Canyon
 df['Vegetation'] = df.Grass + df.Deciduous + df.Evergreen + df.Shrub
 
-df.to_csv('C:/Users/beths/Desktop/LANDING/reference_data_lc_fractions_in_UKV_grids.csv')
+df.to_csv('C:/Users/beths/OneDrive - University of Reading/local_runs_data/reference_data_lc_fractions_in_UKV_grids.csv')
 
 print('end')
 

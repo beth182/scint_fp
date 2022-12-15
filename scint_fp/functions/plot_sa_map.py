@@ -12,7 +12,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 def plot_map(fp_raster,
              hour_string=None,
-             shpfile_dir='C:/Users/beths/Desktop/LANDING/UKV_shapefiles/'):
+             shpfile_dir='D:/Documents/scint_plots/scint_plots/sa_demonstration/UKV_shapefiles/'):
     """
     Function to produce plots of SAs and maps
     :param fp_raster: file path for raster containing source area
@@ -49,10 +49,10 @@ def plot_map(fp_raster,
     return plot
 
 # test
-# plot_map('C:/Users/beths/Desktop/LANDING/fp_raster_tests/hourly/BCT_IMU_65000_2016_142_12.tif', '12')
+# plot_map('C:/Users/beths/OneDrive - University of Reading/local_runs_data/fp_raster_tests/hourly/BCT_IMU_65000_2016_142_12.tif', '12')
 
 
-hourly_dir = 'C:/Users/beths/Desktop/LANDING/fp_raster_tests/hourly/'
+hourly_dir = 'C:/Users/beths/OneDrive - University of Reading/local_runs_data/fp_raster_tests/hourly/'
 partial_name = 'BCT_IMU_65000_2016_142_'
 
 # hours with source areas which fit in the UKV grids

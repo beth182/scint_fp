@@ -58,16 +58,16 @@ def plot_sa_lines(file_list,
     rasterio.plot.show(landcover_raster, ax=ax, cmap=cmap_lc, norm=norm_lc, interpolation='nearest', alpha=0.5)
 
     # plot paths
-    df_12 = gpd.read_file('C:/Users/beths/Desktop/LANDING/scint_path_shp/BCT_IMU.shp')
+    df_12 = gpd.read_file('D:/Documents/scint_plots/scint_plots/sa_position_and_lc_fraction/scint_path_shp/BCT_IMU.shp')
     df_12.plot(edgecolor='red', ax=ax, linewidth=3.0)
 
-    df_11 = gpd.read_file('C:/Users/beths/Desktop/LANDING/scint_path_shp/BTT_BCT.shp')
+    df_11 = gpd.read_file('D:/Documents/scint_plots/scint_plots/sa_position_and_lc_fraction/scint_path_shp/BTT_BCT.shp')
     df_11.plot(edgecolor='blue', ax=ax, linewidth=3.0)
 
-    df_15 = gpd.read_file('C:/Users/beths/Desktop/LANDING/scint_path_shp/SCT_SWT.shp')
+    df_15 = gpd.read_file('D:/Documents/scint_plots/scint_plots/sa_position_and_lc_fraction/scint_path_shp/SCT_SWT.shp')
     df_15.plot(edgecolor='green', ax=ax, linewidth=3.0)
 
-    df_13 = gpd.read_file('C:/Users/beths/Desktop/LANDING/scint_path_shp/IMU_BTT.shp')
+    df_13 = gpd.read_file('D:/Documents/scint_plots/scint_plots/sa_position_and_lc_fraction/scint_path_shp/IMU_BTT.shp')
     df_13.plot(edgecolor='magenta', ax=ax, linewidth=3.0)
 
     left = []
@@ -163,12 +163,12 @@ def plot_sa_lines(file_list,
     # ax.set_xlim(279685.28503960633, 289345.4708460579)
     # ax.set_ylim(5707118.9139011325, 5716431.904868875)
 
-    # plt.savefig('C:/Users/beths/Desktop/LANDING/' + 'sa_lines_' + str(doy_choice) + '.png', bbox_inches='tight')
+    # plt.savefig('C:/Users/beths/OneDrive - University of Reading/local_runs_data/' + 'sa_lines_' + str(doy_choice) + '.png', bbox_inches='tight')
 
     plt.show()
 
 
-def find_SA_rasters(sa_main_dir='C:/Users/beths/Desktop/LANDING/combine_rasters/',
+def find_SA_rasters(sa_main_dir='C:/Users/beths/OneDrive - University of Reading/Paper 2/combine_rasters/',
                     given_list=False,
                     **kwargs):
     """
@@ -224,7 +224,7 @@ def get_colours(cmap, file_list):
 sa_file_source_list = ['SCT_SWT.tif', 'BTT_BCT.tif', 'BCT_IMU.tif', 'IMU_BTT.tif']
 # sa_file_source_list=['BCT_IMU.tif']
 
-file_list_outside = find_SA_rasters(given_list=True, sa_main_dir='C:/Users/beths/Desktop/LANDING/combine_rasters/',
+file_list_outside = find_SA_rasters(given_list=True, sa_main_dir='C:/Users/beths/OneDrive - University of Reading/Paper 2/combine_rasters/',
                                     sa_file_source=sa_file_source_list)
 
 # colour_list = get_colours(cmap=plt.cm.inferno, file_list=file_list)
