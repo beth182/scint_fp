@@ -88,8 +88,6 @@ if __name__ == "__main__":
     csv_path = './DOY_in.csv'
     DOY_in_df = pd.read_csv(csv_path)
 
-    df_list = []
-
     for index, row in DOY_in_df.iterrows():
 
         # make sure DOY is padded with zeros
