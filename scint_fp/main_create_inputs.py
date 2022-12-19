@@ -153,7 +153,6 @@ for index, row in DOY_in_df.iterrows():
             csv_out_string = 'met_inputs_hourly_'
         else:
             csv_out_string = 'met_inputs_hourly_all_stab_'
-
     else:
         raise TypeError('average_period in given csv currently not an option.')
 
@@ -168,6 +167,8 @@ for index, row in DOY_in_df.iterrows():
             out_string = '10_mins'
     elif average_period == 60:
         out_string = 'hourly'
+    else:
+        raise TypeError('average_period in given csv currently not an option.')
 
     out_dir = out_dir_base + out_string + '/' + str(doy) + '/'
 
