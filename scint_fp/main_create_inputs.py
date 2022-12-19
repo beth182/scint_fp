@@ -6,13 +6,9 @@
 
 # imports
 import pandas as pd
-import matplotlib.pyplot as plt
-import datetime as dt
 import os
 
 from scint_flux import run_function
-from scint_flux.functions import plots
-from scint_flux.functions import benchmark
 from scint_flux import look_up
 
 from scint_fp.functions import wx_u_v_components
