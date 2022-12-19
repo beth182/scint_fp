@@ -1,5 +1,5 @@
 # Beth Saunders 01/06/21
-# script to produce maps of source area, model grid & building height's all in one figure
+# script to produce maps of source area, model grid & map all in one figure
 
 # imports
 import matplotlib.pyplot as plt
@@ -16,10 +16,10 @@ def plot_map(fp_raster,
     """
     Function to produce plots of SAs and maps
     :param fp_raster: file path for raster containing source area
+    :param hour_string: String representing the hour of the SA.
     :param shpfile_dir: Path to directory where UKV grid shape files are saved.
     :return:
     """
-    # ToDo: docstring
 
     raster = rasterio.open(fp_raster)
     fig, ax = plt.subplots(figsize=(10, 10))
@@ -48,41 +48,42 @@ def plot_map(fp_raster,
     plot = rasterio.plot.show(raster, ax=ax)
     return plot
 
-# test
-# plot_map('C:/Users/beths/OneDrive - University of Reading/local_runs_data/fp_raster_tests/hourly/BCT_IMU_65000_2016_142_12.tif', '12')
 
+if __name__ == '__main__':
+    # plotting one SA
+    """
+    plot_map('C:/Users/beths/OneDrive - University of Reading/local_runs_data/fp_raster_tests/hourly/BCT_IMU_65000_2016_142_12.tif', '12')
+    """
 
-hourly_dir = 'C:/Users/beths/OneDrive - University of Reading/local_runs_data/fp_raster_tests/hourly/'
-partial_name = 'BCT_IMU_65000_2016_142_'
-
-# hours with source areas which fit in the UKV grids
-hours = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
-# test hours
-# hours = [5, 12, 19]
-
-# empty list for rasters
-raster_paths = []
-hour_strings = []
-
-# get raster paths for every hour in list
-for hour in hours:
-    str_hour = str(hour)
-    if hour < 10:
-        hour_string = str_hour.zfill(2)
-    else:
-        hour_string = str_hour
-
-    raster_path = hourly_dir + partial_name + hour_string + '.tif'
-    raster_paths.append(raster_path)
-    hour_strings.append(hour_string)
-
-
-for i, raster in enumerate(raster_paths):
-
-    plot_map(raster, hour_string=hour_strings[i])
-    plt.savefig(hourly_dir+hour_strings[i] + '.png', bbox_inches='tight')
-
-
-
+    # plotting multiple
+    """
+    hourly_dir = 'C:/Users/beths/OneDrive - University of Reading/local_runs_data/fp_raster_tests/hourly/'
+    partial_name = 'BCT_IMU_65000_2016_142_'
+    
+    # hours with source areas which fit in the UKV grids
+    hours = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    # test hours
+    # hours = [5, 12, 19]
+    
+    # empty list for rasters
+    raster_paths = []
+    hour_strings = []
+    
+    # get raster paths for every hour in list
+    for hour in hours:
+        str_hour = str(hour)
+        if hour < 10:
+            hour_string = str_hour.zfill(2)
+        else:
+            hour_string = str_hour
+    
+        raster_path = hourly_dir + partial_name + hour_string + '.tif'
+        raster_paths.append(raster_path)
+        hour_strings.append(hour_string)
+    
+    for i, raster in enumerate(raster_paths):
+        plot_map(raster, hour_string=hour_strings[i])
+        plt.savefig(hourly_dir + hour_strings[i] + '.png', bbox_inches='tight')
+    """
 
 print('end')
