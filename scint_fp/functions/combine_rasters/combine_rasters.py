@@ -25,6 +25,7 @@ def combine_sa_rasters(path_string,
 
     out_dir = '../'
 
+    # reads in target days from a csv file
     csv_path = '../../DOY_in.csv'
     DOY_in_df = pd.read_csv(csv_path)
     DOY_in_df['doy_string'] = DOY_in_df.Year.astype(str) + DOY_in_df.DOY.astype(str).str.zfill(3)
@@ -32,20 +33,21 @@ def combine_sa_rasters(path_string,
 
     file_list = []
     for DOY in DOYlist:
-        # make filepath for the given day
+        # construct filepath for the given day
         DOYstring = str(DOY)
         current_dir = main_dir + DOYstring + '/'
 
-        # find all files for the current day and append to list
+        # find all the sa files (e.g. for each time period) for the current target day and append to list
         os.chdir(current_dir)
         for file in glob.glob("*" + path_string + "*.tif"):
             file_list.append(current_dir + file)
 
-    # take first raster
+    # take first raster separately for dimensions
     raster = rasterio.open(file_list[0])
     raster_array = raster.read(1)
     raster_array[np.isnan(raster_array)] = 0
 
+    # now for each raster (but not including the first, as this has already been read above
     for i in range(1, len(file_list)):
         print(file_list[i])
         raster_add = rasterio.open(file_list[i])
