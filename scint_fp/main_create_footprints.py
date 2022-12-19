@@ -81,115 +81,117 @@ def create_footprints(pair, roughness_inputs, spatial_inputs, path_params,
 # run the create footprints function for the selection of SAs to be made in the input csv
 if __name__ == "__main__":
 
+    # output directory
     out_dir_base = 'test_outputs/'
+
     # days read in from csv
     csv_path = './DOY_in.csv'
     DOY_in_df = pd.read_csv(csv_path)
 
-df_list = []
+    df_list = []
 
-for index, row in DOY_in_df.iterrows():
+    for index, row in DOY_in_df.iterrows():
 
-    # make sure DOY is padded with zeros
-    doy_string = str(row.DOY).zfill(3)
+        # make sure DOY is padded with zeros
+        doy_string = str(row.DOY).zfill(3)
 
-    doy = int(str(row.Year) + doy_string)
+        doy = int(str(row.Year) + doy_string)
 
-    run_location = row.run_location
-    if run_location == 'cluster':
-        bdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_surface_4m.tif'
-        cdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_veg_4m.tif'
-        dem_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_terrain_4m.tif'
-    elif run_location == 'local':
-        bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif'
-        cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'
-        dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
-    elif run_location == 'mount':
-        bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif'
-        cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'
-        dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
+        run_location = row.run_location
+        if run_location == 'cluster':
+            bdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_surface_4m.tif'
+            cdsm_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_veg_4m.tif'
+            dem_path = '/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintools/example_inputs/rasters/height_terrain_4m.tif'
+        elif run_location == 'local':
+            bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif'
+            cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'
+            dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
+        elif run_location == 'mount':
+            bdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_surface_4m.tif'
+            cdsm_path = 'D:/Documents/scintools/example_inputs/rasters/height_veg_4m.tif'
+            dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
 
-    average_period = row.average
+        average_period = row.average
 
-    pair_id = row.pair
+        pair_id = row.pair
 
-    if row.mins_ending_10 == 1:
-        mins_ending_10 = True
-    else:
-        mins_ending_10 = False
+        if row.mins_ending_10 == 1:
+            mins_ending_10 = True
+        else:
+            mins_ending_10 = False
 
-    if row.unstable_only == 1:
-        unstable_only = True
-    else:
-        unstable_only = False
+        if row.unstable_only == 1:
+            unstable_only = True
+        else:
+            unstable_only = False
 
-    # construct csv name based on imputs
-    if average_period == 10:
-        if unstable_only:
-            if mins_ending_10:
-                average_period_string = 'minutes_ending'
+        # construct csv name based on imputs
+        if average_period == 10:
+            if unstable_only:
+                if mins_ending_10:
+                    average_period_string = 'minutes_ending'
+                else:
+                    average_period_string = 'minutes'
             else:
-                average_period_string = 'minutes'
-        else:
-            if mins_ending_10:
-                average_period_string = 'minutes_all_stab_ending'
+                if mins_ending_10:
+                    average_period_string = 'minutes_all_stab_ending'
+                else:
+                    average_period_string = 'minutes_all_stab'
+        elif average_period == 60:
+            if unstable_only:
+                average_period_string = 'hourly'
             else:
-                average_period_string = 'minutes_all_stab'
-    elif average_period == 60:
-        if unstable_only:
-            average_period_string = 'hourly'
-        else:
-            average_period_string = 'hourly_all_stab'
+                average_period_string = 'hourly_all_stab'
 
-    # csv_name = 'met_inputs_' + average_period_string + '_' + doy_string + '.csv'
+        # csv_name = 'met_inputs_' + average_period_string + '_' + doy_string + '.csv'
 
-    csv_name = 'met_inputs_' + average_period_string + '_' + pair_id + '_' + str(doy) + '.csv'
+        csv_name = 'met_inputs_' + average_period_string + '_' + pair_id + '_' + str(doy) + '.csv'
 
-    # construct out_dir based on inputs
-    if average_period == 10:
-        if mins_ending_10:
-            out_string = '10_mins_ending'
-        else:
-            out_string = '10_mins'
-    elif average_period == 60:
-        out_string = 'hourly'
+        # construct out_dir based on inputs
+        if average_period == 10:
+            if mins_ending_10:
+                out_string = '10_mins_ending'
+            else:
+                out_string = '10_mins'
+        elif average_period == 60:
+            out_string = 'hourly'
 
-    out_dir = out_dir_base + out_string + '/' + str(doy) + '/'
+        out_dir = out_dir_base + out_string + '/' + str(doy) + '/'
 
-    pair_id = row.pair
-    # construct path using scintools
-    tr_string = pair_id.split('_')[0]
-    rx_string = pair_id.split('_')[1]
+        pair_id = row.pair
+        # construct path using scintools
+        tr_string = pair_id.split('_')[0]
+        rx_string = pair_id.split('_')[1]
 
-    pair = sct.ScintillometerPair(x=[look_up.site_info[tr_string]['x'], look_up.site_info[rx_string]['x']],
-                                  y=[look_up.site_info[tr_string]['y'], look_up.site_info[rx_string]['y']],
-                                  z_asl=[look_up.site_info[tr_string]['z_asl'], look_up.site_info[rx_string]['z_asl']],
-                                  pair_id=pair_id,
-                                  crs='epsg:32631')
+        pair = sct.ScintillometerPair(x=[look_up.site_info[tr_string]['x'], look_up.site_info[rx_string]['x']],
+                                      y=[look_up.site_info[tr_string]['y'], look_up.site_info[rx_string]['y']],
+                                      z_asl=[look_up.site_info[tr_string]['z_asl'], look_up.site_info[rx_string]['z_asl']],
+                                      pair_id=pair_id,
+                                      crs='epsg:32631')
 
-    roughness_inputs = sct.RoughnessInputs()
+        roughness_inputs = sct.RoughnessInputs()
 
-    spatial_inputs = sct.SpatialInputs(
-        domain_size=15000,
-        x=float(pair.path_center().x),
-        y=float(pair.path_center().y),
-        z_asl=pair.path_center_z(),
-        bdsm_path=bdsm_path,
-        cdsm_path=cdsm_path,
-        dem_path=dem_path)
+        spatial_inputs = sct.SpatialInputs(
+            domain_size=15000,
+            x=float(pair.path_center().x),
+            y=float(pair.path_center().y),
+            z_asl=pair.path_center_z(),
+            bdsm_path=bdsm_path,
+            cdsm_path=cdsm_path,
+            dem_path=dem_path)
 
-    point_res = 50
-    weightings = (100, 200)
-    path_params = {'point_res': point_res,
-                   'weightings': weightings}
+        point_res = 50
+        weightings = (100, 200)
+        path_params = {'point_res': point_res,
+                       'weightings': weightings}
 
-    # see if directory exists
-    if not os.path.exists(out_dir):
-        os.makedirs(out_dir)
+        # see if directory exists
+        if not os.path.exists(out_dir):
+            os.makedirs(out_dir)
 
-    create_footprints(pair, roughness_inputs, spatial_inputs, path_params,
-                      out_dir, csv_name)
+        create_footprints(pair, roughness_inputs, spatial_inputs, path_params,
+                          out_dir, csv_name)
 
-    print('END')
+        print('END')
 
-print('end')
+    print('end')
