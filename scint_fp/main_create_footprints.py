@@ -88,11 +88,11 @@ if __name__ == "__main__":
     csv_path = './DOY_in.csv'
     DOY_in_df = pd.read_csv(csv_path)
 
+    # loop over each entry in input csv
     for index, row in DOY_in_df.iterrows():
 
         # make sure DOY is padded with zeros
         doy_string = str(row.DOY).zfill(3)
-
         doy = int(str(row.Year) + doy_string)
 
         run_location = row.run_location
@@ -110,7 +110,6 @@ if __name__ == "__main__":
             dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
 
         average_period = row.average
-
         pair_id = row.pair
 
         if row.mins_ending_10 == 1:
@@ -123,7 +122,7 @@ if __name__ == "__main__":
         else:
             unstable_only = False
 
-        # construct csv name based on imputs
+        # construct csv name based on inputs
         if average_period == 10:
             if unstable_only:
                 if mins_ending_10:
@@ -142,7 +141,6 @@ if __name__ == "__main__":
                 average_period_string = 'hourly_all_stab'
 
         # csv_name = 'met_inputs_' + average_period_string + '_' + doy_string + '.csv'
-
         csv_name = 'met_inputs_' + average_period_string + '_' + pair_id + '_' + str(doy) + '.csv'
 
         # construct out_dir based on inputs
@@ -156,14 +154,13 @@ if __name__ == "__main__":
 
         out_dir = out_dir_base + out_string + '/' + str(doy) + '/'
 
-        pair_id = row.pair
         # construct path using scintools
         tr_string = pair_id.split('_')[0]
         rx_string = pair_id.split('_')[1]
-
         pair = sct.ScintillometerPair(x=[look_up.site_info[tr_string]['x'], look_up.site_info[rx_string]['x']],
                                       y=[look_up.site_info[tr_string]['y'], look_up.site_info[rx_string]['y']],
-                                      z_asl=[look_up.site_info[tr_string]['z_asl'], look_up.site_info[rx_string]['z_asl']],
+                                      z_asl=[look_up.site_info[tr_string]['z_asl'],
+                                             look_up.site_info[rx_string]['z_asl']],
                                       pair_id=pair_id,
                                       crs='epsg:32631')
 
