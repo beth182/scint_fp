@@ -180,9 +180,4 @@ for index, row in DOY_in_df.iterrows():
     df_selection.to_csv(csv_save_path)
     print('SAVED')
 
-# df_all = pd.concat(df_list)
-# plots.plot_qh(df_all)
-# pair = run_function.construct_path(pair_id, bdsm_path, cdsm_path, dem_path)['pair']
-# benchmark.test_l1_qh(df_all, DOY_start, DOY_stop, pair)
-
 print('END')
