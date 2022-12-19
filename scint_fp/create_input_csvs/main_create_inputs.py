@@ -14,7 +14,7 @@ from scint_flux import look_up
 from scint_fp.functions import wx_u_v_components
 from scint_fp.functions import time_average_sa_input
 from scint_fp.functions import sa_creation_selecting
-from scint_fp.functions import retrieve_var
+from scint_fp.create_input_csvs import vars_on_hour
 
 # CHANGE HERE
 out_dir_base = 'test_outputs/'
@@ -134,7 +134,7 @@ for index, row in DOY_in_df.iterrows():
     if average_period == 10:
         if mins_ending_10:
             # only take the 10-min average SAs on the hour ending
-            df_selection = retrieve_var.take_hourly_vars(df_selection)
+            df_selection = vars_on_hour.take_hourly_vars(df_selection)
 
     # save to csv
     if average_period == 10:
