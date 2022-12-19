@@ -237,4 +237,3 @@ def classify_stability(times,
                 stability_class.append(1)
 
     return stability_class
-
