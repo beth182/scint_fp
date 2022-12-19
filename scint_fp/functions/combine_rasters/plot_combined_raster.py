@@ -1,74 +1,84 @@
-# optional post-evaluation
+import matplotlib.pyplot as plt
+import pandas as pd
 
-df_sa_columns = ['Building', 'Impervious', 'Water', 'Grass', 'Deciduous', 'Evergreen', 'Shrub']
+from scint_fp.functions import landcover_type_present as lc
 
-P13_file = 'C:/Users/beths/OneDrive - University of Reading/Paper 2/combine_rasters/IMU_BTT.tif'
-P13_sa_df = lc.landcover_fractions_in_SA_weighted(P13_file)
 
-P13_df_sa_data = [[P13_sa_df.loc[1]['sa_weight_percent'],
-                   P13_sa_df.loc[2]['sa_weight_percent'],
-                   P13_sa_df.loc[3]['sa_weight_percent'],
-                   P13_sa_df.loc[4]['sa_weight_percent'],
-                   P13_sa_df.loc[5]['sa_weight_percent'],
-                   P13_sa_df.loc[6]['sa_weight_percent'],
-                   P13_sa_df.loc[7]['sa_weight_percent']]]
+def plot_combined_raster():
+    """
 
-P13_sa_df = pd.DataFrame(P13_df_sa_data, columns=df_sa_columns)
-P13_sa_df.index = ['IMU_BTT']
+    :return:
+    """
 
-P15_file = 'C:/Users/beths/OneDrive - University of Reading/Paper 2/combine_rasters/SCT_SWT.tif'
-P15_sa_df = lc.landcover_fractions_in_SA_weighted(P15_file)
+    df_sa_columns = ['Building', 'Impervious', 'Water', 'Grass', 'Deciduous', 'Evergreen', 'Shrub']
 
-P15_df_sa_data = [[P15_sa_df.loc[1]['sa_weight_percent'],
-                   P15_sa_df.loc[2]['sa_weight_percent'],
-                   P15_sa_df.loc[3]['sa_weight_percent'],
-                   P15_sa_df.loc[4]['sa_weight_percent'],
-                   P15_sa_df.loc[5]['sa_weight_percent'],
-                   P15_sa_df.loc[6]['sa_weight_percent'],
-                   P15_sa_df.loc[7]['sa_weight_percent']]]
+    P13_file = 'C:/Users/beths/OneDrive - University of Reading/Paper 2/combine_rasters/IMU_BTT.tif'
+    P13_sa_df = lc.landcover_fractions_in_SA_weighted(P13_file)
 
-P15_sa_df = pd.DataFrame(P15_df_sa_data, columns=df_sa_columns)
-P15_sa_df.index = ['SCT_SWT']
+    P13_df_sa_data = [[P13_sa_df.loc[1]['sa_weight_percent'],
+                       P13_sa_df.loc[2]['sa_weight_percent'],
+                       P13_sa_df.loc[3]['sa_weight_percent'],
+                       P13_sa_df.loc[4]['sa_weight_percent'],
+                       P13_sa_df.loc[5]['sa_weight_percent'],
+                       P13_sa_df.loc[6]['sa_weight_percent'],
+                       P13_sa_df.loc[7]['sa_weight_percent']]]
 
-P11_file = 'C:/Users/beths/OneDrive - University of Reading/Paper 2/combine_rasters/BTT_BCT.tif'
-P11_sa_df = lc.landcover_fractions_in_SA_weighted(P11_file)
+    P13_sa_df = pd.DataFrame(P13_df_sa_data, columns=df_sa_columns)
+    P13_sa_df.index = ['IMU_BTT']
 
-P11_df_sa_data = [[P11_sa_df.loc[1]['sa_weight_percent'],
-                   P11_sa_df.loc[2]['sa_weight_percent'],
-                   P11_sa_df.loc[3]['sa_weight_percent'],
-                   P11_sa_df.loc[4]['sa_weight_percent'],
-                   P11_sa_df.loc[5]['sa_weight_percent'],
-                   P11_sa_df.loc[6]['sa_weight_percent'],
-                   P11_sa_df.loc[7]['sa_weight_percent']]]
+    P15_file = 'C:/Users/beths/OneDrive - University of Reading/Paper 2/combine_rasters/SCT_SWT.tif'
+    P15_sa_df = lc.landcover_fractions_in_SA_weighted(P15_file)
 
-P11_sa_df = pd.DataFrame(P11_df_sa_data, columns=df_sa_columns)
-P11_sa_df.index = ['BTT_BCT']
+    P15_df_sa_data = [[P15_sa_df.loc[1]['sa_weight_percent'],
+                       P15_sa_df.loc[2]['sa_weight_percent'],
+                       P15_sa_df.loc[3]['sa_weight_percent'],
+                       P15_sa_df.loc[4]['sa_weight_percent'],
+                       P15_sa_df.loc[5]['sa_weight_percent'],
+                       P15_sa_df.loc[6]['sa_weight_percent'],
+                       P15_sa_df.loc[7]['sa_weight_percent']]]
 
-P12_file = 'C:/Users/beths/OneDrive - University of Reading/Paper 2/combine_rasters/BCT_IMU.tif'
-P12_sa_df = lc.landcover_fractions_in_SA_weighted(P12_file)
+    P15_sa_df = pd.DataFrame(P15_df_sa_data, columns=df_sa_columns)
+    P15_sa_df.index = ['SCT_SWT']
 
-P12_df_sa_data = [[P12_sa_df.loc[1]['sa_weight_percent'],
-                   P12_sa_df.loc[2]['sa_weight_percent'],
-                   P12_sa_df.loc[3]['sa_weight_percent'],
-                   P12_sa_df.loc[4]['sa_weight_percent'],
-                   P12_sa_df.loc[5]['sa_weight_percent'],
-                   P12_sa_df.loc[6]['sa_weight_percent'],
-                   P12_sa_df.loc[7]['sa_weight_percent']]]
-# a dataframe of one source area
-P12_sa_df = pd.DataFrame(P12_df_sa_data, columns=df_sa_columns)
-P12_sa_df.index = ['BCT_IMU']
+    P11_file = 'C:/Users/beths/OneDrive - University of Reading/Paper 2/combine_rasters/BTT_BCT.tif'
+    P11_sa_df = lc.landcover_fractions_in_SA_weighted(P11_file)
 
-combine = pd.concat([P13_sa_df, P12_sa_df, P11_sa_df, P15_sa_df])
+    P11_df_sa_data = [[P11_sa_df.loc[1]['sa_weight_percent'],
+                       P11_sa_df.loc[2]['sa_weight_percent'],
+                       P11_sa_df.loc[3]['sa_weight_percent'],
+                       P11_sa_df.loc[4]['sa_weight_percent'],
+                       P11_sa_df.loc[5]['sa_weight_percent'],
+                       P11_sa_df.loc[6]['sa_weight_percent'],
+                       P11_sa_df.loc[7]['sa_weight_percent']]]
 
-color_list = ["dimgrey", "lightgrey", "deepskyblue", "lawngreen", "darkgreen", "limegreen", "olive"]
+    P11_sa_df = pd.DataFrame(P11_df_sa_data, columns=df_sa_columns)
+    P11_sa_df.index = ['BTT_BCT']
 
-fig, ax = plt.subplots(figsize=(12, 12))
+    P12_file = 'C:/Users/beths/OneDrive - University of Reading/Paper 2/combine_rasters/BCT_IMU.tif'
+    P12_sa_df = lc.landcover_fractions_in_SA_weighted(P12_file)
 
-combine.plot(ax=ax, kind='bar', stacked=True, color=color_list, width=0.85)
+    P12_df_sa_data = [[P12_sa_df.loc[1]['sa_weight_percent'],
+                       P12_sa_df.loc[2]['sa_weight_percent'],
+                       P12_sa_df.loc[3]['sa_weight_percent'],
+                       P12_sa_df.loc[4]['sa_weight_percent'],
+                       P12_sa_df.loc[5]['sa_weight_percent'],
+                       P12_sa_df.loc[6]['sa_weight_percent'],
+                       P12_sa_df.loc[7]['sa_weight_percent']]]
+    # a dataframe of one source area
+    P12_sa_df = pd.DataFrame(P12_df_sa_data, columns=df_sa_columns)
+    P12_sa_df.index = ['BCT_IMU']
 
-plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5))
-ax.set_ylim(0, 100)
-ax.set_xlim(-.5, len(combine.index) - 0.5)
+    combine = pd.concat([P13_sa_df, P12_sa_df, P11_sa_df, P15_sa_df])
 
-plt.savefig('C:/Users/beths/OneDrive - University of Reading/Paper 1/mask_tests/output.png', bbox_inches='tight')
-# plt.show()
+    color_list = ["dimgrey", "lightgrey", "deepskyblue", "lawngreen", "darkgreen", "limegreen", "olive"]
+
+    fig, ax = plt.subplots(figsize=(12, 12))
+
+    combine.plot(ax=ax, kind='bar', stacked=True, color=color_list, width=0.85)
+
+    plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5))
+    ax.set_ylim(0, 100)
+    ax.set_xlim(-.5, len(combine.index) - 0.5)
+
+    plt.savefig('C:/Users/beths/OneDrive - University of Reading/Paper 1/mask_tests/output.png', bbox_inches='tight')
+    # plt.show()
