@@ -71,7 +71,6 @@ def combine_sa_rasters(path_string,
 
 
 if __name__ == '__main__':
-
     # CHANGE HERE
     target_path = 'IMU_BTT'
 
