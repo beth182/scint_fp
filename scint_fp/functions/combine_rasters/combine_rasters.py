@@ -70,9 +70,12 @@ def combine_sa_rasters(path_string,
         dst.write_band(1, raster_array.astype(rasterio.float32))
 
 
-# combine_rasters('IMU_BTT')
-print('end')
+if __name__ == '__main__':
 
+    # CHANGE HERE
+    target_path = 'IMU_BTT'
 
+    # calls function
+    combine_sa_rasters(target_path)
 
-print('end')
+    print('end')
