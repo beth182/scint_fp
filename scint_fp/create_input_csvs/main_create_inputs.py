@@ -13,7 +13,6 @@ from scint_flux import look_up
 
 from scint_fp.functions import wx_u_v_components
 from scint_fp.functions import time_average_sa_input
-from scint_fp.functions import sa_creation_selecting
 from scint_fp.create_input_csvs import create_input_functions
 
 # CHANGE HERE
@@ -126,10 +125,10 @@ for index, row in DOY_in_df.iterrows():
     df_selection = df_av
     # find unstable times only
     if unstable_only:
-        df_selection = sa_creation_selecting.find_unstable_times(df_selection, neutral_limit=0.03)
+        df_selection = create_input_functions.find_unstable_times(df_selection, neutral_limit=0.03)
 
     # remove nan rows
-    df_selection = sa_creation_selecting.remove_nan_rows(df_selection)
+    df_selection = create_input_functions.remove_nan_rows(df_selection)
 
     if average_period == 10:
         if mins_ending_10:
