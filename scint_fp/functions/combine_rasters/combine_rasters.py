@@ -5,13 +5,23 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from scint_fp.functions import landcover_type_present as lc
+# from scint_fp.functions import landcover_type_present as lc
 
 
 def combine_rasters(path_string,
                     main_dir='//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintillometer_footprints/scint_fp/test_outputs/10_mins_ending/',
                     # main_dir='/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintillometer_footprints/scint_fp/test_outputs/10_mins_ending/'
                     ):
+    """
+    Takes a list of days (from csv, e.g. DOY_in) and combine each source area of that day (all times) into one
+    source area - representing a "climatology" source area of the given target period (days included).
+
+    # ToDo: fill these out
+    :param path_string:
+    :param main_dir:
+    :return:
+    """
+
     out_dir = '../'
 
     csv_path = '../../DOY_in.csv'
