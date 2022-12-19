@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from scint_fp.functions import landcover_type_present as lc
+from scint_fp.functions.sa_lc_fractions import lc_fractions_in_sa as lc
 
 
 def plot_combined_raster():
