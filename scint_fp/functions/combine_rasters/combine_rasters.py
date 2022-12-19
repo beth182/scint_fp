@@ -2,11 +2,7 @@ import os
 import glob
 import rasterio
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
-
-
-# from scint_fp.functions import landcover_type_present as lc
 
 
 def combine_sa_rasters(path_string,
