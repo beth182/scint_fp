@@ -78,10 +78,13 @@ def create_footprints(pair, roughness_inputs, spatial_inputs, path_params,
         print('END')
 
 
-out_dir_base = 'test_outputs/'
-# days read in from csv
-csv_path = './DOY_in.csv'
-DOY_in_df = pd.read_csv(csv_path)
+# run the create footprints function for the selection of SAs to be made in the input csv
+if __name__ == "__main__":
+
+    out_dir_base = 'test_outputs/'
+    # days read in from csv
+    csv_path = './DOY_in.csv'
+    DOY_in_df = pd.read_csv(csv_path)
 
 df_list = []
 
