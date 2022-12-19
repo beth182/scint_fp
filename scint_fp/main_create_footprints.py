@@ -1,3 +1,8 @@
+# Beth Saunders 09/09/2021
+# main script used to create source area files.
+# This calls the source area model software (scintools) and provides it with the required input variables for each
+# source area to be made.
+
 import pandas as pd
 import scintools as sct
 import numpy as np

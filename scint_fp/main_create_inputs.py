@@ -1,4 +1,8 @@
 # Beth Saunders 09/09/2021
+# main script used to create inputs to the source area model software (scintools)
+# which requires 4 variables (1. Obukhov length, 2. friction velocity, 3. the standard deviation of the v component
+# of wind, 4. wind direction).
+# This script creates csv files which provide these 4 required variables for every source area to be made.
 
 # imports
 import pandas as pd
