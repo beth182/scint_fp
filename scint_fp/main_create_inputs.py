@@ -50,6 +50,8 @@ for index, row in DOY_in_df.iterrows():
         dem_path = 'D:/Documents/scintools/example_inputs/rasters/height_terrain_4m.tif'
         raw_scint_path = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_raw/'
         processed_wx_path = '//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/new_data_scint/'
+    else:
+        raise TypeError('run_location in given csv is not an option.')
 
     if rad_site == 'KSSW':
         rad_file_path = raw_scint_path
