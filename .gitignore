@@ -141,3 +141,4 @@ dmypy.json
 /scint_fp/DOY_in_LOG.xlsx
 /scint_fp/~$DOY_in_LOG.xlsx
 
+/scint_fp/functions/combine_rasters/output.tif
