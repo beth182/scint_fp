@@ -17,4 +17,3 @@ def take_hourly_vars(df):
     hourly_df = df.loc[mask]
 
     return hourly_df
-
