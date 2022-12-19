@@ -4,7 +4,7 @@
 def take_hourly_vars(df):
     """
     Takes dictionary of ncdf output and takes only values on the hour.
-    :param var_dict: dictionary of ncdf output
+    :param df: dataframe of ncdf output
     :return: dict of values on the hour
     """
 
