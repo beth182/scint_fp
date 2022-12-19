@@ -1,16 +1,19 @@
+# Beth Saunders
+# create source area model inputs from UKV model output.
+# This was not used as part of final work.
+
+# imports
 import pandas as pd
 import numpy as np
 import copy
-
 import matplotlib
-
-matplotlib.use('TkAgg')
 
 from scint_flux.functions import iterative_stability
 from scint_flux.functions import wx_data
 
 from scint_fp.functions import wx_u_v_components
-from scint_fp.functions.inputs_from_model import model_inputs
+
+matplotlib.use('TkAgg')
 
 DOYstart_choice = 2016142  # CHANGE HERE
 DOYstop_choice = 2016142
@@ -18,7 +21,7 @@ DOYstop_choice = 2016142
 out_dir = 'test_outputs/'
 
 # get roughness length from the grid directly overlaying the centre of the path
-# ToDo: for now, this is hard coded because I am only looking at one path. In the future this should be flexable
+# for now, this is hard coded because I am only looking at one path. In the future this should be flexible
 
 # grid 13 is over the centre of path BCT -> IMU
 path_number = 13
@@ -31,43 +34,34 @@ z0_centre_grid = 0.7724066
 target_model_level = 70
 
 # get the wind speed of the model
-mod_wind_time, mod_wind_vals, mod_wind_height = model_inputs.collect_model_inputs(DOYstart_choice, DOYstop_choice, '21Z', 'wind',
-                                                                                  target_model_level, model_site,
-                                                                                  model_grid_letter, path_number)
+# THIS WAS USING OLD VERSION OF READING MODEL FILES
+# WILL NEED TO BE UPDATED TO MODEL_EVAL_TOOLS SYSTEM IF EVER USED AGAIN
+mod_wind_time, mod_wind_vals, mod_wind_height = 0
 mod_ws = mod_wind_vals['ws']
 mod_wd = mod_wind_vals['wd']
 
 # construct array of length mod_wind_time full of tair heights
-mod_wind_height_array = np.ones(len(mod_wind_time))*mod_wind_height
-
+mod_wind_height_array = np.ones(len(mod_wind_time)) * mod_wind_height
 
 # get model Tair
-mod_tair_time, mod_tair_vals, mod_tair_height = model_inputs.collect_model_inputs(DOYstart_choice, DOYstop_choice, '21Z', 'Tair',
-                                                                                  target_model_level, model_site,
-                                                                                  model_grid_letter, path_number)
+mod_tair_time, mod_tair_vals, mod_tair_height = 0
 # construct array of length mod_tair_time full of tair heights
-mod_tair_height_array = np.ones(len(mod_tair_time))*mod_tair_height
-
+mod_tair_height_array = np.ones(len(mod_tair_time)) * mod_tair_height
 
 # get model pressure
-mod_press_time, mod_press_vals, mod_press_height = model_inputs.collect_model_inputs(DOYstart_choice, DOYstop_choice, '21Z', 'Press',
-                                                                                     target_model_level, model_site,
-                                                                                     model_grid_letter, path_number)
+mod_press_time, mod_press_vals, mod_press_height = 0
 # construct array of length mod_press_time full of tair heights
-mod_press_height_array = np.ones(len(mod_press_time))*mod_press_height
+mod_press_height_array = np.ones(len(mod_press_time)) * mod_press_height
 
 # get model BL flux (QH)
-mod_BLflux_time, mod_BLflux_vals, mod_BLflux_height = model_inputs.collect_model_inputs(DOYstart_choice, DOYstop_choice, '21Z', 'BL_H',
-                                                                                        target_model_level, model_site,
-                                                                                        model_grid_letter, path_number)
+mod_BLflux_time, mod_BLflux_vals, mod_BLflux_height = 0
 # construct array of length mod_BLflux_time full of tair heights
-mod_BLflux_height_array = np.ones(len(mod_BLflux_time))*mod_BLflux_height
-
+mod_BLflux_height_array = np.ones(len(mod_BLflux_time)) * mod_BLflux_height
 
 assert mod_wind_time.all() == mod_tair_time.all() == mod_press_time.all() == mod_BLflux_time.all()
 
 # construct array of length mod_time full of model z0 heights
-mod_z0_array = np.ones(len(mod_BLflux_time))*z0_centre_grid
+mod_z0_array = np.ones(len(mod_BLflux_time)) * z0_centre_grid
 
 # construct df of all the extracted model values
 df_dict = {'time': mod_wind_time,
@@ -82,7 +76,6 @@ df = df.set_index('time')
 # calculate density and add to df
 df = wx_data.density_calc(df)
 
-
 # calculate initial estimate of ustar
 initial_ustar = iterative_stability.calculate_initial_ustar(ws=mod_ws,
                                                             z_effective=mod_wind_height,
@@ -90,11 +83,9 @@ initial_ustar = iterative_stability.calculate_initial_ustar(ws=mod_ws,
 # calculate initial estimate of L
 initial_L = iterative_stability.calculate_initial_L_no_model_term(initial_ustar, df)
 
-
-
 neutral_limit = 0.03
-ustar_threshold=0.05
-iteration_limit=50
+ustar_threshold = 0.05
+iteration_limit = 50
 
 # create empty
 ustar_list = []
@@ -162,7 +153,6 @@ for a in range(0, len(df.index)):
             Phi = iterative_stability.phi_unstable(stab_param)
             Phi0 = iterative_stability.phi_unstable(df['z0_model'][a] / L_previous)
 
-
         elif stab_param > neutral_limit:  # stable
 
             #  stability-adjusted logarithmic profile to estimate ustar
@@ -170,7 +160,6 @@ for a in range(0, len(df.index)):
 
             Phi = iterative_stability.phi_stable(stab_param)
             Phi0 = iterative_stability.phi_stable(df['z0_model'][a] / L_previous)
-
 
         elif -neutral_limit <= stab_param <= neutral_limit:  # neutral
 
@@ -187,10 +176,12 @@ for a in range(0, len(df.index)):
 
         else:
             # ustar
-            ustar = iterative_stability.ustar_eq(df['wind_speed_convert'][a], df['z_wind'][a], df['z0_model'][a], Phi, Phi0)
+            ustar = iterative_stability.ustar_eq(df['wind_speed_convert'][a], df['z_wind'][a], df['z0_model'][a], Phi,
+                                                 Phi0)
 
             # calculate L
-            L = iterative_stability.obukhov_length_with_qh(ustar, np.asarray(df['density'])[a], np.asarray(df['t_air'])[a], np.asarray(df['QH'])[a])
+            L = iterative_stability.obukhov_length_with_qh(ustar, np.asarray(df['density'])[a],
+                                                           np.asarray(df['t_air'])[a], np.asarray(df['QH'])[a])
 
         # check to see if condition is met if we aren't on the first iteration
         if iteration_count != 0:
@@ -230,22 +221,18 @@ iter = iter.set_index('time')
 
 df = pd.concat([df, iter], axis=1)
 
-
-
 # looking at observation sig v
-
 obs_inputs = out_dir + 'met_inputs_hourly_' + str(DOYstart_choice)[-3:] + '.csv'
 obs_df = pd.read_csv(obs_inputs)
 obs_df['Unnamed: 0'] = pd.to_datetime(obs_df['Unnamed: 0'], format='%Y%m%d %H:%M:%S')
-obs_df.rename(columns={'Unnamed: 0':'time'}, inplace=True)
-obs_df.rename(columns={'sig_v':'obs_sig_v'}, inplace=True)
-obs_df.rename(columns={'wind_direction':'wind_direction_obs'}, inplace=True)
+obs_df.rename(columns={'Unnamed: 0': 'time'}, inplace=True)
+obs_df.rename(columns={'sig_v': 'obs_sig_v'}, inplace=True)
+obs_df.rename(columns={'wind_direction': 'wind_direction_obs'}, inplace=True)
 obs_df = obs_df.set_index('time')
 obs_sigv = obs_df.obs_sig_v
 obs_wd = obs_df.wind_direction_obs
 df = pd.concat([df, obs_sigv], axis=1)
 df = pd.concat([df, obs_wd], axis=1)
-
 
 # looking at the variability of the v component or direction for the 3hours
 # IE +/- 1 on the hour of interest
@@ -255,13 +242,11 @@ df = pd.concat([df, component_df], axis=1)
 df['time'] = df.index
 df.index = np.arange(0, len(df))
 
-
 sig_v_list = []
 
 dv1_list = []
 dv2_list = []
 dv3_list = []
-
 
 for index, row in df.iterrows():
 
@@ -276,14 +261,13 @@ for index, row in df.iterrows():
     else:
         v_component = row['v_component']
 
-        prev_v = df.loc[index-1, 'v_component']
-        next_v = df.loc[index+1, 'v_component']
+        prev_v = df.loc[index - 1, 'v_component']
+        next_v = df.loc[index + 1, 'v_component']
 
         array_of_vals = np.array([prev_v, v_component, next_v])
 
         sig_v = np.std(array_of_vals, axis=0)
         sig_v_list.append(sig_v)
-
 
         dv1 = np.abs(prev_v - v_component)
         dv2 = np.abs(v_component - next_v)
@@ -292,7 +276,6 @@ for index, row in df.iterrows():
         dv1_list.append(dv1)
         dv2_list.append(dv2)
         dv3_list.append(dv3)
-
 
 df['sig_v'] = sig_v_list
 
