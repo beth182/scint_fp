@@ -1,5 +1,6 @@
 # Beth Saunders 27/05/21
 # functions creating plots go here
+# currently none are used
 
 import numpy as np
 import matplotlib.pyplot as plt
