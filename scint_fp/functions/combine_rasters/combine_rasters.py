@@ -12,9 +12,9 @@ def combine_rasters(path_string,
                     main_dir='//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintillometer_footprints/scint_fp/test_outputs/10_mins_ending/',
                     # main_dir='/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintillometer_footprints/scint_fp/test_outputs/10_mins_ending/'
                     ):
-    out_dir = './'
+    out_dir = '../'
 
-    csv_path = '../DOY_in.csv'
+    csv_path = '../../DOY_in.csv'
     DOY_in_df = pd.read_csv(csv_path)
     DOY_in_df['doy_string'] = DOY_in_df.Year.astype(str) + DOY_in_df.DOY.astype(str).str.zfill(3)
     DOYlist = DOY_in_df['doy_string'].astype(int).to_list()
