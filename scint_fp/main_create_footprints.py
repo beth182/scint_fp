@@ -13,12 +13,28 @@ from scint_flux import look_up
 
 def create_footprints(pair, roughness_inputs, spatial_inputs, path_params,
                       out_dir, csv_name):
+    """
+    Main function used to create source area files.
+    This calls the source area model software (scintools) and provides it with the required input variables for each
+    source area to be made.
+
+    # ToDo: fill this in
+    :param pair:
+    :param roughness_inputs:
+    :param spatial_inputs:
+    :param path_params:
+    :param out_dir:
+    :param csv_name:
+    :return:
+    """
+
     # read inputs csv
     df = pd.read_csv(out_dir + csv_name)
     df.rename(columns={'Unnamed: 0': 'time'}, inplace=True)
     df.time = pd.to_datetime(df['time'], dayfirst=True)
     df = df.set_index('time')
 
+    # limit time - optional
     # df = df.between_time('11:00', '13:00')
 
     # create footprint for each entry in dataframe
