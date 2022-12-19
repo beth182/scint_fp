@@ -5,7 +5,7 @@ import os
 from scint_fp.functions.sa_lc_fractions import lc_fractions_in_sa as lc
 
 
-def plot_combined_raster(save_path):
+def combined_raster_lc_bar(save_path):
     """
 
     :return:
@@ -89,6 +89,6 @@ if __name__ == '__main__':
 
     save_path = os.getcwd().replace('\\', '/') + '/'
 
-    plot_combined_raster(save_path=save_path)
+    combined_raster_lc_bar(save_path=save_path)
 
     print('end')
