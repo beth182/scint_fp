@@ -24,6 +24,8 @@ out_dir_base = 'test_outputs/'
 csv_path = './DOY_in.csv'
 DOY_in_df = pd.read_csv(csv_path)
 
+# empty list to append to:
+# each item will be a df of scint_flux outputs
 df_list = []
 
 for index, row in DOY_in_df.iterrows():
@@ -85,9 +87,9 @@ for index, row in DOY_in_df.iterrows():
         unstable_only = False
 
     pair_id = row.pair
-
     las_instrument_type = look_up.pair_instruments[pair_id]
 
+    # runs scint flux
     df = run_function.main_QH_calcs(doy=doy,
                                     pair_id=pair_id,
                                     sa_res=average_period,
@@ -103,6 +105,7 @@ for index, row in DOY_in_df.iterrows():
                                     sa_path=False,
                                     write_file=False)
 
+    # test plot - optional
     # plots.plot_qh(df)
 
     # APPEND BEFORE AVERAGING
@@ -120,11 +123,8 @@ for index, row in DOY_in_df.iterrows():
     df_av = pd.concat([df_av, av_comp], axis=1)
 
     # determine which times are made into source areas here:
-    ########################################################################################################################
     df_selection = df_av
-
     # find unstable times only
-
     if unstable_only:
         df_selection = sa_creation_selecting.find_unstable_times(df_selection, neutral_limit=0.03)
 
@@ -136,7 +136,6 @@ for index, row in DOY_in_df.iterrows():
             # only take the 10-min average SAs on the hour ending
             df_selection = retrieve_var.take_hourly_vars(df_selection)
 
-    ########################################################################################################################
     # save to csv
     if average_period == 10:
         if unstable_only:
