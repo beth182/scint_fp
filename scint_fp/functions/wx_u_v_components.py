@@ -71,4 +71,3 @@ ws_dir_con = u_v_to_ws_wd(u_v_df['u_component'], u_v_df['v_component'])
 assert ws_dir_con['wind_speed_convert'].all() == wind_df['ws'].all()
 assert ws_dir_con['wind_direction_convert'].all() == wind_df['wd'].all()
 """
-
