@@ -1,4 +1,4 @@
-# Getting the land cover fractions of each UKV grid-box from the reference (observation) dataset
+# Getting the land cover fractions from the reference (observation) dataset - in the area of each UKV grid-box
 
 import rasterio
 import rasterio.plot
@@ -72,5 +72,3 @@ df['Vegetation'] = df.Grass + df.Deciduous + df.Evergreen + df.Shrub
 df.to_csv('C:/Users/beths/OneDrive - University of Reading/local_runs_data/reference_data_lc_fractions_in_UKV_grids.csv')
 
 print('end')
-
-# get a break-down of fractions for this area
