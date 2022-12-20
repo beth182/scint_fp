@@ -1,9 +1,7 @@
 # Getting the land cover fractions from the reference (observation) dataset - in the area of each UKV grid-box
 
-import rasterio
+# imports
 import rasterio.plot
-import matplotlib.colors as colors
-import matplotlib.pyplot as plt
 import geopandas
 from rasterio.mask import mask
 import numpy as np
@@ -69,6 +67,7 @@ df = df.rename(
 df['Built'] = df.Roof + df.Canyon
 df['Vegetation'] = df.Grass + df.Deciduous + df.Evergreen + df.Shrub
 
-df.to_csv('C:/Users/beths/OneDrive - University of Reading/local_runs_data/reference_data_lc_fractions_in_UKV_grids.csv')
+df.to_csv(
+    'C:/Users/beths/OneDrive - University of Reading/local_runs_data/reference_data_lc_fractions_in_UKV_grids.csv')
 
 print('end')
