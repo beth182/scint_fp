@@ -6,6 +6,7 @@ import geopandas
 from rasterio.mask import mask
 import numpy as np
 import pandas as pd
+import os
 
 # read in the reference dataset
 landcover_raster_filepath = 'C:/Users/beths/OneDrive - University of Reading/Model_Eval/QGIS/Elliott/LandUseMM_7classes_32631.tif'
@@ -67,7 +68,8 @@ df = df.rename(
 df['Built'] = df.Roof + df.Canyon
 df['Vegetation'] = df.Grass + df.Deciduous + df.Evergreen + df.Shrub
 
-df.to_csv(
-    'C:/Users/beths/OneDrive - University of Reading/local_runs_data/reference_data_lc_fractions_in_UKV_grids.csv')
+save_path = os.getcwd().replace('\\', '/') + '/'
+
+df.to_csv(save_path + 'reference_data_lc_fractions_in_UKV_grids.csv')
 
 print('end')
