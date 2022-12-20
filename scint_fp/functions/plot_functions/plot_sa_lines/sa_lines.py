@@ -168,63 +168,11 @@ def plot_sa_lines(file_list,
     plt.show()
 
 
-def find_SA_rasters(sa_main_dir='C:/Users/beths/OneDrive - University of Reading/Paper 2/combine_rasters/',
-                    given_list=False,
-                    **kwargs):
-    """
-
-    :param given_list:
-    :param sa_file_source:
-    :return:
-    """
-    if given_list:
-        sa_file_source = kwargs['sa_file_source']
-
-        list_of_files = []
-        for sa_name in sa_file_source:
-            new_path = sa_main_dir + sa_name
-            list_of_files.append(new_path)
-
-    else:
-
-        # deal with files
-        list_of_files = []
-        os.chdir(sa_main_dir)
-        for file in glob.glob("*.tif"):
-            list_of_files.append(sa_main_dir + file)
-
-    return list_of_files
-
-
-def get_colours(cmap, file_list):
-    """
-
-    :param cmap:
-    :param file_list:
-    :return:
-    """
-    # extract all colors from the map
-    cmaplist = [cmap(i) for i in range(cmap.N)]
-
-    list_len = len(file_list)
-    colour_len = len(cmaplist)
-    colour_intervals = int(colour_len / list_len)
-
-    colour_list = []
-
-    count = 0
-    for i in file_list:
-        color_choice = cmaplist[count]
-        colour_list.append(color_choice)
-        count += colour_intervals
-
-    return colour_list
-
-
 sa_file_source_list = ['SCT_SWT.tif', 'BTT_BCT.tif', 'BCT_IMU.tif', 'IMU_BTT.tif']
 # sa_file_source_list=['BCT_IMU.tif']
 
-file_list_outside = find_SA_rasters(given_list=True, sa_main_dir='C:/Users/beths/OneDrive - University of Reading/Paper 2/combine_rasters/',
+file_list_outside = find_SA_rasters(given_list=True,
+                                    sa_main_dir='C:/Users/beths/OneDrive - University of Reading/Paper 2/combine_rasters/',
                                     sa_file_source=sa_file_source_list)
 
 # colour_list = get_colours(cmap=plt.cm.inferno, file_list=file_list)
