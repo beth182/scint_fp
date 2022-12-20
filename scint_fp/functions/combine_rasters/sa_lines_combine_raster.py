@@ -156,17 +156,21 @@ def plot_sa_lines_combined_raster(file_list,
     plt.yticks(rotation=90)
 
     # set limits according to raster
+    """
     left_bound = min(left)
     right_bound = max(right)
     top_bound = max(top)
     bottom_bound = min(bottom)
 
-    # ax.set_xlim(left_bound, right_bound)
-    # ax.set_ylim(bottom_bound, top_bound)
+    ax.set_xlim(left_bound, right_bound)
+    ax.set_ylim(bottom_bound, top_bound)
+    """
 
-    # limits which stay constant between and which suit both day's SAs
-    # ax.set_xlim(279685.28503960633, 289345.4708460579)
-    # ax.set_ylim(5707118.9139011325, 5716431.904868875)
+    # limits which stay constant between and which suit the SAs
+    """
+    ax.set_xlim(279685.28503960633, 289345.4708460579)
+    ax.set_ylim(5707118.9139011325, 5716431.904868875)
+    """
 
     plt.savefig(save_path + 'sa_lines_combine.png', bbox_inches='tight')
     # plt.show()
