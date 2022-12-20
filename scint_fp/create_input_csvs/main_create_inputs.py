@@ -12,7 +12,6 @@ from scint_flux import run_function
 from scint_flux import look_up
 
 from scint_fp.functions import wx_u_v_components
-from scint_fp.functions import time_average_sa_input
 from scint_fp.create_input_csvs import create_input_functions
 
 # CHANGE HERE
@@ -115,7 +114,7 @@ for index, row in DOY_in_df.iterrows():
     df = pd.concat([df, component_df], axis=1)
 
     # take the last 10 minute averages and calculate the standard deviation of wind for that period
-    df_av = time_average_sa_input.time_average_sa(df, average_period)
+    df_av = create_input_functions.time_average_sa(df, average_period)
 
     # convert the averages of the u and the v component back to wind speed and direction
     av_comp = wx_u_v_components.u_v_to_ws_wd(df_av['u_component'], df_av['v_component'])

@@ -9,9 +9,11 @@ import datetime as dt
 
 from scint_flux import look_up
 from scint_flux.functions import find_files
-import scintools as sct
 from scint_flux.functions import wx_data
-from scint_fp.functions import time_average_sa_input
+
+import scintools as sct
+
+from scint_fp.create_input_csvs import create_input_functions
 
 doy_start = 2016168 # CHANGE HERE
 doy_end = 2016168
@@ -64,7 +66,7 @@ for group_name, df_group in seperate_days:
 df_day = pd.concat(list_of_dfs)
 
 # timage average df with u & v components
-df_av = time_average_sa_input.time_average_sa(df_day, 10, period='D')
+df_av = create_input_functions.time_average_sa(df_day, 10, period='D')
 
 # convert back timage averaged values to wind speed and direction
 av_comp = wx_u_v_components.u_v_to_ws_wd(df_av['u_component'], df_av['v_component'])
