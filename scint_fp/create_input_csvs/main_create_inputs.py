@@ -11,8 +11,7 @@ import os
 from scint_flux import run_function
 from scint_flux import look_up
 
-from scint_fp.functions import wx_u_v_components
-from scint_fp.create_input_csvs import create_input_functions
+from scint_fp.create_input_csvs import create_input_functions, wx_u_v_components
 
 # CHANGE HERE
 out_dir_base = 'test_outputs/'

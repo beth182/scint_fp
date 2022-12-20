@@ -11,7 +11,7 @@ import matplotlib
 from scint_flux.functions import iterative_stability
 from scint_flux.functions import wx_data
 
-from scint_fp.functions import wx_u_v_components
+from scint_fp.create_input_csvs import wx_u_v_components
 
 matplotlib.use('TkAgg')
 
