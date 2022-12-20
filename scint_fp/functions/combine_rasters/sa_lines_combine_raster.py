@@ -11,7 +11,7 @@ import matplotlib.lines as mlines
 import os
 import matplotlib.pyplot as plt
 
-import scint_fp.functions.plot_functions.plot_sa_lines.sa_lines_funs as sa_lines
+import scint_fp.functions.plot_functions.plot_sa_lines.sa_lines_funs as sa_lines_funs
 
 from scintools.PointFootprint import trim_fp
 
@@ -176,11 +176,14 @@ if __name__ == '__main__':
     sa_file_source_list = ['SCT_SWT.tif', 'BTT_BCT.tif', 'BCT_IMU.tif', 'IMU_BTT.tif']
     # sa_file_source_list=['BCT_IMU.tif']
 
-    file_list_outside = find_SA_rasters(given_list=True,
-                                        sa_main_dir='C:/Users/beths/OneDrive - University of Reading/Paper 2/combine_rasters/',
-                                        sa_file_source=sa_file_source_list)
-
-    # colour_list = get_colours(cmap=plt.cm.inferno, file_list=file_list)
     colour_list = ['green', 'blue', 'red', 'magenta']
 
-    plot_sa_lines(file_list=file_list_outside, colour_list=colour_list)
+    file_list = sa_lines_funs.find_SA_rasters(given_list=True,
+                                              sa_main_dir='C:/Users/beths/OneDrive - University of Reading/Paper 2/combine_rasters/',
+                                              sa_file_source=sa_file_source_list)
+
+    save_path = os.getcwd().replace('\\', '/') + '/'
+
+    plot_sa_lines_combined_raster(file_list=file_list, colour_list=colour_list)
+
+    print('end')
