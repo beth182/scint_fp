@@ -167,12 +167,12 @@ def plot_sa_lines_combined_raster(file_list,
     """
 
     # limits which stay constant between and which suit the SAs
-    """
-    ax.set_xlim(279685.28503960633, 289345.4708460579)
-    ax.set_ylim(5707118.9139011325, 5716431.904868875)
-    """
+    # """
+    ax.set_xlim(277277.92426043435, 288387.33066867734)
+    ax.set_ylim(5706625.265920927, 5717734.67232917)
+    # """
 
-    plt.savefig(save_path + 'sa_lines_combine.png', bbox_inches='tight')
+    plt.savefig(save_path + 'sa_lines_combine.png', bbox_inches='tight', dpi=300)
     # plt.show()
 
     print('end')
