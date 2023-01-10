@@ -63,25 +63,24 @@ def plot_sa_lines_combined_raster(file_list,
     norm_lc = colors.BoundaryNorm(bounds_lc, cmap_lc.N)
     rasterio.plot.show(landcover_raster, ax=ax, cmap=cmap_lc, norm=norm_lc, interpolation='nearest', alpha=0.4)
 
-    # plot paths
-    df_12 = gpd.read_file('D:/Documents/scint_plots/scint_plots/sa_position_and_lc_fraction/scint_path_shp/BCT_IMU.shp')
-    df_12.plot(edgecolor='red', ax=ax, linewidth=3.0)
-
-    df_11 = gpd.read_file('D:/Documents/scint_plots/scint_plots/sa_position_and_lc_fraction/scint_path_shp/BTT_BCT.shp')
-    df_11.plot(edgecolor='blue', ax=ax, linewidth=3.0)
-
-    df_15 = gpd.read_file('D:/Documents/scint_plots/scint_plots/sa_position_and_lc_fraction/scint_path_shp/SCT_SWT.shp')
-    df_15.plot(edgecolor='green', ax=ax, linewidth=3.0)
-
-    df_13 = gpd.read_file('D:/Documents/scint_plots/scint_plots/sa_position_and_lc_fraction/scint_path_shp/IMU_BTT.shp')
-    df_13.plot(edgecolor='magenta', ax=ax, linewidth=3.0)
-
     # plot the SAs
     for i, filename in enumerate(file_list):
 
         # labels as filename without .tif
         path_name = filename.split('.')[0].split('/')[-1]
 
+        # determine colour
+        if type(colour_dict[path_name]) == str:
+            colour_here = colour_dict[path_name]
+        else:
+            colour_here = list(colour_dict[path_name])
+
+        # plot path
+        df_path = gpd.read_file(
+            'D:/Documents/scint_plots/scint_plots/sa_position_and_lc_fraction/scint_path_shp/' + path_name + '.shp')
+        df_path.plot(edgecolor=colour_here, ax=ax, linewidth=3.0)
+
+        # deal with SA raster
         raster = rasterio.open(filename)
 
         raster_array_untrimmed = raster.read()
@@ -110,12 +109,6 @@ def plot_sa_lines_combined_raster(file_list,
             max_coords = raster.xy(ind_max_2d[0], ind_max_2d[1])
 
             # Plot the SA line
-
-            if type(colour_dict[path_name]) == str:
-                colour_here = colour_dict[path_name]
-            else:
-                colour_here = list(colour_dict[path_name])
-
             line_label = path_name.split('_')[0] + ' ' + path_name.split('_')[1]
 
             rasterio.plot.show(bool_arr, transform=raster.transform, contour=True, contour_label_kws={}, ax=ax,
@@ -198,6 +191,13 @@ def plot_sa_lines_combined_raster_panels(file_list,
         # labels as filename without .tif
         path_name = filename.split('.')[0].split('/')[-1]
 
+        # determine colour
+        if type(colour_dict[path_name]) == str:
+            colour_here = colour_dict[path_name]
+        else:
+            colour_here = list(colour_dict[path_name])
+
+        # deal with SA raster
         raster = rasterio.open(filename)
 
         raster_array_untrimmed = raster.read()
@@ -228,12 +228,6 @@ def plot_sa_lines_combined_raster_panels(file_list,
             max_coords = raster.xy(ind_max_2d[0], ind_max_2d[1])
 
             # Plot the SA line
-
-            if type(colour_dict[path_name]) == str:
-                colour_here = colour_dict[path_name]
-            else:
-                colour_here = list(colour_dict[path_name])
-
             sas = rasterio.plot.show(bool_arr, transform=raster.transform, contour=True, contour_label_kws={}, ax=axis,
                                      colors=[colour_here], linestyles=[linestyle_dict[weight]])
 
@@ -254,22 +248,10 @@ def plot_sa_lines_combined_raster_panels(file_list,
                 rasterio.plot.show(shade_array, transform=raster.transform, ax=axis, cmap=cmap_path, vmin=0, vmax=vmax,
                                    alpha=0.1)
 
-    # plot paths
-    # ax1: top left: IMU BTT
-    df_13 = gpd.read_file('D:/Documents/scint_plots/scint_plots/sa_position_and_lc_fraction/scint_path_shp/IMU_BTT.shp')
-    df_13.plot(edgecolor='magenta', ax=ax1, linewidth=2.0)
-
-    # ax2: top right: BCT IMU
-    df_12 = gpd.read_file('D:/Documents/scint_plots/scint_plots/sa_position_and_lc_fraction/scint_path_shp/BCT_IMU.shp')
-    df_12.plot(edgecolor='red', ax=ax2, linewidth=2.0)
-
-    # ax3: bottom left: BTT BCT
-    df_11 = gpd.read_file('D:/Documents/scint_plots/scint_plots/sa_position_and_lc_fraction/scint_path_shp/BTT_BCT.shp')
-    df_11.plot(edgecolor='blue', ax=ax3, linewidth=2.0)
-
-    # ax4: bottom right: SCT SWT
-    df_15 = gpd.read_file('D:/Documents/scint_plots/scint_plots/sa_position_and_lc_fraction/scint_path_shp/SCT_SWT.shp')
-    df_15.plot(edgecolor='green', ax=ax4, linewidth=2.0)
+        # plot path
+        df_path = gpd.read_file(
+            'D:/Documents/scint_plots/scint_plots/sa_position_and_lc_fraction/scint_path_shp/' + path_name + '.shp')
+        df_path.plot(edgecolor=colour_here, ax=axis, linewidth=2.0)
 
     handles, labels = ax1.get_legend_handles_labels()
 
@@ -304,7 +286,7 @@ if __name__ == '__main__':
 
     save_path = os.getcwd().replace('\\', '/') + '/'
 
-    plot_sa_lines_combined_raster(file_list=file_list, colour_dict=colour_dict, save_path=save_path)
-    # plot_sa_lines_combined_raster_panels(file_list=file_list, colour_dict=colour_dict, save_path=save_path)
+    # plot_sa_lines_combined_raster(file_list=file_list, colour_dict=colour_dict, save_path=save_path)
+    plot_sa_lines_combined_raster_panels(file_list=file_list, colour_dict=colour_dict, save_path=save_path)
 
     print('end')
