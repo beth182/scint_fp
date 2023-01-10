@@ -28,7 +28,6 @@ else:
     path_col = 'P13'
 
 # find wind data
-
 days_df_path = 'C:/Users/beths/OneDrive - University of Reading/Paper 2/all_days.csv'
 days_df = pd.read_csv(days_df_path)
 df_selected = days_df.iloc[np.where(days_df[path_col] == 1)[0]][['year', 'DOY', path_col]]
@@ -77,6 +76,6 @@ def plot_windrose(df,
     print('end')
 
 
-plot_windrose(df, path_name)
+plot_windrose(df, path_name, save_path)
 
 print('end')
