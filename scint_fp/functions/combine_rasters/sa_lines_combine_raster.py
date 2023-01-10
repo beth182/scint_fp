@@ -45,8 +45,7 @@ def reweight_fp(raster_array, path_id, target_percentage):
 def plot_sa_lines_combined_raster(file_list,
                                   colour_dict,
                                   save_path,
-                                  landcover_raster_filepath='C:/Users/beths/OneDrive - University of Reading/Model_Eval/QGIS/Elliott/LandUseMM_7classes_32631.tif',
-                                  given_list=True):
+                                  landcover_raster_filepath='C:/Users/beths/OneDrive - University of Reading/Model_Eval/QGIS/Elliott/LandUseMM_7classes_32631.tif'):
     """
 
     :return:
@@ -139,8 +138,7 @@ def plot_sa_lines_combined_raster(file_list,
 def plot_sa_lines_combined_raster_panels(file_list,
                                          colour_dict,
                                          save_path,
-                                         landcover_raster_filepath='C:/Users/beths/OneDrive - University of Reading/Model_Eval/QGIS/Elliott/LandUseMM_7classes_32631.tif',
-                                         given_list=True):
+                                         landcover_raster_filepath='C:/Users/beths/OneDrive - University of Reading/Model_Eval/QGIS/Elliott/LandUseMM_7classes_32631.tif'):
     """
 
     :return:
@@ -286,7 +284,7 @@ if __name__ == '__main__':
 
     save_path = os.getcwd().replace('\\', '/') + '/'
 
-    # plot_sa_lines_combined_raster(file_list=file_list, colour_dict=colour_dict, save_path=save_path)
-    plot_sa_lines_combined_raster_panels(file_list=file_list, colour_dict=colour_dict, save_path=save_path)
+    plot_sa_lines_combined_raster(file_list=file_list, colour_dict=colour_dict, save_path=save_path)
+    # plot_sa_lines_combined_raster_panels(file_list=file_list, colour_dict=colour_dict, save_path=save_path)
 
     print('end')
