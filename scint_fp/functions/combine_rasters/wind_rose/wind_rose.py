@@ -15,7 +15,7 @@ mpl.rcParams.update({'font.size': 15})
 from scint_flux.functions import read_calculated_fluxes
 
 save_path = os.getcwd().replace('\\', '/') + '/'
-path_name = 'SCT_SWT'
+path_name = 'IMU_BTT'
 
 if path_name == 'BCT_IMU':
     path_col = 'P12'
