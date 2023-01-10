@@ -10,12 +10,12 @@ import pandas as pd
 import os
 import matplotlib.pyplot as plt
 
-mpl.rcParams.update({'font.size': 15})
+mpl.rcParams.update({'font.size': 20})
 
 from scint_flux.functions import read_calculated_fluxes
 
 save_path = os.getcwd().replace('\\', '/') + '/'
-path_name = 'IMU_BTT'
+path_name = 'BTT_BCT'
 
 if path_name == 'BCT_IMU':
     path_col = 'P12'
@@ -31,6 +31,7 @@ else:
 days_df_path = 'C:/Users/beths/OneDrive - University of Reading/Paper 2/all_days.csv'
 days_df = pd.read_csv(days_df_path)
 df_selected = days_df.iloc[np.where(days_df[path_col] == 1)[0]][['year', 'DOY', path_col]]
+
 DOY_list = list((df_selected.year.astype(str) + df_selected.DOY.astype(str)).astype(int))
 
 df = read_calculated_fluxes.extract_data(doy_list=DOY_list,
@@ -70,10 +71,17 @@ def plot_windrose(df,
 
     # legend if it's windrose appearing first in the plot
     if path_name == 'IMU_BTT':
-        ax.legend(loc='center left', bbox_to_anchor=(-0.3, 0.1))
+        ax.legend(loc='center left', bbox_to_anchor=(-0.4, 0.1))
 
-    ax.set_yticks(np.arange(10, 40, step=10))
-    ax.set_yticklabels(np.arange(10, 40, step=10))
+        ax.set_yticks(np.arange(5, 45, step=10))
+        ax.set_yticklabels(np.arange(5, 45, step=10))
+
+    else:
+        ax.set_yticks(np.arange(5, 45, step=10))
+        ax.set_yticklabels([])
+
+    ax.tick_params(axis='x', which='major', pad=15, colors=color_here)
+    ax.xaxis.grid(True, color=color_here)
 
     plt.savefig(save_path + 'windrose_' + path_name + '.png', bbox_inches='tight', dpi=300)
     print('end')
