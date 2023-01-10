@@ -273,10 +273,8 @@ def plot_sa_lines_combined_raster_panels(file_list,
 
 
 if __name__ == '__main__':
-    sa_file_source_list = ['SCT_SWT.tif', 'BTT_BCT.tif', 'BCT_IMU.tif', 'IMU_BTT.tif']
-    # sa_file_source_list=['BCT_IMU.tif']
+    sa_file_source_list = ['IMU_BTT.tif', 'BCT_IMU.tif', 'BTT_BCT.tif', 'SCT_SWT.tif']
 
-    # colour_dict = {'BCT_IMU': 'red', 'SCT_SWT': 'green', 'IMU_BTT': 'magenta', 'BTT_BCT': 'blue'}
     colour_dict = {'BCT_IMU': 'red', 'SCT_SWT': 'mediumorchid', 'IMU_BTT': 'green', 'BTT_BCT': 'blue'}
 
     file_list = sa_lines_funs.find_SA_rasters(given_list=True,
