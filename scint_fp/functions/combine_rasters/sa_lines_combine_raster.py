@@ -43,7 +43,7 @@ def reweight_fp(raster_array, path_id, target_percentage):
 
 
 def plot_sa_lines_combined_raster(file_list,
-                                  colour_list,
+                                  colour_dict,
                                   save_path,
                                   landcover_raster_filepath='C:/Users/beths/OneDrive - University of Reading/Model_Eval/QGIS/Elliott/LandUseMM_7classes_32631.tif',
                                   given_list=True):
@@ -79,21 +79,14 @@ def plot_sa_lines_combined_raster(file_list,
     # plot the SAs
     for i, filename in enumerate(file_list):
 
-        if given_list:
-            # labels as filename without .tif
-            labels = filename.split('.')[0].split('/')[-1]
-
-        else:
-            # labels as time
-            replc = filename.replace('.', '_')
-            splt = replc.split('_')
-            labels = splt[-3] + ':' + splt[-2]
+        # labels as filename without .tif
+        path_name = filename.split('.')[0].split('/')[-1]
 
         raster = rasterio.open(filename)
 
         raster_array_untrimmed = raster.read()
 
-        fp_60 = reweight_fp(raster_array_untrimmed, labels, 0.6)
+        fp_60 = reweight_fp(raster_array_untrimmed, path_name, 0.6)
         weight_dict = {'60': fp_60}
 
         linestyle_dict = {'60': 'dashdot'}
@@ -118,12 +111,12 @@ def plot_sa_lines_combined_raster(file_list,
 
             # Plot the SA line
 
-            if type(colour_list[i]) == str:
-                colour_here = colour_list[i]
+            if type(colour_dict[path_name]) == str:
+                colour_here = colour_dict[path_name]
             else:
-                colour_here = list(colour_list[i])
+                colour_here = list(colour_dict[path_name])
 
-            line_label = labels.split('_')[0] + ' ' + labels.split('_')[1]
+            line_label = path_name.split('_')[0] + ' ' + path_name.split('_')[1]
 
             rasterio.plot.show(bool_arr, transform=raster.transform, contour=True, contour_label_kws={}, ax=ax,
                                colors=[colour_here], linestyles=[linestyle_dict[weight]])
@@ -151,7 +144,7 @@ def plot_sa_lines_combined_raster(file_list,
 
 
 def plot_sa_lines_combined_raster_panels(file_list,
-                                         colour_list,
+                                         colour_dict,
                                          save_path,
                                          landcover_raster_filepath='C:/Users/beths/OneDrive - University of Reading/Model_Eval/QGIS/Elliott/LandUseMM_7classes_32631.tif',
                                          given_list=True):
@@ -202,23 +195,16 @@ def plot_sa_lines_combined_raster_panels(file_list,
             assert 'IMU_BTT' in filename
             axis = ax1
 
-        if given_list:
-            # labels as filename without .tif
-            labels = filename.split('.')[0].split('/')[-1]
-
-        else:
-            # labels as time
-            replc = filename.replace('.', '_')
-            splt = replc.split('_')
-            labels = splt[-3] + ':' + splt[-2]
+        # labels as filename without .tif
+        path_name = filename.split('.')[0].split('/')[-1]
 
         raster = rasterio.open(filename)
 
         raster_array_untrimmed = raster.read()
 
-        fp_40 = reweight_fp(raster_array_untrimmed, labels, 0.4)
-        fp_50 = reweight_fp(raster_array_untrimmed, labels, 0.5)
-        fp_60 = reweight_fp(raster_array_untrimmed, labels, 0.6)
+        fp_40 = reweight_fp(raster_array_untrimmed, path_name, 0.4)
+        fp_50 = reweight_fp(raster_array_untrimmed, path_name, 0.5)
+        fp_60 = reweight_fp(raster_array_untrimmed, path_name, 0.6)
         weight_dict = {'40': fp_40, '50': fp_50, '60': fp_60}
 
         linestyle_dict = {'60': 'dashdot', '50': (0, (5, 6)), '40': 'dotted'}
@@ -243,12 +229,10 @@ def plot_sa_lines_combined_raster_panels(file_list,
 
             # Plot the SA line
 
-            if type(colour_list[i]) == str:
-                colour_here = colour_list[i]
+            if type(colour_dict[path_name]) == str:
+                colour_here = colour_dict[path_name]
             else:
-                colour_here = list(colour_list[i])
-
-            # line_label = labels.split('_')[0] + ' ' + labels.split('_')[1]
+                colour_here = list(colour_dict[path_name])
 
             sas = rasterio.plot.show(bool_arr, transform=raster.transform, contour=True, contour_label_kws={}, ax=axis,
                                      colors=[colour_here], linestyles=[linestyle_dict[weight]])
@@ -312,7 +296,7 @@ if __name__ == '__main__':
     sa_file_source_list = ['SCT_SWT.tif', 'BTT_BCT.tif', 'BCT_IMU.tif', 'IMU_BTT.tif']
     # sa_file_source_list=['BCT_IMU.tif']
 
-    colour_list = ['green', 'blue', 'red', 'magenta']
+    colour_dict = {'BCT_IMU': 'red', 'SCT_SWT': 'green', 'IMU_BTT': 'magenta', 'BTT_BCT': 'blue'}
 
     file_list = sa_lines_funs.find_SA_rasters(given_list=True,
                                               sa_main_dir='C:/Users/beths/OneDrive - University of Reading/Paper 2/combine_rasters/',
@@ -320,7 +304,7 @@ if __name__ == '__main__':
 
     save_path = os.getcwd().replace('\\', '/') + '/'
 
-    # plot_sa_lines_combined_raster(file_list=file_list, colour_list=colour_list, save_path=save_path)
-    plot_sa_lines_combined_raster_panels(file_list=file_list, colour_list=colour_list, save_path=save_path)
+    plot_sa_lines_combined_raster(file_list=file_list, colour_dict=colour_dict, save_path=save_path)
+    # plot_sa_lines_combined_raster_panels(file_list=file_list, colour_dict=colour_dict, save_path=save_path)
 
     print('end')
