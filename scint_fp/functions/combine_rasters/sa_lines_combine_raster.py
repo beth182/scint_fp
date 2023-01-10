@@ -299,9 +299,8 @@ def plot_sa_lines_combined_raster_panels(file_list,
 
     plt.legend(handles=handles, loc='upper left')
 
-    # ToDo: fix the amound of white space around the subplots here
-
     plt.tight_layout()
+    fig.subplots_adjust(hspace=0.01, wspace=0.01)
 
     plt.savefig(save_path + 'sa_lines_combine_panels.png', bbox_inches='tight', dpi=300)
     # plt.show()
