@@ -116,18 +116,6 @@ def plot_sa_lines_combined_raster(file_list,
             if weight == '60':
                 ax.scatter(max_coords[0], max_coords[1], color=colour_here, marker='o', s=30, label=line_label)
 
-                # plot a solid colour in the 60 extent
-                shade_array = bool_arr.copy()
-                shade_array[shade_array == 0] = np.nan
-
-                # faff with custom cmap for just 1 colour
-                vmax = 3.0
-                cmap_path = LinearSegmentedColormap.from_list('mycmap', [(0 / vmax, 'white'),
-                                                                         (1 / vmax, colour_here),
-                                                                         (3 / vmax, 'white')])
-                rasterio.plot.show(shade_array, transform=raster.transform, ax=ax, cmap=cmap_path, vmin=0, vmax=vmax,
-                                   alpha=0.1)
-
     handles, labels = ax.get_legend_handles_labels()
 
     line_60 = mlines.Line2D([], [], color='k', linestyle=linestyle_dict['60'], label='60%')
