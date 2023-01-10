@@ -68,7 +68,10 @@ def plot_windrose(df,
     ax.contour(df.direction, df.speed, normed=True, bins=bins_range, colors='black', linewidth=0.5)
     # """
 
-    ax.legend(loc='center left', bbox_to_anchor=(-0.3, 0.1))
+    # legend if it's windrose appearing first in the plot
+    if path_name == 'IMU_BTT':
+        ax.legend(loc='center left', bbox_to_anchor=(-0.3, 0.1))
+
     ax.set_yticks(np.arange(10, 40, step=10))
     ax.set_yticklabels(np.arange(10, 40, step=10))
 
