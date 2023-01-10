@@ -7,11 +7,14 @@ import numpy as np
 from windrose import WindroseAxes
 import matplotlib as mpl
 import pandas as pd
+import os
+import matplotlib.pyplot as plt
 
 mpl.rcParams.update({'font.size': 15})
 
 from scint_flux.functions import read_calculated_fluxes
 
+save_path = os.getcwd().replace('\\', '/') + '/'
 path_name = 'SCT_SWT'
 
 if path_name == 'BCT_IMU':
@@ -43,7 +46,8 @@ df = df.rename(columns={'wind_speed_adj': 'speed', 'wind_direction_corrected': '
 
 
 def plot_windrose(df,
-                  path_name):
+                  path_name,
+                  save_path):
     colour_dict = {'BCT_IMU': 'red', 'SCT_SWT': 'mediumorchid', 'IMU_BTT': 'green', 'BTT_BCT': 'blue'}
 
     color_here = colour_dict[path_name]
@@ -68,6 +72,8 @@ def plot_windrose(df,
     ax.legend(loc='center left', bbox_to_anchor=(-0.3, 0.1))
     ax.set_yticks(np.arange(10, 40, step=10))
     ax.set_yticklabels(np.arange(10, 40, step=10))
+
+    plt.savefig(save_path + 'windrose_' + path_name + '.png', bbox_inches='tight', dpi=300)
     print('end')
 
 
