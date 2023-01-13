@@ -3,7 +3,6 @@
 
 # imports
 import numpy as np
-from shapely.geometry import Point
 from rasterio.mask import mask
 import rasterio
 
@@ -11,11 +10,10 @@ from scint_fp.functions.sa_lc_fractions.lc_by_sector import define_sectors
 
 
 def mask_raster_by_sector(raster_filepath,
-                         centre_point,
-                         num_of_sectors=12):
+                          centre_point,
+                          num_of_sectors=12):
     # read in raster file
     sa_raster = rasterio.open(raster_filepath)
-
 
     # define sectors
     # using define_sectors.py
@@ -38,33 +36,40 @@ def mask_raster_by_sector(raster_filepath,
                                           end=360,
                                           steps=90)
 
-    # mask raster by sector polygon
-    masked_SA, masked_SA_transform = mask(sa_raster, [polys[0]])
-    masked_SA[0][masked_SA[0] == 0] = np.nan
-
-    out_image, out_transform = mask(sa_raster, [polys[0]])
-
-    print('end')
-
     # sanity checks
     """
     import matplotlib.pyplot as plt
-    import rasterio.plot
-    
+
     fig, ax = plt.subplots()
     sa_array = sa_raster.read(1)
     rasterio.plot.show(sa_array, transform=sa_raster.transform, ax=ax)
     ax.scatter(centre_point.x[0], centre_point.y[0], marker='o', s=100, color='red')
-    
+
     for poly in polys:
         x, y = poly.exterior.xy
         ax.plot(x, y)
     plt.show()
-    
-    rasterio.plot.show(masked_SA[0], transform=masked_SA_transform)
     """
 
+    # mask raster by sector polygon
+    raster_by_sector_image = {}
+    raster_by_sector_transform = {}
 
+    for i in range(0, len(polys)):
+        masked_SA, masked_SA_transform = mask(sa_raster, [polys[i]])
+        masked_SA[0][masked_SA[0] == 0] = np.nan
 
+        out_image, out_transform = mask(sa_raster, [polys[i]])
 
+        key_name = i + 1
 
+        raster_by_sector_image[key_name] = out_image
+        raster_by_sector_image[key_name] = out_transform
+
+        # sanity checks
+        """
+        import rasterio.plot
+        rasterio.plot.show(masked_SA[0], transform=masked_SA_transform)
+        """
+
+    return {'images': raster_by_sector_image, 'transform': raster_by_sector_image}
