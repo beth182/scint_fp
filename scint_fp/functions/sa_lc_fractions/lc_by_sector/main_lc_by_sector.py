@@ -2,6 +2,7 @@
 # split landcover dataset into sectors by angle and calculate land cover fraction
 
 # imports
+import matplotlib.pyplot as plt
 from shapely.geometry import Point
 
 import scintools as sct
@@ -19,6 +20,18 @@ pair_raw = sct.ScintillometerPair(x=[285440.6056, 284562.3107],
 centre_point = Point(pair_raw.path_center()[0].x, pair_raw.path_center()[0].y)
 raster_filepath = 'C:/Users/beths/OneDrive - University of Reading/Paper 2/combine_rasters/BCT_IMU.tif'
 
-mask_SA_by_sector.mask_raster_by_sector(raster_filepath, centre_point)
+sector_dict = mask_SA_by_sector.mask_raster_by_sector(raster_filepath, centre_point)
+
+
+fig, ax = plt.subplots()
+
+for key in sector_dict['images'].keys():
+
+    ax.imshow(sector_dict['images'][key][0])
+
+
+
 
 print('end')
+
+# plt.imshow(sector_dict['images'][1][0])

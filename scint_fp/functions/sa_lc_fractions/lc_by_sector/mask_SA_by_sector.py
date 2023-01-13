@@ -56,15 +56,14 @@ def mask_raster_by_sector(raster_filepath,
     raster_by_sector_transform = {}
 
     for i in range(0, len(polys)):
+
         masked_SA, masked_SA_transform = mask(sa_raster, [polys[i]])
         masked_SA[0][masked_SA[0] == 0] = np.nan
 
-        out_image, out_transform = mask(sa_raster, [polys[i]])
-
         key_name = i + 1
 
-        raster_by_sector_image[key_name] = out_image
-        raster_by_sector_image[key_name] = out_transform
+        raster_by_sector_image[key_name] = masked_SA
+        raster_by_sector_transform[key_name] = masked_SA_transform
 
         # sanity checks
         """
@@ -72,4 +71,4 @@ def mask_raster_by_sector(raster_filepath,
         rasterio.plot.show(masked_SA[0], transform=masked_SA_transform)
         """
 
-    return {'images': raster_by_sector_image, 'transform': raster_by_sector_image}
+    return {'images': raster_by_sector_image, 'transforms': raster_by_sector_transform}
