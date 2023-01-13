@@ -24,7 +24,7 @@ pair_raw = sct.ScintillometerPair(x=[285440.6056, 284562.3107],
 centre_point = Point(pair_raw.path_center()[0].x, pair_raw.path_center()[0].y)
 raster_filepath = 'C:/Users/beths/OneDrive - University of Reading/Paper 2/combine_rasters/BCT_IMU.tif'
 
-sector_dict = mask_SA_by_sector.mask_raster_by_sector(raster_filepath, centre_point)
+mask_SA_by_sector.mask_raster_by_sector(raster_filepath, centre_point, save_path)
 
 # sanity check
 """
