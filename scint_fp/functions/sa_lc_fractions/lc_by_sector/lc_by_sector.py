@@ -15,6 +15,9 @@ def lc_by_sector(image,
                  transform,
                  save_path,
                  landcover_location='C:/Users/beths/OneDrive - University of Reading/Model_Eval/QGIS/Elliott/LandUseMM_7classes_32631.tif'):
+
+
+
     print('end')
 
     # crop square extent of landcover fractions file to the same as the
