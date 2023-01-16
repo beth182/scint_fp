@@ -5,6 +5,7 @@
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 
 from scint_fp.functions.sa_lc_fractions import lc_fractions_in_sa
 
@@ -60,5 +61,57 @@ for file in os.listdir(sa_sector_dir):
     df = df.append(df_sa)
 
 df = df.sort_index()
+
+
+interval = 360 / len(df)
+# start = interval / 2
+# thetas = np.arange(start, 360, interval)
+thetas = np.arange(0, 360, interval)
+
+assert len(thetas) == len(df)
+
+df['thetas'] = thetas
+
+
+color_list = ["dimgrey", "lightgrey", "deepskyblue", "lawngreen", "darkgreen", "limegreen", "olive"]
+# df.plot(kind='bar', stacked=True, color=color_list, width=0.85)
+
+
+# deal with masked values in deciduous col
+df.Deciduous.iloc[~np.isin(np.arange(len(df)), np.where(df.Deciduous >= 0)[0])] = 0
+
+df['Veg'] = df['Grass'] + df['Deciduous'] + df['Evergreen'] + df['Shrub']
+
+import plotly.express as px
+import plotly.graph_objects as go
+
+
+fig = px.bar_polar()
+
+fig.add_trace(go.Barpolar(
+    r=list(df['Building']),
+    theta=list(df['thetas']),
+    marker_color='dimgrey'))
+
+fig.add_trace(go.Barpolar(
+    r=list(df['Impervious']),
+    theta=list(df['thetas']),
+    marker_color='lightgrey'))
+
+fig.add_trace(go.Barpolar(
+    r=list(df['Water']),
+    theta=list(df['thetas']),
+    marker_color='deepskyblue'))
+
+fig.add_trace(go.Barpolar(
+    r=list(df['Veg']),
+    theta=list(df['thetas']),
+    marker_color='lawngreen'))
+
+fig.update_layout(barmode='group', bargap=0.30,bargroupgap=0.0)
+fig.show()
+
+
+
 
 print('end')
