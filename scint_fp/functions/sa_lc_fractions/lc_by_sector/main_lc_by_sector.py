@@ -5,7 +5,7 @@
 import os
 import matplotlib.pyplot as plt
 
-from scint_fp.functions.sa_lc_fractions.lc_by_sector import lc_by_sector
+from scint_fp.functions.sa_lc_fractions import lc_fractions_in_sa
 
 save_path = os.getcwd().replace('\\', '/') + '/'
 
@@ -32,7 +32,7 @@ mask_SA_by_sector.mask_raster_by_sector(raster_filepath, centre_point, save_path
 
 # landcover function
 # ToDo: currently manually feeding first raster as test. Need to make this a loop
-lc_by_sector.lc_by_sector(sa_sector_tif_path=save_path + 'sector_rasters/1.tif',
-                          save_path=save_path)
+df = lc_fractions_in_sa.landcover_fractions_in_SA_weighted(sa_tif_path=save_path + 'sector_rasters/1.tif',
+                                                           save_path=save_path)
 
 print('end')

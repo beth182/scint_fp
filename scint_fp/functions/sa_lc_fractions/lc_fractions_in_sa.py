@@ -10,16 +10,18 @@ from gdalconst import GA_ReadOnly
 from collections import Counter
 import pandas as pd
 import datetime as dt
+import os
 
 
-def landcover_fractions_in_SA_weighted(sa_tif_path, save_path):
+def landcover_fractions_in_SA_weighted(sa_tif_path, save_path,
+                                       landcover_location='C:/Users/beths/OneDrive - University of Reading/Model_Eval/QGIS/Elliott/LandUseMM_7classes_32631.tif'):
     """
     Reads scintillometer source area and returns information about the type of landcover fractions present within
     :return:
     """
 
-    # ToDo: move this file
-    landcover_location = 'C:/Users/beths/OneDrive - University of Reading/Model_Eval/QGIS/Elliott/LandUseMM_7classes_32631.tif'
+    # check the file exists
+    os.path.isfile(sa_tif_path)
 
     # crop square extent of landcover fractions file to the same as the
     maskDs = gdal.Open(sa_tif_path, GA_ReadOnly)  # your mask raster
