@@ -143,3 +143,4 @@ dmypy.json
 
 /scint_fp/functions/combine_rasters/output.tif
 /scint_fp/functions/sa_lc_fractions/lc_by_sector/sector_rasters/
+/scint_fp/functions/sa_lc_fractions/lc_by_sector/output.tif
