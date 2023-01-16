@@ -11,17 +11,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def lc_by_sector(image,
-                 transform,
+def lc_by_sector(sa_sector_tif_path,
                  save_path,
                  landcover_location='C:/Users/beths/OneDrive - University of Reading/Model_Eval/QGIS/Elliott/LandUseMM_7classes_32631.tif'):
 
 
-
-    print('end')
+    # check the file exists
+    os.path.isfile(sa_sector_tif_path)
 
     # crop square extent of landcover fractions file to the same as the
-    maskDs = gdal.Open(SA_file, GA_ReadOnly)  # your mask raster
+    maskDs = gdal.Open(sa_sector_tif_path, GA_ReadOnly)  # your mask raster
     projection = maskDs.GetProjectionRef()
     geoTransform = maskDs.GetGeoTransform()
     minx = geoTransform[0]
@@ -37,6 +36,10 @@ def lc_by_sector(image,
     # reads this cropped dataset
     landcover_crop = rasterio.open(output)
     landcover_array = landcover_crop.read(1)
+
+    # reads sa tif
+    sa_raster = rasterio.open(sa_sector_tif_path)
+    sa_array = sa_raster.read(1)
 
     # test of two arrays have the same shape
     if sa_array.shape == landcover_array.shape:
