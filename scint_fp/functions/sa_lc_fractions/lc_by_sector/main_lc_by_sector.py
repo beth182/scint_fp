@@ -4,38 +4,63 @@
 # imports
 import os
 import pandas as pd
-import numpy as np
-import plotly.express as px
-import plotly.graph_objects as go
-
-from scint_fp.functions.sa_lc_fractions import lc_fractions_in_sa
-
-save_path = os.getcwd().replace('\\', '/') + '/'
-
-# run this to make sector rasters
-"""
-from scint_fp.functions.sa_lc_fractions.lc_by_sector import mask_SA_by_sector
 from shapely.geometry import Point
+
+from scint_fp.functions.sa_lc_fractions.lc_by_sector import mask_SA_by_sector
+from scint_fp.functions.sa_lc_fractions import lc_fractions_in_sa
+from scint_fp.functions.sa_lc_fractions.lc_by_sector import lc_by_sector
 
 import scintools as sct
 
+# user choices here
+path_name = 'BCT_IMU'
+
+save_path = os.getcwd().replace('\\', '/') + '/'
+
+# Make sector rasters
+# """
 # define a centre point (in this case, the centre of the path)
-# path 12 - BCT -> IMU
-pair_raw = sct.ScintillometerPair(x=[285440.6056, 284562.3107],
-                                  y=[5712253.017, 5712935.032],
-                                  z_asl=[142, 88],
-                                  pair_id='BCT_IMU',
-                                  crs='epsg:32631')
+if path_name == 'BCT_IMU':
+    # path 12 - BCT -> IMU
+    pair_raw = sct.ScintillometerPair(x=[285440.6056, 284562.3107],
+                                      y=[5712253.017, 5712935.032],
+                                      z_asl=[142, 88],
+                                      pair_id='BCT_IMU',
+                                      crs='epsg:32631')
+elif path_name == 'BTT_BCT':
+    # path 11 - BTT -> BCT
+    pair_raw = sct.ScintillometerPair(x=[282251.14, 285440.6056],
+                                      y=[5712486.47, 5712253.017],
+                                      z_asl=[180, 142],
+                                      pair_id='BTT_BCT',
+                                      crs='epsg:32631')
+
+elif path_name == 'IMU_BTT':
+    # path 13 - IMU -> BTT
+    pair_raw = sct.ScintillometerPair(x=[284562.3107, 282251.14],
+                                      y=[5712935.032, 5712486.47],
+                                      z_asl=[88, 180],
+                                      pair_id='IMU_BTT',
+                                      crs='epsg:32631')
+
+elif path_name == 'SCT_SWT':
+    # path 15 - SCT -> SWT
+    pair_raw = sct.ScintillometerPair(x=[284450.1944, 285407],
+                                      y=[5708094.734, 5708599.83],
+                                      z_asl=[51, 44],
+                                      pair_id='SCT_SWT',
+                                      crs='epsg:32631')
+else:
+    raise ValueError('Path name not an option.')
 
 centre_point = Point(pair_raw.path_center()[0].x, pair_raw.path_center()[0].y)
-raster_filepath = 'C:/Users/beths/OneDrive - University of Reading/Paper 2/combine_rasters/BCT_IMU.tif'
+raster_filepath = 'C:/Users/beths/OneDrive - University of Reading/Paper 2/combine_rasters/' + path_name + '.tif'
 
+# mask SA by sector and sae tif
 mask_SA_by_sector.mask_raster_by_sector(raster_filepath, centre_point, save_path)
-"""
+# """
 
 # landcover functions in each sector - weighted by SA
-
-
 sa_sector_dir = save_path + 'sector_rasters/'
 
 df = pd.DataFrame()
@@ -63,103 +88,6 @@ for file in os.listdir(sa_sector_dir):
 
 df = df.sort_index()
 
-
-def lc_polar_plot(path_name,
-                  df):
-    """
-
-    :param path_name:
-    :param df: landcover pandas dataframe
-    :return:
-    """
-
-    # set the colours of the path
-    colour_dict = {'BCT_IMU': 'red', 'SCT_SWT': 'mediumorchid', 'IMU_BTT': 'green', 'BTT_BCT': 'blue'}
-    color_here = colour_dict[path_name]
-
-    # deal with masked values in pandas df col
-    for col_name in df.columns:
-        df[col_name].iloc[~np.isin(np.arange(len(df)), np.where(df[col_name] >= 0)[0])] = 0
-
-    # combine vegitation into one lc type
-    df['Veg'] = df['Grass'] + df['Deciduous'] + df['Evergreen'] + df['Shrub']
-
-    # define the angles of the sectors in the plot
-    interval = 360 / len(df)
-    start = interval / 2
-    thetas = np.arange(start, 360, interval)
-    assert len(thetas) == len(df)
-    df['thetas'] = thetas
-
-    # define width of sector
-    width = [360 / len(df) for _ in range(len(df))]
-
-    # set up plot
-    fig = px.bar_polar(template="simple_white")
-
-    # add each bar one by one
-
-    fig.add_trace(go.Barpolar(
-        r=list(df['Building']),
-        theta=list(df['thetas']),
-        marker_color='dimgrey',
-        width=width,
-        name='Building'))
-
-    fig.add_trace(go.Barpolar(
-        r=list(df['Impervious']),
-        theta=list(df['thetas']),
-        marker_color='lightgrey',
-        width=width,
-        name='Impervious'))
-
-    fig.add_trace(go.Barpolar(
-        r=list(df['Water']),
-        theta=list(df['thetas']),
-        marker_color='deepskyblue',
-        width=width,
-        name='Water'))
-
-    fig.add_trace(go.Barpolar(
-        r=list(df['Veg']),
-        theta=list(df['thetas']),
-        marker_color='lawngreen',
-        width=width,
-        name='Vegetation'))
-
-    # fix layout
-    layout_options = {"legend_x": 0.15,
-                      "legend_y": 0.5,
-                      # "polar_radialaxis_ticks": "",
-                      # "polar_radialaxis_showticklabels": False,
-                      # "polar_angularaxis_ticks": "",
-                      # "polar_angularaxis_showticklabels": False,
-                      "font": {'size': 20},
-                      "grid": {'ygap': 0}
-                      }
-
-    fig.update_layout(**layout_options)
-
-    fig.update_traces(marker_line={'color': 'black'})
-    fig.update_polars(radialaxis=dict(range=[0, 100],
-                                      tickvals=[20, 40, 60, 80],
-                                      # angle=90,
-                                      # tickangle=90,
-                                      linewidth=5,
-                                      linecolor=color_here,
-                                      color=color_here),
-                      angularaxis=dict(linewidth=15,
-                                       layer="below traces",
-                                       linecolor=color_here,
-                                       color=color_here,
-                                       tickvals=[0, 45, 90, 135, 180, 225, 270, 315],
-                                       ticktext=['N', 'N-E', 'E', 'S-E', 'S', 'S-W', 'W', 'N-W']
-                                       ))
-
-    # show figure and save manually
-    fig.show()
-
-
-
-lc_polar_plot('BCT_IMU', df)
+# plot
+lc_by_sector.lc_polar_plot('BCT_IMU', df)
 print('end')
