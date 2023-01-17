@@ -71,13 +71,13 @@ def lc_polar_plot(path_name,
         name='Vegetation'))
 
     # fix layout
-    layout_options = {"legend_x": 0.15,
+    layout_options = {"legend_x": 0.1,
                       "legend_y": 0.5,
                       # "polar_radialaxis_ticks": "",
                       # "polar_radialaxis_showticklabels": False,
                       # "polar_angularaxis_ticks": "",
                       # "polar_angularaxis_showticklabels": False,
-                      "font": {'size': 20},
+                      "font": {'size': 33},
                       "grid": {'ygap': 0}
                       }
 
@@ -91,7 +91,7 @@ def lc_polar_plot(path_name,
                                       linewidth=5,
                                       linecolor=color_here,
                                       color=color_here),
-                      angularaxis=dict(linewidth=15,
+                      angularaxis=dict(linewidth=25,
                                        layer="below traces",
                                        linecolor=color_here,
                                        color=color_here,
