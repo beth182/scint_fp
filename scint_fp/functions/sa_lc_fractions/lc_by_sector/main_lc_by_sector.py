@@ -13,7 +13,7 @@ from scint_fp.functions.sa_lc_fractions.lc_by_sector import lc_by_sector
 import scintools as sct
 
 # user choices here
-path_name = 'BCT_IMU'
+path_name = 'SCT_SWT'
 
 save_path = os.getcwd().replace('\\', '/') + '/'
 
@@ -89,5 +89,5 @@ for file in os.listdir(sa_sector_dir):
 df = df.sort_index()
 
 # plot
-lc_by_sector.lc_polar_plot('BCT_IMU', df)
+lc_by_sector.lc_polar_plot(path_name, df)
 print('end')

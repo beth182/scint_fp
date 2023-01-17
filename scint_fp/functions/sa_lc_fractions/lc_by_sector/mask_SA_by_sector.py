@@ -6,6 +6,7 @@ import numpy as np
 from rasterio.mask import mask
 import rasterio
 import os
+import glob
 
 from scint_fp.functions.sa_lc_fractions.lc_by_sector import define_sectors
 
@@ -53,6 +54,15 @@ def mask_raster_by_sector(raster_filepath,
     plt.show()
     """
 
+    # set up raster saves
+    raster_save_path = save_path + 'sector_rasters/'
+    assert os.path.isdir(raster_save_path)  # make sure file path exists before saving
+
+    # remove old files if they exist
+    files = glob.glob(raster_save_path + '*')
+    for f in files:
+        os.remove(f)
+
     # mask raster by sector polygon
     for i in range(0, len(polys)):
         masked_SA, masked_SA_transform = mask(sa_raster, [polys[i]])
@@ -67,9 +77,6 @@ def mask_raster_by_sector(raster_filepath,
         """
 
         # save the sector as a raster
-        raster_save_path = save_path + 'sector_rasters/'
-        assert os.path.isdir(raster_save_path)  # make sure file path exists before saving
-
         new_dataset = rasterio.open(raster_save_path + str(sector_name) + '.tif', 'w', driver='GTiff',
                                     height=masked_SA.shape[1], width=masked_SA.shape[2],
                                     count=1, dtype=str(masked_SA.dtype),
