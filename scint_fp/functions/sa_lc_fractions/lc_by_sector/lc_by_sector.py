@@ -45,28 +45,28 @@ def lc_polar_plot(path_name,
     fig.add_trace(go.Barpolar(
         r=list(df['Building']),
         theta=list(df['thetas']),
-        marker_color='dimgrey',
+        marker_color='rgba(105,105,105,0.7)',
         width=width,
         name='Building'))
 
     fig.add_trace(go.Barpolar(
         r=list(df['Impervious']),
         theta=list(df['thetas']),
-        marker_color='lightgrey',
+        marker_color='rgba(211,211,211,0.7)',
         width=width,
         name='Impervious'))
 
     fig.add_trace(go.Barpolar(
         r=list(df['Water']),
         theta=list(df['thetas']),
-        marker_color='deepskyblue',
+        marker_color='rgba(0,191,255, 0.7)',
         width=width,
         name='Water'))
 
     fig.add_trace(go.Barpolar(
         r=list(df['Veg']),
         theta=list(df['thetas']),
-        marker_color='yellowgreen',
+        marker_color='rgba(202,255,112,1)',
         width=width,
         name='Vegetation'))
 
