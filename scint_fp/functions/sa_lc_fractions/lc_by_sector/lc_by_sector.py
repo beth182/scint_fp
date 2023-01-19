@@ -66,7 +66,7 @@ def lc_polar_plot(path_name,
     fig.add_trace(go.Barpolar(
         r=list(df['Veg']),
         theta=list(df['thetas']),
-        marker_color='lawngreen',
+        marker_color='yellowgreen',
         width=width,
         name='Vegetation'))
 
@@ -90,7 +90,7 @@ def lc_polar_plot(path_name,
                                       # tickangle=90,
                                       linewidth=5,
                                       linecolor=color_here,
-                                      color=color_here),
+                                      color='black'),
                       angularaxis=dict(linewidth=25,
                                        layer="below traces",
                                        linecolor=color_here,
@@ -101,3 +101,5 @@ def lc_polar_plot(path_name,
 
     # show figure and save manually
     fig.show()
+
+    print('end')
