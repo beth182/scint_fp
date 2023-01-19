@@ -2,6 +2,7 @@
 # A version of sa lines plot - for the combined raster plot
 
 # imports
+import pandas as pd
 import rasterio.plot
 import numpy as np
 import geopandas as gpd
@@ -114,7 +115,38 @@ def plot_sa_lines_combined_raster(file_list,
                                colors=[colour_here], linestyles=[linestyle_dict[weight]])
 
             if weight == '60':
-                ax.scatter(max_coords[0], max_coords[1], color=colour_here, marker='o', s=30, label=line_label)
+                ax.scatter(max_coords[0], max_coords[1], color=colour_here, marker='o', s=60, label=line_label, edgecolor='k', zorder=100)
+
+    # plot coords of sites
+    path_15_coords = 'C:/Users/beths/OneDrive - University of Reading/Scintillometers/QGIS/scint_locations/trusted_coords/pair_15.csv'
+    path15_df = pd.read_csv(path_15_coords)
+    path15_df = path15_df.set_index(path15_df.site)
+    path_12_coords = 'C:/Users/beths/OneDrive - University of Reading/Scintillometers/QGIS/scint_locations/trusted_coords/pair_12.csv'
+    path12_df = pd.read_csv(path_12_coords)
+    path12_df = path12_df.set_index(path12_df.site)
+    path_13_coords = 'C:/Users/beths/OneDrive - University of Reading/Scintillometers/QGIS/scint_locations/trusted_coords/pair_13.csv'
+    path13_df = pd.read_csv(path_13_coords)
+    path13_df = path13_df.set_index(path13_df.site)
+    KSSW_coords_file = 'C:/Users/beths/OneDrive - University of Reading/Scintillometers/QGIS/scint_locations/trusted_coords/KSSW_coords.csv'
+    KSSW_df = pd.read_csv(KSSW_coords_file)
+    # BCT
+    ax.scatter(path12_df.loc['BCT'].x, path12_df.loc['BCT'].y, edgecolor='k', color='yellow', marker='o', s=30, zorder=100)
+    ax.annotate('BCT', (path12_df.loc['BCT'].x + 50, path12_df.loc['BCT'].y), fontsize=13)
+    # IMU
+    ax.scatter(path12_df.loc['IMU'].x, path12_df.loc['IMU'].y, edgecolor='k', color='yellow', marker='o', s=30, zorder=100)
+    ax.annotate('IMU', (path12_df.loc['IMU'].x + 50, path12_df.loc['IMU'].y), fontsize=13)
+    # BTT
+    ax.scatter(path13_df.loc['BTT'].x, path13_df.loc['BTT'].y, edgecolor='k', color='yellow', marker='o', s=30, zorder=100)
+    ax.annotate('BTT', (path13_df.loc['BTT'].x -500, path13_df.loc['BTT'].y), fontsize=13)
+    # SWT
+    ax.scatter(path15_df.loc['SWT'].x, path15_df.loc['SWT'].y, edgecolor='k', color='yellow', marker='o', s=30, zorder=100)
+    ax.annotate('SWT', (path15_df.loc['SWT'].x + 50, path15_df.loc['SWT'].y), fontsize=13)
+    # SCT
+    ax.scatter(path15_df.loc['SCT'].x, path15_df.loc['SCT'].y, edgecolor='k', color='yellow', marker='o', s=30, zorder=100)
+    ax.annotate('SCT', (path15_df.loc['SCT'].x -500, path15_df.loc['SCT'].y), fontsize=13)
+    # KSSW
+    ax.scatter(KSSW_df.X_32631[0], KSSW_df.Y_32631[0], edgecolor='k', color='yellow', marker='o', s=30, zorder=100)
+    ax.annotate('KSSW', (KSSW_df.X_32631[0] + 50, KSSW_df.Y_32631[0] + 50), fontsize=13)
 
     handles, labels = ax.get_legend_handles_labels()
 
