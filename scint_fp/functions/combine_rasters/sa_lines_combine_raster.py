@@ -78,7 +78,7 @@ def plot_sa_lines_combined_raster(file_list,
         # plot path
         df_path = gpd.read_file(
             'D:/Documents/scint_plots/scint_plots/sa_position_and_lc_fraction/scint_path_shp/' + path_name + '.shp')
-        df_path.plot(edgecolor=colour_here, ax=ax, linewidth=3.0)
+        df_path.plot(edgecolor=colour_here, ax=ax, linewidth=3.0, zorder=50)
 
         # deal with SA raster
         raster = rasterio.open(filename)
@@ -112,10 +112,11 @@ def plot_sa_lines_combined_raster(file_list,
             line_label = path_name.split('_')[0] + ' ' + path_name.split('_')[1]
 
             rasterio.plot.show(bool_arr, transform=raster.transform, contour=True, contour_label_kws={}, ax=ax,
-                               colors=[colour_here], linestyles=[linestyle_dict[weight]])
+                               colors=[colour_here], linestyles=[linestyle_dict[weight]], zorder=40)
 
             if weight == '60':
-                ax.scatter(max_coords[0], max_coords[1], color=colour_here, marker='o', s=60, label=line_label, edgecolor='k', zorder=100)
+                ax.scatter(max_coords[0], max_coords[1], color=colour_here, marker='o', s=60, label=line_label,
+                           edgecolor='k', zorder=100)
 
     # plot coords of sites
     path_15_coords = 'C:/Users/beths/OneDrive - University of Reading/Scintillometers/QGIS/scint_locations/trusted_coords/pair_15.csv'
@@ -130,23 +131,40 @@ def plot_sa_lines_combined_raster(file_list,
     KSSW_coords_file = 'C:/Users/beths/OneDrive - University of Reading/Scintillometers/QGIS/scint_locations/trusted_coords/KSSW_coords.csv'
     KSSW_df = pd.read_csv(KSSW_coords_file)
     # BCT
-    ax.scatter(path12_df.loc['BCT'].x, path12_df.loc['BCT'].y, edgecolor='k', color='yellow', marker='o', s=30, zorder=100)
+    ax.scatter(path12_df.loc['BCT'].x, path12_df.loc['BCT'].y, edgecolor='k', color='yellow', marker='o', s=30,
+               zorder=100)
     ax.annotate('BCT', (path12_df.loc['BCT'].x + 50, path12_df.loc['BCT'].y), fontsize=13)
     # IMU
-    ax.scatter(path12_df.loc['IMU'].x, path12_df.loc['IMU'].y, edgecolor='k', color='yellow', marker='o', s=30, zorder=100)
+    ax.scatter(path12_df.loc['IMU'].x, path12_df.loc['IMU'].y, edgecolor='k', color='yellow', marker='o', s=30,
+               zorder=100)
     ax.annotate('IMU', (path12_df.loc['IMU'].x + 50, path12_df.loc['IMU'].y), fontsize=13)
     # BTT
-    ax.scatter(path13_df.loc['BTT'].x, path13_df.loc['BTT'].y, edgecolor='k', color='yellow', marker='o', s=30, zorder=100)
-    ax.annotate('BTT', (path13_df.loc['BTT'].x -500, path13_df.loc['BTT'].y), fontsize=13)
+    ax.scatter(path13_df.loc['BTT'].x, path13_df.loc['BTT'].y, edgecolor='k', color='yellow', marker='o', s=30,
+               zorder=100)
+    ax.annotate('BTT', (path13_df.loc['BTT'].x - 500, path13_df.loc['BTT'].y), fontsize=13)
     # SWT
-    ax.scatter(path15_df.loc['SWT'].x, path15_df.loc['SWT'].y, edgecolor='k', color='yellow', marker='o', s=30, zorder=100)
+    ax.scatter(path15_df.loc['SWT'].x, path15_df.loc['SWT'].y, edgecolor='k', color='yellow', marker='o', s=30,
+               zorder=100)
     ax.annotate('SWT', (path15_df.loc['SWT'].x + 50, path15_df.loc['SWT'].y), fontsize=13)
     # SCT
-    ax.scatter(path15_df.loc['SCT'].x, path15_df.loc['SCT'].y, edgecolor='k', color='yellow', marker='o', s=30, zorder=100)
-    ax.annotate('SCT', (path15_df.loc['SCT'].x -500, path15_df.loc['SCT'].y), fontsize=13)
+    ax.scatter(path15_df.loc['SCT'].x, path15_df.loc['SCT'].y, edgecolor='k', color='yellow', marker='o', s=30,
+               zorder=100)
+    ax.annotate('SCT', (path15_df.loc['SCT'].x - 500, path15_df.loc['SCT'].y), fontsize=13)
     # KSSW
     ax.scatter(KSSW_df.X_32631[0], KSSW_df.Y_32631[0], edgecolor='k', color='yellow', marker='o', s=30, zorder=100)
     ax.annotate('KSSW', (KSSW_df.X_32631[0] + 50, KSSW_df.Y_32631[0] + 50), fontsize=13)
+
+    # plot UKV grids at centre of paths
+    # read in the UKV grid geo-reference data for each grid
+    ukv_shp_13 = 'C:/Users/beths/OneDrive - University of Reading/UKV_grid_objects/grid_line_shp_files/13.shp'
+    ukv_shp_12 = 'C:/Users/beths/OneDrive - University of Reading/UKV_grid_objects/grid_line_shp_files/12.shp'
+    ukv_shp_37 = 'C:/Users/beths/OneDrive - University of Reading/UKV_grid_objects/grid_line_shp_files/37.shp'
+    ukv_shp_13_df = gpd.read_file(ukv_shp_13)
+    ukv_shp_13_df.plot(edgecolor='grey', ax=ax, zorder=30)
+    ukv_shp_12_df = gpd.read_file(ukv_shp_12)
+    ukv_shp_12_df.plot(edgecolor='grey', ax=ax, zorder=30)
+    ukv_shp_37_df = gpd.read_file(ukv_shp_37)
+    ukv_shp_37_df.plot(edgecolor='grey', ax=ax, zorder=30, label='UKV')
 
     handles, labels = ax.get_legend_handles_labels()
 
