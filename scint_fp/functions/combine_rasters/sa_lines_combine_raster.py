@@ -277,12 +277,12 @@ def plot_sa_lines_combined_raster_panels(file_list,
 
             # Plot the SA line
             sas = rasterio.plot.show(bool_arr, transform=raster.transform, contour=True, contour_label_kws={}, ax=axis,
-                                     colors=[colour_here], linestyles=[linestyle_dict[weight]])
+                                     colors=[colour_here], linestyles=[linestyle_dict[weight]], zorder=10)
 
             plt.setp(sas.collections, linewidth=1)
 
             if weight == '60':
-                axis.scatter(max_coords[0], max_coords[1], color=colour_here, marker='o', s=30)
+                axis.scatter(max_coords[0], max_coords[1], color=colour_here, marker='o', s=30, zorder=20, edgecolor='k')
 
                 # plot a solid colour in the 60 extent
                 shade_array = bool_arr.copy()
@@ -299,7 +299,20 @@ def plot_sa_lines_combined_raster_panels(file_list,
         # plot path
         df_path = gpd.read_file(
             'D:/Documents/scint_plots/scint_plots/sa_position_and_lc_fraction/scint_path_shp/' + path_name + '.shp')
-        df_path.plot(edgecolor=colour_here, ax=axis, linewidth=2.0)
+        df_path.plot(edgecolor=colour_here, ax=axis, linewidth=2.0, zorder=10)
+
+        # plot UKV grid box of path
+        if path_name == 'BCT_IMU':
+            # read in the UKV grid geo-reference data for each grid
+            ukv_shp = 'C:/Users/beths/OneDrive - University of Reading/UKV_grid_objects/grid_line_shp_files/13.shp'
+        elif path_name == 'IMU_BTT' or path_name == 'BTT_BCT':
+            ukv_shp = 'C:/Users/beths/OneDrive - University of Reading/UKV_grid_objects/grid_line_shp_files/12.shp'
+        elif path_name == 'SCT_SWT':
+            ukv_shp = 'C:/Users/beths/OneDrive - University of Reading/UKV_grid_objects/grid_line_shp_files/37.shp'
+        else:
+            raise ValueError('Path name not an option.')
+        ukv_shp_df = gpd.read_file(ukv_shp)
+        ukv_shp_df.plot(edgecolor='grey', ax=axis, zorder=1)
 
     handles, labels = ax1.get_legend_handles_labels()
 
@@ -333,7 +346,7 @@ if __name__ == '__main__':
 
     save_path = os.getcwd().replace('\\', '/') + '/'
 
-    plot_sa_lines_combined_raster(file_list=file_list, colour_dict=colour_dict, save_path=save_path)
-    # plot_sa_lines_combined_raster_panels(file_list=file_list, colour_dict=colour_dict, save_path=save_path)
+    # plot_sa_lines_combined_raster(file_list=file_list, colour_dict=colour_dict, save_path=save_path)
+    plot_sa_lines_combined_raster_panels(file_list=file_list, colour_dict=colour_dict, save_path=save_path)
 
     print('end')
