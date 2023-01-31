@@ -6,8 +6,8 @@ import pandas as pd
 
 
 def combine_sa_rasters(path_string,
-                       main_dir='//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintillometer_footprints/scint_fp/test_outputs/10_mins_ending/',
-                       # main_dir='/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scintillometer_footprints/scint_fp/test_outputs/10_mins_ending/'
+                       main_dir='//rdg-home.ad.rdg.ac.uk/research-nfs/basic/micromet/Tier_processing/rv006011/PycharmProjects/scint_fp/scint_fp/test_outputs/10_mins_ending/',
+                       # main_dir='/storage/basic/micromet/Tier_processing/rv006011/PycharmProjects/scint_fp/scint_fp/test_outputs/10_mins_ending/'
                        ):
     """
     Takes a list of days (from csv, e.g. DOY_in) and combine each source area of that day (all times) into one
