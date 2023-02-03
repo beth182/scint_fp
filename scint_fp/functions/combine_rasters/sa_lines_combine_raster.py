@@ -20,6 +20,68 @@ from scintools.PointFootprint import trim_fp
 mpl.rcParams.update({'font.size': 15})
 
 
+def just_path_lines(colour_dict,
+                    save_path
+                    ):
+    """
+
+    """
+
+    fig, ax = plt.subplots(figsize=(10, 10))
+
+
+    path_list = ['BCT_IMU', 'BTT_BCT', 'IMU_BTT', 'SCT_SWT']
+
+    for path_name in path_list:
+        colour_here = colour_dict[path_name]
+
+        # plot path
+        df_path = gpd.read_file(
+            'D:/Documents/scint_plots/scint_plots/sa_position_and_lc_fraction/scint_path_shp/' + path_name + '.shp')
+        df_path.plot(edgecolor=colour_here, ax=ax, linewidth=3.0, zorder=50)
+
+    # plot coords of sites
+    path_15_coords = 'C:/Users/beths/OneDrive - University of Reading/Scintillometers/QGIS/scint_locations/trusted_coords/pair_15.csv'
+    path15_df = pd.read_csv(path_15_coords)
+    path15_df = path15_df.set_index(path15_df.site)
+    path_12_coords = 'C:/Users/beths/OneDrive - University of Reading/Scintillometers/QGIS/scint_locations/trusted_coords/pair_12.csv'
+    path12_df = pd.read_csv(path_12_coords)
+    path12_df = path12_df.set_index(path12_df.site)
+    path_13_coords = 'C:/Users/beths/OneDrive - University of Reading/Scintillometers/QGIS/scint_locations/trusted_coords/pair_13.csv'
+    path13_df = pd.read_csv(path_13_coords)
+    path13_df = path13_df.set_index(path13_df.site)
+
+    # BCT
+    ax.scatter(path12_df.loc['BCT'].x, path12_df.loc['BCT'].y, edgecolor='k', color='yellow', marker='o', s=30,
+               zorder=100)
+    ax.annotate('BCT', (path12_df.loc['BCT'].x + 50, path12_df.loc['BCT'].y), fontsize=13)
+    # IMU
+    ax.scatter(path12_df.loc['IMU'].x, path12_df.loc['IMU'].y, edgecolor='k', color='yellow', marker='o', s=30,
+               zorder=100)
+    ax.annotate('IMU', (path12_df.loc['IMU'].x + 50, path12_df.loc['IMU'].y), fontsize=13)
+    # BTT
+    ax.scatter(path13_df.loc['BTT'].x, path13_df.loc['BTT'].y, edgecolor='k', color='yellow', marker='o', s=30,
+               zorder=100)
+    ax.annotate('BTT', (path13_df.loc['BTT'].x - 500, path13_df.loc['BTT'].y), fontsize=13)
+    # SWT
+    ax.scatter(path15_df.loc['SWT'].x, path15_df.loc['SWT'].y, edgecolor='k', color='yellow', marker='o', s=30,
+               zorder=100)
+    ax.annotate('SWT', (path15_df.loc['SWT'].x + 50, path15_df.loc['SWT'].y), fontsize=13)
+    # SCT
+    ax.scatter(path15_df.loc['SCT'].x, path15_df.loc['SCT'].y, edgecolor='k', color='yellow', marker='o', s=30,
+               zorder=100)
+    ax.annotate('SCT', (path15_df.loc['SCT'].x - 500, path15_df.loc['SCT'].y), fontsize=13)
+
+
+    # limits which stay constant between and which suit the SAs
+    ax.set_xlim(277277.92426043435, 288387.33066867734)
+    ax.set_ylim(5706625.265920927, 5717734.67232917)
+
+    plt.axis('off')
+    plt.savefig(save_path + 'sa_path_lines.png', bbox_inches='tight', dpi=300, transparent=True)
+    print('end')
+
+
 def reweight_fp(raster_array, path_id, target_percentage):
     """
 
@@ -282,7 +344,8 @@ def plot_sa_lines_combined_raster_panels(file_list,
             plt.setp(sas.collections, linewidth=1)
 
             if weight == '60':
-                axis.scatter(max_coords[0], max_coords[1], color=colour_here, marker='o', s=30, zorder=20, edgecolor='k')
+                axis.scatter(max_coords[0], max_coords[1], color=colour_here, marker='o', s=30, zorder=20,
+                             edgecolor='k')
 
                 # plot a solid colour in the 60 extent
                 shade_array = bool_arr.copy()
@@ -336,15 +399,18 @@ def plot_sa_lines_combined_raster_panels(file_list,
 
 
 if __name__ == '__main__':
+
+    save_path = os.getcwd().replace('\\', '/') + '/'
+
     sa_file_source_list = ['IMU_BTT.tif', 'BCT_IMU.tif', 'BTT_BCT.tif', 'SCT_SWT.tif']
 
     colour_dict = {'BCT_IMU': 'red', 'SCT_SWT': 'mediumorchid', 'IMU_BTT': 'green', 'BTT_BCT': 'blue'}
 
+    # just_path_lines(colour_dict, save_path)
+
     file_list = sa_lines_funs.find_SA_rasters(given_list=True,
                                               sa_main_dir='C:/Users/beths/OneDrive - University of Reading/Paper 2/combine_rasters/',
                                               sa_file_source=sa_file_source_list)
-
-    save_path = os.getcwd().replace('\\', '/') + '/'
 
     # plot_sa_lines_combined_raster(file_list=file_list, colour_dict=colour_dict, save_path=save_path)
     plot_sa_lines_combined_raster_panels(file_list=file_list, colour_dict=colour_dict, save_path=save_path)
