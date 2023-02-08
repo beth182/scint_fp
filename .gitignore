@@ -135,6 +135,7 @@ dmypy.json
 *.bak
 /example_data/
 /scint_fp/test_outputs/
+/scint_fp/temp_runs/
 /plots/
 /scint_fp/DOY_in.csv
 /scint_fp/DOY_in_LOG.csv
