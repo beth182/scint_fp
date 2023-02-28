@@ -256,8 +256,8 @@ def plot_sa_lines_combined_raster(file_list,
     ax.set_xlim(277277.92426043435, 288387.33066867734)
     ax.set_ylim(5706625.265920927, 5717734.67232917)
 
-    # plt.savefig(save_path + 'sa_lines_combine.png', bbox_inches='tight', dpi=300)
-    plt.show()
+    plt.savefig(save_path + 'sa_lines_combine.png', bbox_inches='tight', dpi=300)
+    # plt.show()
 
     print('end')
 
@@ -421,8 +421,8 @@ def plot_sa_lines_combined_raster_panels(file_list,
     plt.tight_layout()
     fig.subplots_adjust(hspace=0.01, wspace=0.01)
 
-    # plt.savefig(save_path + 'sa_lines_combine_panels.png', bbox_inches='tight', dpi=300)
-    plt.show()
+    plt.savefig(save_path + 'sa_lines_combine_panels.png', bbox_inches='tight', dpi=300)
+    # plt.show()
 
     print('end')
 
@@ -441,7 +441,7 @@ if __name__ == '__main__':
                                               sa_main_dir='C:/Users/beths/OneDrive - University of Reading/Paper 2/combine_rasters/',
                                               sa_file_source=sa_file_source_list)
 
-    # plot_sa_lines_combined_raster(file_list=file_list, colour_dict=colour_dict, save_path=save_path)
-    plot_sa_lines_combined_raster_panels(file_list=file_list, colour_dict=colour_dict, save_path=save_path)
+    plot_sa_lines_combined_raster(file_list=file_list, colour_dict=colour_dict, save_path=save_path)
+    # plot_sa_lines_combined_raster_panels(file_list=file_list, colour_dict=colour_dict, save_path=save_path)
 
     print('end')
