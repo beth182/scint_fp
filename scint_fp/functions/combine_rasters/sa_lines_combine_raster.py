@@ -216,15 +216,30 @@ def plot_sa_lines_combined_raster(file_list,
     ax.scatter(KSSW_df.X_32631[0], KSSW_df.Y_32631[0], edgecolor='k', color='yellow', marker='o', s=30, zorder=100)
     ax.annotate('KSSW', (KSSW_df.X_32631[0] + 50, KSSW_df.Y_32631[0] + 50), fontsize=13)
 
-    # plot UKV grids at centre of paths
+    # plot UKV grids
     # read in the UKV grid geo-reference data for each grid
     ukv_shp_13 = 'C:/Users/beths/OneDrive - University of Reading/UKV_grid_objects/grid_line_shp_files/13.shp'
     ukv_shp_12 = 'C:/Users/beths/OneDrive - University of Reading/UKV_grid_objects/grid_line_shp_files/12.shp'
     ukv_shp_37 = 'C:/Users/beths/OneDrive - University of Reading/UKV_grid_objects/grid_line_shp_files/37.shp'
+    ukv_shp_22 = 'C:/Users/beths/OneDrive - University of Reading/UKV_grid_objects/grid_line_shp_files/22.shp'
+    ukv_shp_21 = 'C:/Users/beths/OneDrive - University of Reading/UKV_grid_objects/grid_line_shp_files/21.shp'
+    ukv_shp_38 = 'C:/Users/beths/OneDrive - University of Reading/UKV_grid_objects/grid_line_shp_files/38.shp'
+
+    ukv_shp_22_df = gpd.read_file(ukv_shp_22)
+    ukv_shp_22_df.plot(edgecolor='grey', ax=ax, zorder=30)
+
+    ukv_shp_21_df = gpd.read_file(ukv_shp_21)
+    ukv_shp_21_df.plot(edgecolor='grey', ax=ax, zorder=30)
+
+    ukv_shp_38_df = gpd.read_file(ukv_shp_38)
+    ukv_shp_38_df.plot(edgecolor='grey', ax=ax, zorder=30)
+
     ukv_shp_13_df = gpd.read_file(ukv_shp_13)
     ukv_shp_13_df.plot(edgecolor='grey', ax=ax, zorder=30)
+
     ukv_shp_12_df = gpd.read_file(ukv_shp_12)
     ukv_shp_12_df.plot(edgecolor='grey', ax=ax, zorder=30)
+
     ukv_shp_37_df = gpd.read_file(ukv_shp_37)
     ukv_shp_37_df.plot(edgecolor='grey', ax=ax, zorder=30, label='UKV')
 
@@ -241,8 +256,8 @@ def plot_sa_lines_combined_raster(file_list,
     ax.set_xlim(277277.92426043435, 288387.33066867734)
     ax.set_ylim(5706625.265920927, 5717734.67232917)
 
-    plt.savefig(save_path + 'sa_lines_combine.png', bbox_inches='tight', dpi=300)
-    # plt.show()
+    # plt.savefig(save_path + 'sa_lines_combine.png', bbox_inches='tight', dpi=300)
+    plt.show()
 
     print('end')
 
@@ -368,14 +383,28 @@ def plot_sa_lines_combined_raster_panels(file_list,
         if path_name == 'BCT_IMU':
             # read in the UKV grid geo-reference data for each grid
             ukv_shp = 'C:/Users/beths/OneDrive - University of Reading/UKV_grid_objects/grid_line_shp_files/13.shp'
-        elif path_name == 'IMU_BTT' or path_name == 'BTT_BCT':
+            ukv_shp_2 = 'C:/Users/beths/OneDrive - University of Reading/UKV_grid_objects/grid_line_shp_files/22.shp'
+
+        elif path_name == 'IMU_BTT':
             ukv_shp = 'C:/Users/beths/OneDrive - University of Reading/UKV_grid_objects/grid_line_shp_files/12.shp'
+            ukv_shp_2 = 'C:/Users/beths/OneDrive - University of Reading/UKV_grid_objects/grid_line_shp_files/21.shp'
+
+        elif path_name == 'BTT_BCT':
+            ukv_shp = 'C:/Users/beths/OneDrive - University of Reading/UKV_grid_objects/grid_line_shp_files/21.shp'
+            ukv_shp_2 = 'C:/Users/beths/OneDrive - University of Reading/UKV_grid_objects/grid_line_shp_files/12.shp'
+
         elif path_name == 'SCT_SWT':
             ukv_shp = 'C:/Users/beths/OneDrive - University of Reading/UKV_grid_objects/grid_line_shp_files/37.shp'
+            ukv_shp_2 = 'C:/Users/beths/OneDrive - University of Reading/UKV_grid_objects/grid_line_shp_files/38.shp'
+
         else:
             raise ValueError('Path name not an option.')
+
         ukv_shp_df = gpd.read_file(ukv_shp)
         ukv_shp_df.plot(edgecolor='grey', ax=axis, zorder=1)
+
+        ukv_shp_df_2 = gpd.read_file(ukv_shp_2)
+        ukv_shp_df_2.plot(edgecolor='grey', ax=axis, zorder=1)
 
     handles, labels = ax1.get_legend_handles_labels()
 
@@ -392,8 +421,8 @@ def plot_sa_lines_combined_raster_panels(file_list,
     plt.tight_layout()
     fig.subplots_adjust(hspace=0.01, wspace=0.01)
 
-    plt.savefig(save_path + 'sa_lines_combine_panels.png', bbox_inches='tight', dpi=300)
-    # plt.show()
+    # plt.savefig(save_path + 'sa_lines_combine_panels.png', bbox_inches='tight', dpi=300)
+    plt.show()
 
     print('end')
 
