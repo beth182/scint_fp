@@ -137,10 +137,10 @@ def plot_sa_lines(file_list,
 
     # title
     if doy_choice == 126:
-        title_string = 'Clear'
+        title_string = 'IOP-2'
     else:
         assert doy_choice == 123
-        title_string = 'Cloudy'
+        title_string = 'IOP-1'
 
     plt.title(title_string)
 
