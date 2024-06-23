@@ -66,8 +66,11 @@ def get_colours(cmap, file_list):
 
 def plot_sa_lines(file_list,
                   colour_list,
-                  doy_choice,
                   save_path,
+                  doy_choice=False,
+                  custom_labels=False,
+                  custom_linetype=False,
+                  custom_marker=False,
                   landcover_raster_filepath='C:/Users/beths/OneDrive - University of Reading/Model_Eval/QGIS/Elliott/LandUseMM_7classes_32631.tif'):
     """
     ToDo: move landcover_raster_filepath
@@ -88,10 +91,13 @@ def plot_sa_lines(file_list,
     # plot the SAs
     for i, filename in enumerate(file_list):
 
-        # labels as time
-        replc = filename.replace('.', '_')
-        splt = replc.split('_')
-        labels = splt[-3] + ':' + splt[-2]
+        if custom_labels == False:
+            # labels as time
+            replc = filename.replace('.', '_')
+            splt = replc.split('_')
+            labels = splt[-3] + ':' + splt[-2]
+        else:
+            labels = custom_labels[i]
 
         raster = rasterio.open(filename)
         raster_array = raster.read()
@@ -116,10 +122,25 @@ def plot_sa_lines(file_list,
         else:
             colour_here = list(colour_list[i])
 
-        ax.scatter(max_coords[0], max_coords[1], color=colour_here, marker='o', s=30, label=labels)
+        if custom_linetype == False:
+            linetype = '-'
+        else:
+            linetype = custom_linetype[i]
+
+        if custom_marker == False:
+            marker = 'o'
+            ax.scatter(max_coords[0], max_coords[1], color=colour_here, marker=marker, s=30, label=labels)
+        else:
+
+            assert custom_linetype
+
+            marker = custom_marker[i]
+            ax.scatter(max_coords[0], max_coords[1], color=colour_here, marker=marker, s=30)
+
+            ax.plot([], [], marker=marker, linestyle=custom_linetype[i], color=colour_here, label=labels)
 
         rasterio.plot.show(bool_arr, transform=raster.transform, contour=True, contour_label_kws={}, ax=ax,
-                           colors=[colour_here])
+                           colors=[colour_here], linestyles=linetype)
 
     handles, labels = ax.get_legend_handles_labels()
 
@@ -131,18 +152,23 @@ def plot_sa_lines(file_list,
     ax.set_ylim(5707118.9139011325, 5716431.904868875)
 
     # plot paths
-    scint_shp_file_path = save_path + '../scint_path_shp/BCT_IMU.shp'
+    # scint_shp_file_path = save_path + '../scint_path_shp/BCT_IMU.shp'
+    scint_shp_file_path = 'D:/Documents/scint_plots/scint_plots/sa_position_and_lc_fraction/scint_path_shp/BCT_IMU.shp'
+
     df_12 = gpd.read_file(scint_shp_file_path)
     df_12.plot(edgecolor='green', ax=ax, linewidth=3.0)
 
     # title
-    if doy_choice == 126:
-        title_string = 'IOP-2'
+    if doy_choice == False:
+        pass
     else:
-        assert doy_choice == 123
-        title_string = 'IOP-1'
+        if doy_choice == 126:
+            title_string = 'IOP-2'
+        else:
+            assert doy_choice == 123
+            title_string = 'IOP-1'
 
-    plt.title(title_string)
+        plt.title(title_string)
 
     plt.savefig(save_path + 'sa_lines_' + str(doy_choice) + '.png', bbox_inches='tight', dpi=300)
     print('end')
