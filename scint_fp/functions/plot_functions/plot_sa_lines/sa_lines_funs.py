@@ -71,6 +71,7 @@ def plot_sa_lines(file_list,
                   custom_labels=False,
                   custom_linetype=False,
                   custom_marker=False,
+                  custom_facecolours=False,
                   landcover_raster_filepath='C:/Users/beths/OneDrive - University of Reading/Model_Eval/QGIS/Elliott/LandUseMM_7classes_32631.tif'):
     """
     ToDo: move landcover_raster_filepath
@@ -127,17 +128,22 @@ def plot_sa_lines(file_list,
         else:
             linetype = custom_linetype[i]
 
+        if custom_facecolours == False:
+            markerfacecolor= colour_here
+        else:
+            markerfacecolor = custom_facecolours[i]
+
         if custom_marker == False:
             marker = 'o'
-            ax.scatter(max_coords[0], max_coords[1], color=colour_here, marker=marker, s=30, label=labels)
+            ax.scatter(max_coords[0], max_coords[1], color=colour_here, marker=marker, facecolors=markerfacecolor, s=30, label=labels)
         else:
 
             assert custom_linetype
 
             marker = custom_marker[i]
-            ax.scatter(max_coords[0], max_coords[1], color=colour_here, marker=marker, s=30)
+            ax.scatter(max_coords[0], max_coords[1], color=colour_here, marker=marker, s=30, facecolors=markerfacecolor)
 
-            ax.plot([], [], marker=marker, linestyle=custom_linetype[i], color=colour_here, label=labels)
+            ax.plot([], [], marker=marker, linestyle=custom_linetype[i], color=colour_here, label=labels, markerfacecolor=markerfacecolor)
 
         rasterio.plot.show(bool_arr, transform=raster.transform, contour=True, contour_label_kws={}, ax=ax,
                            colors=[colour_here], linestyles=linetype)
