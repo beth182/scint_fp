@@ -5,7 +5,7 @@ setup(
     url='https://github.com/beth182/scintillometer_footprints',
     author='Beth Saunders',
     author_email='bethany.saunders@pgr.reading.ac.uk',
-    packages=[],
+    packages=['scint_fp'],
     install_requires=[
         'numpy',
         'scipy',
